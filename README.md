@@ -66,10 +66,10 @@ elmo-hikes/
 
 
 ## Contributors
+- **Alex Balog** - Before I started CST I was an amateur hip-hop dancer, now I just cry at my lack of time in the week ^-^
 - **Alex Minty** - I'm here to code games and kick ass. And I'm all out of ass.
 Fun Fact: Chaos is a requirement for fun >:D
 - **Simon** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute.
-- **Teammate Name** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
 - **Carlos Fonseca** I'm Carlos, I like games and programming and I want to be a game programmer.
     
 ---
