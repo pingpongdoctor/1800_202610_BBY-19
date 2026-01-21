@@ -68,7 +68,7 @@ elmo-hikes/
 ## Contributors
 - **Your Name** - BCIT CST Student with a passion for outdoor adventures and user-friendly applications. Fun fact: Loves solving Rubik's Cubes in under a minute.
 - **Teammate Name** - BCIT CST Student, Frontend enthusiast with a knack for creative design. Fun fact: Has a collection of over 50 houseplants.
-- **Carlos Fonseca**
+- **Carlos Fonseca** I'm Carlos, I like games and programming and I want to be a game programmer.
 
 ---
 
