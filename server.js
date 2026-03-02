@@ -11,11 +11,14 @@ app.use("/img", express.static("./public/images"));
 app.use("/icon", express.static("./public/icons"));
 app.use("/font", express.static("./public/fonts"));
 
-app.get("/mapInfor", function (req, res) {
+app.get("/", function (req, res) {
     //console.log(process.env);
     // retrieve and send an HTML document from the file system
-    let doc = fs.readFileSync("./app/html/index.html", "utf8");
+    let doc = fs.readFileSync("./index.html", "utf8");
     res.send(doc);
+});
+
+app.get("/mapInfor", function (req, res) {
 });
 
 // for resource not found (i.e., 404)
