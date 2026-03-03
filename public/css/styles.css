@@ -7,6 +7,14 @@ Black:                #002100 - Black
 White:                #F5FFF5 - White
  */
 
+:root {
+    --primary: #68E152;
+    --primary_compliment: #9AE184;
+    --secondary: #E0DD4C;
+    --secondary_compliment: #DCE07F;
+    --white: #F5FFF5;
+}
+
 body {
     margin: 0;
     padding: 2rem;
@@ -19,7 +27,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 2rem 6rem;
-    background-color: #68E152;
+    background-color: var(--primary);
     border-radius: 1rem;
 }
 
@@ -41,7 +49,7 @@ nav {
     width: 100%;
     height: 65vh;
     margin: 2rem 0;
-    background-color: #DCE07F;
+    background-color: var(--secondary_compliment);
 }
 
 #map {
@@ -51,3 +59,8 @@ nav {
   width: 100%;
   height: auto;
 }
+
+#loginEmail, #loginPassword {
+    background-color: var(--white);
+}
+
