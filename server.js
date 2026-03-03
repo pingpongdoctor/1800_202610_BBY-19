@@ -11,11 +11,19 @@ app.use("/img", express.static("./public/images"));
 app.use("/icon", express.static("./public/icons"));
 app.use("/font", express.static("./public/fonts"));
 app.use("/cpn", express.static("./components"));
+app.use("/src", express.static("./src"));
 
 app.get("/", function (req, res) {
     //console.log(process.env);
     // retrieve and send an HTML document from the file system
     let doc = fs.readFileSync("./index.html", "utf8");
+    res.send(doc);
+});
+
+app.get("/login", function (req, res) {
+    //console.log(process.env);
+    // retrieve and send an HTML document from the file system
+    let doc = fs.readFileSync("./login.html", "utf8");
     res.send(doc);
 });
 
