@@ -10,6 +10,7 @@ app.use("/css", express.static("./public/css"));
 app.use("/img", express.static("./public/images"));
 app.use("/icon", express.static("./public/icons"));
 app.use("/font", express.static("./public/fonts"));
+app.use("/components", express.static("./src/components"))
 
 app.get("/", function (req, res) {
     //console.log(process.env);
@@ -20,6 +21,17 @@ app.get("/", function (req, res) {
 
 app.get("/mapInfor", function (req, res) {
 });
+
+app.get("/challenges", function (req, res) {
+
+    let doc = fs.readFileSync("./app/html/challenges.html", "utf8");
+
+    // just send the text stream
+    res.send(doc);
+
+});
+
+
 
 // for resource not found (i.e., 404)
 app.use(function (req, res, next) {
