@@ -23,8 +23,20 @@ nav {
     background-image: url('/img/MapPlaceholder.png');
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-    height: 70vh;
+    min-height: 75vh;
+}
+
+.map-container {
+    position: relative;
     width: 100%;
-    border-radius: 1.5%;
+    height: 65vh;
+    margin: 2rem 0;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
 }
