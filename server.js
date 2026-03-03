@@ -31,6 +31,15 @@ app.get("/challenges", function (req, res) {
 
 });
 
+app.get("/shop", function (req, res) {
+
+    let doc = fs.readFileSync("./app/html/itemshop.html", "utf8");
+
+    // just send the text stream
+    res.send(doc);
+
+});
+
 
 
 // for resource not found (i.e., 404)
