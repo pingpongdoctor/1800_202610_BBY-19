@@ -23,5 +23,8 @@ nav {
     background-image: url('/img/MapPlaceholder.png');
     background-size: cover;
     background-position: center;
-    min-height: 75vh;
+    background-repeat: no-repeat;
+    height: 70vh;
+    width: 100%;
+    border-radius: 1.5%;
 }
