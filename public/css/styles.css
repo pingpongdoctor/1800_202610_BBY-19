@@ -20,8 +20,8 @@ nav {
 }
 
 .hero {
-    background-image: url('/img/MapPlaceholder');
+    background-image: url('/img/MapPlaceholder.png');
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    min-height: 75vh;
 }
