@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="./styles/style.css">
     
     <!-- Other libraries go here -->
+    <script type="module" src="/src/components/site-footer.js"></script>
+    <script type="module" src="/src/components/site-searchbar.js"></script>
+
 </head>
 
 <body>
@@ -19,10 +22,7 @@
     <!-- Your HTML Layout go here -->
     <!------------------------------>
     <!-- Stuff for body goes here -->
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+     <site-searchbar></site-searchbar>
 
     <div class="px-4 pt-5 my-5 text-center border-bottom"> 
         <h1 class="display-4 fw-bold text-body-emphasis">Welcome to G19</h1> 
@@ -50,12 +50,8 @@
 
     <!-- Link to scripts of your own -->
     <!-- <script type="module" src="./src/main.js"></script> -->
-     <footer>
-        <img class="footer-image" src="./images/Location.png" alt="location">
-        <img class="footer-image" src="./images/Footprint.png" alt="footprint">
-        <img class="footer-image" src="./images//Dollar Bag.png" alt="">
-        <img class="footer-image" src="./images/Person.png" alt="person">
-     </footer>
+     <site-footer></site-footer>
+
     <script type="module" src="./src/main.js"></script>
 </body>
 
