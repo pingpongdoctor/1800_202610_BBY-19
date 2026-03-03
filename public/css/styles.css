@@ -18,3 +18,10 @@ nav {
     width: 60px;
     height: auto;
 }
+
+.hero {
+    background-image: url('/img/MapPlaceholder');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
