@@ -25,3 +25,18 @@ nav {
     background-position: center;
     min-height: 75vh;
 }
+
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 65vh;
+    margin: 2rem 0;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+}

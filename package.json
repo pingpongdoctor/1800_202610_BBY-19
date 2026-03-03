@@ -10,9 +10,11 @@
     "vite": "^7.0.0"
   },
   "dependencies": {
+    "@maptiler/sdk": "^3.11.1",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.8",
     "express": "^5.2.1",
-    "firebase": "^12.10.0"
+    "firebase": "^12.10.0",
+    "maplibre-gl": "^5.19.0"
   }
 }
