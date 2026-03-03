@@ -10,6 +10,7 @@ app.use("/css", express.static("./public/css"));
 app.use("/img", express.static("./public/images"));
 app.use("/icon", express.static("./public/icons"));
 app.use("/font", express.static("./public/fonts"));
+app.use("/components", express.static("./src/components"))
 
 app.get("/", function (req, res) {
     //console.log(process.env);
