@@ -8,7 +8,7 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import '../styles/style.css';
+import '/css/styles.css?url';
 import {
     loginUser,
     signupUser,
