@@ -1,3 +1,22 @@
+/*
+* --------------------------------------------------
+* Custom styles overriding Bootstrap defaults
+* --------------------------------------------------
+*
+* Design principles applied:
+*
+* 1) 20/80 Rule
+*    A small number of targeted changes (colours on key
+*    components like buttons, navbar, and backgrounds)
+*    create most of the visual impact without rewriting
+*    Bootstrap’s core styles.
+*
+* 2) 60 / 30 / 10 Colour Rule
+*    - 60% dominant: lighter for backgrounds and large surfaces
+*    - 30% primary/secondary: primary for main actions, secondary for supporting elements
+*    - 10% accent: used sparingly for hover or emphasis
+*/
+
 /* ---Colour Palette---
 Main:                 #68E152 - Green
 Main complement:      #9AE184 - Soft Green
@@ -10,14 +29,20 @@ White:                #F5FFF5 - White
 :root {
     --primary: #68E152;
     --primary_compliment: #9AE184;
-    --secondary: #E0DD4C;
-    --secondary_compliment: #DCE07F;
+    --secondary: #f0eb51;
+    --secondary_compliment: #e4e885;
     --white: #F5FFF5;
+    --black: #002100;
+    /* Can be altered when needed */
+    --test:  red;
+    /* -------------------------- */
 }
 
 body {
     margin: 0;
     padding: 2rem;
+    background-color: var(--white) !important;
+    color: var(--primary) !important;
 }
 
 nav {
@@ -60,7 +85,54 @@ nav {
   height: auto;
 }
 
-#loginEmail, #loginPassword {
-    background-color: var(--white);
+.btn-info, 
+.btn, 
+.btn-primary{
+    color: var(--black) !important;
+    background-color: var(--primary_compliment) !important;
+    border-color: var(--black) !important;
 }
 
+.btn-info:hover,
+.btn-info:focus {
+    background-color: var(--secondary);
+    border-color: var(--white);
+    border-width: var(--btn-border-width-hover);
+}
+
+.card-header {
+    background-color: var(--secondary) !important;
+}
+
+.card {
+    background-color: var(--white) !important;
+}
+
+.list-group-item {
+    background-color: var(--secondary_compliment) !important;
+}
+
+#challenge_summary {
+    background-color: var(--primary_compliment) !important;
+}
+
+.progress {
+    background-color: var(--white) !important;
+}
+
+.progress-bar.text-bg-success {
+    background-color: var(--primary) !important;
+    color: var(--black) !important;
+}
+
+.route-img {
+    background-color: var(--primary) !important;
+}
+
+.route-odd {
+    background-color: var(--primary_compliment) !important;
+}
+
+.route-even {
+    background-color: var(--secondary_compliment) !important;
+}
