@@ -136,3 +136,21 @@ nav {
 .route-even {
     background-color: var(--secondary_compliment) !important;
 }
+
+.searchbar-suggestions{
+    position: absolute;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.suggestion-item{
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover{
+    background-color: #f8f9fa;
+}
