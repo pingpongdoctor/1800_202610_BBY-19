@@ -10,7 +10,7 @@ class SiteSearchbar extends HTMLElement {
             <div class="container mt-3">
                 <div class="input-group">
                     <input type="text" id="searchInput" class="form-control" placeholder="Search...">
-                    <button id="searchBtn" class="btn btn-primary" type="button">Search</button>
+                    <a href="/app/html/route.html"><button id="searchBtn" class="btn btn-primary" type="button">Search</button></a>
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             Filters
