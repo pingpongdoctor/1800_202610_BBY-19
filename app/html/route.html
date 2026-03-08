@@ -30,48 +30,45 @@
         <div id="map"></div>
     </div>
 
-    <!-- NAV BAR -->
-    <div class="d-flex justify-content-center">
-    <table class="table">
-    <thead>
-        <tr> 
-        <th scope="col" class ="route-img"></th>
-        <th scope="col" class ="route-img"></th>
-        <th scope="col" class ="route-img"><img src="/images/walking.png" alt="walking" style="width: 35px;"></th>
-        <th scope="col" class ="route-img"><img src="/images/cycling.png" alt="cycling" style="width: 35px;"></th>
-        <th scope="col" class ="route-img"><img src="/images/transit.png" alt="transit" style="width: 35px;"></th>
-        </tr>
-    </thead>
-    </table>
+    <!-- MODE SELECTOR + ROUTES TABLE (fixed to bottom) -->
+    <div class="route-panel">
+        <!-- MODE SELECTOR -->
+        <div class="d-flex w-100">
+            <button class="mode-btn active flex-fill d-flex flex-column align-items-center py-3 border-0" data-mode="walking">
+                <img src="/images/walking.png" alt="walking" style="width: 35px;">
+                <span class="mt-1 small">Walking</span>
+            </button>
+            <button class="mode-btn flex-fill d-flex flex-column align-items-center py-3 border-0" data-mode="cycling">
+                <img src="/images/cycling.png" alt="cycling" style="width: 35px;">
+                <span class="mt-1 small">Cycling</span>
+            </button>
+            <button class="mode-btn flex-fill d-flex flex-column align-items-center py-3 border-0" data-mode="transit">
+                <img src="/images/transit.png" alt="transit" style="width: 35px;">
+                <span class="mt-1 small">Transit</span>
+            </button>
+        </div>
+
+        <!-- ROUTES TABLE -->
+        <table class="table table-striped mb-0">
+            <tbody>
+                <tr>
+                    <th class="route-odd" scope="row">Route 1</th>
+                    <td class="route-odd route-time"></td>
+                </tr>
+                <tr>
+                    <th class="route-even" scope="row">Route 2</th>
+                    <td class="route-even route-time"></td>
+                </tr>
+                <tr>
+                    <th class="route-odd" scope="row">Route 3</th>
+                    <td class="route-odd route-time"></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <table class="table table-striped">
-        <tbody>
-            <tr>
-            <th class="route-odd" scope="row">Route 1: 50 Min</th>
-            <td class="route-odd"></td>
-            <td class="route-odd"></td>
-            <td class="route-odd"></td>
-            </tr>
-            <tr class="route-even">
-            <th class="route-even" scope="row">Route 2: 20 Min</th>
-            <td class="route-even"></td>
-            <td class="route-even"></td>
-            <td class="route-even"></td>
-            </tr>
-            <tr>
-            <th class="route-odd" scope="row">Route 3: 45 Min</th>
-            <td class="route-odd"></td>
-            <td class="route-odd"></td>
-            <td class="route-odd"></td>
-            </tr>
-        </tbody>
-    </table>
-
     <script type="module" src="/src/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+    <script src="/src/routes.js"></script>
 </body>
 
 </html>
