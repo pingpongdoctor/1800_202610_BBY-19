@@ -52,7 +52,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 2rem 6rem;
-    background-color: var(--primary);
+    background-color: var(--primary) !important;
     border-radius: 1rem;
 }
 
