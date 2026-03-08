@@ -1,12 +1,12 @@
-const times = {
-    walking: ['50 Min', '20 Min', '45 Min'],
-    cycling: ['20 Min', '10 Min', '18 Min'],
-    transit: ['30 Min', '15 Min', '25 Min']
-};
+import { db } from './firebaseConfig.js';
+import { collection, getDocs } from 'firebase/firestore';
 
+let routesData = [];
+
+// 
 function updateTimes(mode) {
     document.querySelectorAll('.route-time').forEach((cell, i) => {
-        cell.textContent = times[mode][i];
+        cell.textContent = routesData[i] ? routesData[i][mode] ?? 'N/A' : 'N/A';
     });
 }
 
@@ -18,4 +18,9 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
     });
 });
 
-updateTimes('walking');
+getDocs(collection(db, 'routes')).then(snapshot => {
+    snapshot.forEach(doc => {
+        routesData.push(doc.data());
+    });
+    updateTimes('walking');
+});
