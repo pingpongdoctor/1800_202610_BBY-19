@@ -1,9 +1,8 @@
 import { db } from './firebaseConfig.js';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 let routesData = [];
 
-// 
 function updateTimes(mode) {
     document.querySelectorAll('.route-time').forEach((cell, i) => {
         cell.textContent = routesData[i] ? routesData[i][mode] ?? 'N/A' : 'N/A';
@@ -18,7 +17,7 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
     });
 });
 
-getDocs(collection(db, 'routes')).then(snapshot => {
+getDocs(query(collection(db, 'routes'), orderBy('order'))).then(snapshot => {
     snapshot.forEach(doc => {
         routesData.push(doc.data());
     });
