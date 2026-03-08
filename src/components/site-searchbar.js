@@ -62,11 +62,10 @@ class SiteSearchbar extends HTMLElement {
                 // );
               
                 // For each match from the auto complete, creates suggestion item div.
-                console.log(data)
                 // Use set to save unique search result
                 const set = new Set();
                 // Filter to get only the documents that have matching text field
-                data.forEach(result => {
+                data.filter(document => document.text.toLowerCase().includes(query)).forEach(result => {
                     // Skip the current iteration if the text field's value is duplicate
                     if(set.has(result.text)){
                         return;
@@ -92,7 +91,6 @@ class SiteSearchbar extends HTMLElement {
                         data.map(async document => {
                             const marker = await addMarker(document.center, map);
                             markerList.push(marker);
-                            console.log(markerList)
                         })
                     });
 
