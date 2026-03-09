@@ -1,9 +1,9 @@
 import { db } from '../firebaseConfig.js';
-import { collection, doc, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import * as maptilersdk from '@maptiler/sdk';
 import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker } from "../mapFunctions.js";
 import { map } from "./map.js"
-import { Popup } from 'maplibre-gl';
+import {addNewLocation} from "../locations.js"
 
 // Defines a custom HTML element (for search bar)
 class SiteSearchbar extends HTMLElement {
@@ -92,22 +92,28 @@ class SiteSearchbar extends HTMLElement {
                         popupList.forEach(popup => {
                             popup.remove();
                         })
-                        // When user choose the address, it will set at all markers on the map that match with the search result
+                        // When user choose an place, it will set all available markers for that place
                         data.map(async location => {
                             // Add marker
                             const marker = await addMarker(location.center, map);
-                            // Add popup element
+                            // Append paragraph and button elements to the popup element
                             const newPopup = document.createElement("div");
                             newPopup.classList.add("popup-container")
 
-                            const popUpcContent = document.createElement("p");
-                            popUpcContent.textContent = location.address;
+                            const popUpContent = document.createElement("p");
+                            popUpContent.textContent = location.place_name;
 
                             const popUpSavedLocationButton = document.createElement("button");
                             popUpSavedLocationButton.classList.add("popup-button--save-location");
                             popUpSavedLocationButton.textContent = "Save location";
-                            
-                            newPopup.append(popUpcContent);
+                            //Click eventlistener allows user to save location by invoking the createLocation function
+                            const {id, text, place_name, properties, center} = location;
+                            popUpSavedLocationButton.addEventListener("click", ()=>{
+                                
+                                addNewLocation(id, text, place_name, properties?.categories[0] || "", center[0], center[1]);
+                            })
+
+                            newPopup.append(popUpContent);
                             newPopup.append(popUpSavedLocationButton);
 
                             const popup = new maptilersdk.Popup({closeButton:true, closeOnClick:false}).setLngLat(location.center).setDOMContent(newPopup)

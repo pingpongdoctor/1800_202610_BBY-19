@@ -26,6 +26,7 @@ export async function addMarker(coordinates, map) {
     const marker = new maptilersdk.Marker()
         .setLngLat(coordinates)
         .addTo(map);
-        
+
     return marker
 }
+
