@@ -21,9 +21,11 @@ export async function getLocationsByPlaceNameAndCountry(name, country, limit, pr
 }
 
 // Function that allows to set a new marker
-export async function addMarker(coordinates, map){
+export async function addMarker(coordinates, map) {
+    // Add popup
     const marker = new maptilersdk.Marker()
-      .setLngLat(coordinates)
-      .addTo(map);
-      return marker
+        .setLngLat(coordinates)
+        .addTo(map);
+        
+    return marker
 }

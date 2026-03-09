@@ -1,8 +1,9 @@
 import { db } from '../firebaseConfig.js';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, doc, getDocs } from 'firebase/firestore';
 import * as maptilersdk from '@maptiler/sdk';
-import {getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker} from "../mapFunctions.js";
-import {map} from "./map.js"
+import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker } from "../mapFunctions.js";
+import { map } from "./map.js"
+import { Popup } from 'maplibre-gl';
 
 // Defines a custom HTML element (for search bar)
 class SiteSearchbar extends HTMLElement {
@@ -45,9 +46,10 @@ class SiteSearchbar extends HTMLElement {
 
         // We need to save a list of marker instances in case we want to remove them 
         const markerList = [];
+        const popupList = [];
 
         // Autocomplete, fires everytime user types a character in search box (Carly's implementation)
-        searchInput.addEventListener('input', async function() {
+        searchInput.addEventListener('input', async function () {
             const query = searchInput.value.toLowerCase();
             // clears any previously shown suggestion
             suggestions.innerHTML = '';
@@ -61,14 +63,14 @@ class SiteSearchbar extends HTMLElement {
                 // const filteredResults = autocompleteSuggestions.filter(item =>
                 //     item.toLowerCase().includes(query)
                 // );
-              
+
                 // For each match from the auto complete, creates suggestion item div.
                 // Use set to save unique search result
                 const set = new Set();
                 // Filter to get only the documents that have matching text field
                 data.filter(location => location.text.toLowerCase().includes(query)).forEach(result => {
                     // Skip the current iteration if the text field's value is duplicate
-                    if(set.has(result.text)){
+                    if (set.has(result.text)) {
                         return;
                     }
 
@@ -82,22 +84,45 @@ class SiteSearchbar extends HTMLElement {
                     suggestionItem.addEventListener('click', () => {
                         searchInput.value = result.text;
                         suggestions.innerHTML = '';
-                        // Remove old markers before adding the new ones
-                        if(markerList.length>0){
-                            markerList.forEach(marker => {
-                                marker.remove();
-                            })
-                        }
+                        // Remove old markers and popups before adding the new ones
+                        markerList.forEach(marker => {
+                            marker.remove();
+                        })
+
+                        popupList.forEach(popup => {
+                            popup.remove();
+                        })
                         // When user choose the address, it will set at all markers on the map that match with the search result
                         data.map(async location => {
                             // Add marker
                             const marker = await addMarker(location.center, map);
-                            // Add popup
+                            // Add popup element
                             const newPopup = document.createElement("div");
-                            newPopup.classList.add("popup-container");
-                            marker.setPopup(new maptilersdk.Popup().setDOMContent(newPopup))
-                            //Add Popup element to marker
+                            newPopup.classList.add("popup-container")
+
+                            const popUpcContent = document.createElement("p");
+                            popUpcContent.textContent = location.address;
+
+                            const popUpSavedLocationButton = document.createElement("button");
+                            popUpSavedLocationButton.classList.add("popup-button--save-location");
+                            popUpSavedLocationButton.textContent = "Save location";
+                            
+                            newPopup.append(popUpcContent);
+                            newPopup.append(popUpSavedLocationButton);
+
+                            const popup = new maptilersdk.Popup({closeButton:true, closeOnClick:false}).setLngLat(location.center).setDOMContent(newPopup)
+
+                            // Make marker information div element pop up when it is hovered
+                            const markerElement = marker.getElement();
+
+                            markerElement.addEventListener("click", () => {
+                                popup.addTo(map);
+                            })
+
+                            //add marker to marker list
                             markerList.push(marker);
+                            //ad popup to popup list
+                            popupList.push(popup);
                         })
                     });
 
@@ -107,7 +132,7 @@ class SiteSearchbar extends HTMLElement {
         });
 
         // Listens for any click outside of the search bar, if that happens, it closes the suggestions
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             if (event.target !== searchInput) {
                 suggestions.innerHTML = '';
             }
@@ -147,7 +172,7 @@ class SiteSearchbar extends HTMLElement {
             applyBtn.addEventListener('click', () => {
                 const selected = [...filterMenu.querySelectorAll('.filter-checkbox:checked')]
                     .map(cb => cb.value);
-                
+
                 // fires off an event that carries all the filters selected. bubbles: true allows the entire page to access this data
                 this.dispatchEvent(new CustomEvent('filtersApplied', {
                     detail: { filters: selected },
