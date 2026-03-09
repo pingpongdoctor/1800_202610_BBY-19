@@ -172,3 +172,9 @@ nav {
     right: 0;
     z-index: 100;
 }
+
+.popup-container {
+    width: 100px;
+    height: 100px;
+    background-color: red;
+}
