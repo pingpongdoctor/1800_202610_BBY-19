@@ -1,5 +1,7 @@
 import { db } from '../firebaseConfig.js';
 import { collection, getDocs } from 'firebase/firestore';
+import {getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker} from "../mapFunctions.js";
+import {map} from "./map.js"
 
 // Defines a custom HTML element (for search bar)
 class SiteSearchbar extends HTMLElement {
@@ -40,26 +42,56 @@ class SiteSearchbar extends HTMLElement {
             });
         });
 
+        // We need to save a list of marker instances in case we want to remove them 
+        const markerList = [];
+
         // Autocomplete, fires everytime user types a character in search box (Carly's implementation)
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', async function() {
             const query = searchInput.value.toLowerCase();
             // clears any previously shown suggestion
             suggestions.innerHTML = '';
             if (query) {
+                //Fetch Vancouver coordinates
+                const vacouverCoordinates = await getLocationsByPlaceName("Vancouver, BC, Canada");
+                //Fetch the locations using the input value
+                const data = await getLocationsByPlaceNameAndCountry(query, ["ca"], 10, vacouverCoordinates[0].center, vacouverCoordinates[0].bbox)
                 // Filters auto complete based on what the user typed
-                const filteredResults = autocompleteSuggestions.filter(item =>
-                    item.toLowerCase().includes(query)
-                );
-                
+                // We now use the data that is pulled from the Map API
+                // const filteredResults = autocompleteSuggestions.filter(item =>
+                //     item.toLowerCase().includes(query)
+                // );
+              
                 // For each match from the auto complete, creates suggestion item div.
-                filteredResults.forEach(result => {
+                // Use set to save unique search result
+                const set = new Set();
+                // Filter to get only the documents that have matching text field
+                data.filter(document => document.text.toLowerCase().includes(query)).forEach(result => {
+                    // Skip the current iteration if the text field's value is duplicate
+                    if(set.has(result.text)){
+                        return;
+                    }
+
+                    // Add new text field's value to the set
+                    set.add(result.text)
+
                     const suggestionItem = document.createElement('div');
                     suggestionItem.classList.add('suggestion-item');
-                    suggestionItem.textContent = result;
+                    suggestionItem.textContent = result.text;
                     // Closing suggestions logic, whenever a suggestion is clicked, it fills the input with the same value as div, then appends div to container
                     suggestionItem.addEventListener('click', () => {
-                        searchInput.value = result;
+                        searchInput.value = result.text;
                         suggestions.innerHTML = '';
+                        // Remove old markers before adding the new ones
+                        if(markerList.length>0){
+                            markerList.forEach(marker => {
+                                marker.remove();
+                            })
+                        }
+                        // When user choose the address, it will set at all markers on the map that match with the search result
+                        data.map(async document => {
+                            const marker = await addMarker(document.center, map);
+                            markerList.push(marker);
+                        })
                     });
 
                     suggestions.appendChild(suggestionItem);
