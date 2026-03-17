@@ -1,9 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db } from "./firebaseConfig.js";
-import { doc, onSnapshot, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { logoutUser, onAuthReady } from '/src/authentication.js';
-import '/css/styles.css?url';
+
+import '/css/default.css?url';
 
 // Function to fetch the signed-in user's name and display it in the UI
 function showItems() {
