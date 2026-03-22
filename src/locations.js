@@ -1,5 +1,7 @@
 import { collection, getDocs, addDoc, serverTimestamp, query, where, setDoc, doc } from 'firebase/firestore';
 import { db } from "./firebaseConfig.js";
+import { map } from "./components/map.js";    // the live Map instance
+import { addMarker } from "./mapFunctions.js"; // marker + popup function
 
 //add sample locations
 function addSampleLocationData() {
@@ -16,10 +18,21 @@ function addSampleLocationData() {
     });
 }
 
-const locations = await getDocs(collection(db, "locations"))
+const locations = await getDocs(collection(db, "locations"));
 if (locations.empty) {
     addSampleLocationData();
 }
+
+// Loop every Firestore location and drop a marker on the map with a popup
+locations.forEach(docSnap => {
+    const data = docSnap.data();
+    // MapTiler expects [lng, lat] order (opposite of Firestore storage)
+    addMarker(
+        [data.lng, data.lat],
+        map,
+        { name: data.name, description: data.description, type: data.type, id: docSnap.id }
+    );
+});
 
 // Function to get a location
 export async function getALocation(){
