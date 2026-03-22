@@ -34,27 +34,48 @@ export async function addMarker(coordinates, map, locationData = null) {
         const routeUrl =
             `/app/html/route.html?name=${encodeURIComponent(locationName)}&lat=${coordinates[1]}&lng=${coordinates[0]}`;
 
-        // popupHTML is injected into MapTiler's popup
+        // Store location data in a global registry keyed by a unique ID.
+        // This avoids passing raw strings through onclick attributes (escaping issues).
+        const registryKey = `loc_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        window._locationRegistry = window._locationRegistry || {};
+        window._locationRegistry[registryKey] = { locationName, locationDesc, locationType, routeUrl };
+
+        // Small popup — just the name + a Details button that opens the side panel
         const popupHTML = `
             <div class="map-popup">
                 <p class="popup-type">${locationType ?? "Location"}</p>
                 <h4 class="popup-name">${locationName}</h4>
-                <p class="popup-description">${locationDesc}</p>
-                <a href="${routeUrl}" class="popup-directions-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-                    </svg>
-                    Directions
-                </a>
+                <button class="popup-details-btn" onclick="openLocationPanel('${registryKey}')">
+                    Details
+                </button>
             </div>
         `;
 
         // Create the popup and attach it to the marker — clicking the pin opens it
-        const popup = new maptilersdk.Popup({ offset: 30, closeButton: true, maxWidth: "240px" })
+        const popup = new maptilersdk.Popup({ offset: 30, closeButton: true, maxWidth: "200px" })
             .setHTML(popupHTML);
 
         marker.setPopup(popup);
     }
+
+// Opens the side panel and populates it with the location's data
+window.openLocationPanel = function (key) {
+    const { locationName, locationDesc, locationType, routeUrl } = window._locationRegistry[key];
+
+    // Populate panel fields
+    document.getElementById("panel-type").textContent        = locationType ?? "Location";
+    document.getElementById("panel-name").textContent        = locationName;
+    document.getElementById("panel-description").textContent = locationDesc;
+    document.getElementById("panel-directions-btn").href     = routeUrl;
+
+    // Slide the panel in
+    document.getElementById("location-panel").classList.add("open");
+};
+
+// Closes the side panel by sliding it back out
+window.closeLocationPanel = function () {
+    document.getElementById("location-panel").classList.remove("open");
+};
 
     return marker;
 }

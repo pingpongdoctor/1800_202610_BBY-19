@@ -175,14 +175,13 @@ nav {
     z-index: 100;
 }
 
-/* Outer card wrapper (white card style like Google Maps, we can go over style later) */
+/* ---- MARKER POPUP (small, just name + Details button) ---- */
+
 .map-popup {
-    min-width: 180px;
-    max-width: 220px;
+    min-width: 160px;
     padding: 2px 4px 6px;
 }
 
-/* Small muted label above the name (like: "Park", "Restaurant") */
 .popup-type {
     font-size: 0.7rem;
     color: #666;
@@ -191,38 +190,127 @@ nav {
     margin: 0 0 2px 0;
 }
 
-/* Bold location name, largest text in the card */
 .popup-name {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--black);
-    margin: 0 0 6px 0;
+    margin: 0 0 8px 0;
 }
 
-/* Short description */
-.popup-description {
-    font-size: 0.8rem;
-    color: #555;
-    line-height: 1.4;
-    margin: 0 0 10px 0;
-}
-
-/* Pill-shaped directions button, green to match the app, icon + text like Google Maps */
-.popup-directions-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+/* Small pill button that opens the side panel */
+.popup-details-btn {
+    display: inline-block;
     background-color: var(--primary);
     color: var(--black);
+    border: none;
     border-radius: 20px;
     padding: 5px 14px;
     font-size: 0.8rem;
     font-weight: 600;
-    text-decoration: none;
+    cursor: pointer;
     transition: background-color 0.2s;
 }
 
-.popup-directions-btn:hover {
+.popup-details-btn:hover {
+    background-color: var(--primary_compliment);
+}
+
+/* ---- LOCATION DETAIL PANEL (slides in from left like Google Maps) ---- */
+
+.location-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100%;
+    background-color: var(--white);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+    z-index: 200;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    /* Hidden by default */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+/* Adding this class slides the panel into view (so fancy) */
+.location-panel.open {
+    transform: translateX(0);
+}
+
+/* X button — top right corner of the panel */
+.panel-close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--black);
+    padding: 0;
+    line-height: 1;
+}
+
+.panel-type {
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.panel-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0;
+}
+
+.panel-description {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.5;
+    margin: 0;
+    flex-grow: 1;
+}
+
+/* Row of action buttons at the bottom of the panel */
+.panel-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+}
+
+/* Shared base style for both panel buttons */
+.panel-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.panel-directions-btn {
+    background-color: var(--primary);
+    color: var(--black);
+}
+
+.panel-directions-btn:hover {
     background-color: var(--primary_compliment);
     color: var(--black);
+}
+
+/* Save route button */
+.panel-save-btn {
+    background-color: var(--secondary_compliment);
+
 }
