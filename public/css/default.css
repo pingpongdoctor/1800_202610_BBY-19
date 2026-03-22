@@ -215,7 +215,9 @@ nav {
     background-color: var(--primary_compliment);
 }
 
-/* ---- LOCATION DETAIL PANEL (slides in from left like Google Maps) ---- */
+/* ---- LOCATION DETAIL PANEL ---- */
+/* Desktop: slides in from the left like Google Maps */
+/* Mobile: slides up from the bottom like the Google Maps app */
 
 .location-panel {
     position: fixed;
@@ -225,19 +227,39 @@ nav {
     height: 100%;
     background-color: var(--white);
     box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
-    z-index: 200;
+    z-index: 1050; /* above Bootstrap's fixed-bottom navbar (1030) */
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    /* Hidden by default */
     transform: translateX(-100%);
     transition: transform 0.3s ease;
+    overflow-y: auto;
 }
 
-/* Adding this class slides the panel into view (so fancy) */
 .location-panel.open {
     transform: translateX(0);
+}
+
+/* Mobile bottom sheet — kicks in below 768px */
+@media (max-width: 768px) {
+    .location-panel {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+        max-height: 55vh;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+        /* Slide down instead of left */
+        transform: translateY(100%);
+    }
+
+    .location-panel.open {
+        transform: translateY(0);
+    }
 }
 
 /* X button — top right corner of the panel */
