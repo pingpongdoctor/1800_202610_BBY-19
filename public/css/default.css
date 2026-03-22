@@ -175,30 +175,54 @@ nav {
     z-index: 100;
 }
 
-.popup-container {
-    width: 120px;
-    height: auto;
-    border: 1px;
-    border-radius: 50px;
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.5rem;
+/* Outer card wrapper (white card style like Google Maps, we can go over style later) */
+.map-popup {
+    min-width: 180px;
+    max-width: 220px;
+    padding: 2px 4px 6px;
 }
 
-.popup-button--save-location {
-    border: 50px;
-    width: 100%;
-    height: 30px;
-    background-color: navy;
-    color: white;
+/* Small muted label above the name (like: "Park", "Restaurant") */
+.popup-type {
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 2px 0;
 }
 
-.popup-button--save-location:hover {
-    background-color: blue;
+/* Bold location name, largest text in the card */
+.popup-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0 0 6px 0;
 }
 
-.popup-button--save-location:active {
-    transform: scale(0.8);
+/* Short description */
+.popup-description {
+    font-size: 0.8rem;
+    color: #555;
+    line-height: 1.4;
+    margin: 0 0 10px 0;
+}
+
+/* Pill-shaped directions button, green to match the app, icon + text like Google Maps */
+.popup-directions-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--primary);
+    color: var(--black);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.popup-directions-btn:hover {
+    background-color: var(--primary_compliment);
+    color: var(--black);
 }
