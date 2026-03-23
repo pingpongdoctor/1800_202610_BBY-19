@@ -19,6 +19,7 @@
     <!-- Other libraries go here -->
     <script type="module" src="/src/components/site-footer.js"></script>
     <script type="module" src="/src/components/site-searchbar.js"></script>
+    <script type="module" src="/src/components/site-location-panel.js"></script>
     <script type="module" src="/src/components/map.js"></script>
 </head>
 
@@ -32,11 +33,15 @@
         <div id="map"></div>
     </div>
 
-    <!-- MODE SELECTOR + ROUTES TABLE (fixed to bottom) -->
+    <!-- LOCATION DETAIL PANEL -->
+    <site-location-panel></site-location-panel>
+
+    <!-- MODE SELECTOR + ROUTE INFO (fixed to bottom) -->
     <div class="route-panel">
-        <!-- CANCEL BUTTON -->
-        <div class="px-2 pt-2">
+        <!-- TOP ROW: cancel button + destination name -->
+        <div class="d-flex align-items-center px-2 pt-2 gap-2">
             <a href="/index.html" class="btn btn-sm">Cancel</a>
+            <span id="dest-name" class="fw-bold text-truncate" style="color: var(--black);"></span>
         </div>
 
         <!-- MODE SELECTOR -->
@@ -55,20 +60,16 @@
             </button>
         </div>
 
-        <!-- ROUTES TABLE -->
+        <!-- ROUTE INFO TABLE (duration and distance for the selected mode) -->
         <table class="table table-striped mb-0">
             <tbody>
                 <tr>
-                    <th class="route-odd" scope="row">Route 1</th>
-                    <td class="route-odd route-time"></td>
+                    <th class="route-odd" scope="row">Duration</th>
+                    <td id="route-duration" class="route-odd">Loading...</td>
                 </tr>
                 <tr>
-                    <th class="route-even" scope="row">Route 2</th>
-                    <td class="route-even route-time"></td>
-                </tr>
-                <tr>
-                    <th class="route-odd" scope="row">Route 3</th>
-                    <td class="route-odd route-time"></td>
+                    <th class="route-even" scope="row">Distance</th>
+                    <td id="route-distance" class="route-even">Loading...</td>
                 </tr>
             </tbody>
         </table>
