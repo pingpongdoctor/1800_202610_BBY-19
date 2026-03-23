@@ -200,6 +200,27 @@ function startRouting() {
     );
 }
 
+// Confirm route button: hides the route panel and shows the cancel button
+document.getElementById('confirm-route-btn').addEventListener('click', () => {
+    document.querySelector('.route-panel').style.display = 'none';
+    document.getElementById('cancel-route-btn').style.display = 'block';
+});
+
+// Cancel route button: removes the route line from the map and brings the panel back
+document.getElementById('cancel-route-btn').addEventListener('click', () => {
+    // Remove the route line from the map if it exists
+    if (map.getLayer('route-line')) {
+        map.removeLayer('route-line');
+    }
+    if (map.getSource('route')) {
+        map.removeSource('route');
+    }
+
+    // Hide the cancel button and show the route panel again
+    document.getElementById('cancel-route-btn').style.display = 'none';
+    document.querySelector('.route-panel').style.display = '';
+});
+
 // Check if the map already finished loading (can happen if map.js loaded before this script)
 // If it has, start immediately. Otherwise wait for the load event.
 if (map.loaded()) {

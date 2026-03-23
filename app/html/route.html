@@ -38,10 +38,11 @@
 
     <!-- MODE SELECTOR + ROUTE INFO (fixed to bottom) -->
     <div class="route-panel">
-        <!-- TOP ROW: cancel button + destination name -->
+        <!-- TOP ROW: cancel button, destination name, confirm button -->
         <div class="d-flex align-items-center px-2 pt-2 gap-2">
-            <a href="/index.html" class="btn btn-sm">Cancel</a>
-            <span id="dest-name" class="fw-bold text-truncate" style="color: var(--black);"></span>
+            <a href="/index.html" class="route-cancel-btn">Cancel</a>
+            <span id="dest-name" class="fw-bold text-truncate flex-grow-1" style="color: var(--black);"></span>
+            <button id="confirm-route-btn" class="route-go-btn">Go</button>
         </div>
 
         <!-- MODE SELECTOR -->
@@ -74,6 +75,9 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Shows up after confirming a route, lets the user cancel navigation -->
+    <button id="cancel-route-btn" class="cancel-route-btn" style="display: none;">Cancel Route</button>
 
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/routes.js"></script>

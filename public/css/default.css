@@ -334,5 +334,55 @@ nav {
 /* Save route button */
 .panel-save-btn {
     background-color: var(--secondary_compliment);
+}
 
+/* Shared pill style for route panel action buttons */
+.route-cancel-btn,
+.route-go-btn,
+.cancel-route-btn {
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+/* Cancel button in the route panel (goes back to index) */
+.route-cancel-btn {
+    background-color: #e05252;
+    color: white;
+}
+
+.route-cancel-btn:hover {
+    background-color: #c94444;
+    color: white;
+}
+
+/* Go button in the route panel (confirms the route) */
+.route-go-btn {
+    background-color: var(--primary);
+    color: var(--black);
+}
+
+.route-go-btn:hover {
+    background-color: var(--primary_compliment);
+}
+
+/* Floating cancel route button, shown after confirming a route */
+.cancel-route-btn {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 150;
+    background-color: #e05252;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-route-btn:hover {
+    background-color: #c94444;
 }
