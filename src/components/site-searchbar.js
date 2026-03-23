@@ -1,6 +1,5 @@
 import { db } from '../firebaseConfig.js';
 import { collection, getDocs } from 'firebase/firestore';
-import * as maptilersdk from '@maptiler/sdk';
 import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker } from "../mapFunctions.js";
 import { map } from "./map.js"
 import {addNewLocation} from "../locations.js"
@@ -44,92 +43,67 @@ class SiteSearchbar extends HTMLElement {
             });
         });
 
-        // We need to save a list of marker instances in case we want to remove them 
-        const markerList = [];
-        const popupList = [];
+        // Keeps track of markers placed by search so we can remove them between searches
+        let searchMarkers = [];
 
-        // Autocomplete, fires everytime user types a character in search box (Carly's implementation)
+        // Removes all markers from the previous search before placing new ones
+        function clearSearchMarkers() {
+            searchMarkers.forEach(marker => marker.remove());
+            searchMarkers = [];
+        }
+
+        // Autocomplete, fires everytime user types a character in search box
         searchInput.addEventListener('input', async function () {
             const query = searchInput.value.toLowerCase();
-            // clears any previously shown suggestion
+            // Clears any previously shown suggestions
             suggestions.innerHTML = '';
             if (query) {
-                //Fetch Vancouver coordinates
-                const vacouverCoordinates = await getLocationsByPlaceName("Vancouver, BC, Canada");
-                //Fetch the locations using the input value
-                const data = await getLocationsByPlaceNameAndCountry(query, ["ca"], 10, vacouverCoordinates[0].center, vacouverCoordinates[0].bbox)
-                // Filters auto complete based on what the user typed
-                // We now use the data that is pulled from the Map API
-                // const filteredResults = autocompleteSuggestions.filter(item =>
-                //     item.toLowerCase().includes(query)
-                // );
+                // Fetch Vancouver coordinates for bounding the search
+                const vancouverCoordinates = await getLocationsByPlaceName("Vancouver, BC, Canada");
+                // Fetch locations from MapTiler using the input value
+                const data = await getLocationsByPlaceNameAndCountry(query, ["ca"], 10, vancouverCoordinates[0].center, vancouverCoordinates[0].bbox)
 
-                // For each match from the auto complete, creates suggestion item div.
-                // Use set to save unique search result
+                // Use a Set to track unique results and avoid duplicate suggestion items
                 const set = new Set();
-                // Filter to get only the documents that have matching text field
+                // Filter to only show results whose text matches the query
                 data.filter(location => location.text.toLowerCase().includes(query)).forEach(result => {
-                    // Skip the current iteration if the text field's value is duplicate
+                    // Skip if we already have a suggestion with this text
                     if (set.has(result.text)) {
                         return;
                     }
 
-                    // Add new text field's value to the set
                     set.add(result.text)
 
                     const suggestionItem = document.createElement('div');
                     suggestionItem.classList.add('suggestion-item');
                     suggestionItem.textContent = result.text;
-                    // Closing suggestions logic, whenever a suggestion is clicked, it fills the input with the same value as div, then appends div to container
+
+                    // When a suggestion is clicked, place markers for all matching locations
                     suggestionItem.addEventListener('click', () => {
                         searchInput.value = result.text;
                         suggestions.innerHTML = '';
-                        // Remove old markers and popups before adding the new ones
-                        markerList.forEach(marker => {
-                            marker.remove();
-                        })
 
-                        popupList.forEach(popup => {
-                            popup.remove();
-                        })
-                        // When user choose an place, it will set all available markers for that place
-                        data.map(async location => {
-                            // Add marker
-                            const marker = await addMarker(location.center, map);
-                            // Append paragraph and button elements to the popup element
-                            const newPopup = document.createElement("div");
-                            newPopup.classList.add("popup-container")
+                        // Remove markers from the previous search
+                        clearSearchMarkers();
 
-                            const popUpContent = document.createElement("p");
-                            popUpContent.textContent = location.place_name;
+                        // Place a marker for each result using the new popup system
+                        // Each marker gets locationData so it shows the styled popup + detail panel
+                        data.forEach(async location => {
+                            const { id, text, place_name, properties, center } = location;
 
-                            const popUpSavedLocationButton = document.createElement("button");
-                            popUpSavedLocationButton.classList.add("popup-button--save-location");
-                            popUpSavedLocationButton.textContent = "Save location";
-                            //Click eventlistener allows user to save location by invoking the createLocation function
-                            const {id, text, place_name, properties, center} = location;
-                            popUpSavedLocationButton.addEventListener("click", ()=>{
-                                
-                                addNewLocation(id, text, place_name, properties?.categories[0] || "", center[0], center[1]);
-                            })
+                            // Pass locationData including a saveCallback so the panel's
+                            // Save button works for these unsaved search results
+                            const marker = await addMarker(center, map, {
+                                name: text,
+                                description: place_name,
+                                type: properties?.categories?.[0] || '',
+                                saveCallback: () => {
+                                    addNewLocation(id, text, place_name, properties?.categories?.[0] || '', center[0], center[1]);
+                                }
+                            });
 
-                            newPopup.append(popUpContent);
-                            newPopup.append(popUpSavedLocationButton);
-
-                            const popup = new maptilersdk.Popup({closeButton:true, closeOnClick:false}).setLngLat(location.center).setDOMContent(newPopup)
-
-                            // Make marker information div element pop up when it is hovered
-                            const markerElement = marker.getElement();
-
-                            markerElement.addEventListener("click", () => {
-                                popup.addTo(map);
-                            })
-
-                            //add marker to marker list
-                            markerList.push(marker);
-                            //ad popup to popup list
-                            popupList.push(popup);
-                        })
+                            searchMarkers.push(marker);
+                        });
                     });
 
                     suggestions.appendChild(suggestionItem);

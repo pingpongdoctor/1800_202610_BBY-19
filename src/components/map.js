@@ -12,7 +12,7 @@ export const map = new maptilersdk.Map({
   container: 'map', // container's id or the HTML element to render the map
   style: maptilersdk.MapStyle.STREETS,
   zoom: 14, // starting zoom
-  geolocate: maptilersdk.GeolocationType.POINT,
+  geolocate: maptilersdk.GeolocationType.WATCH,
   center: result[0]?.center || [],
 });
 
