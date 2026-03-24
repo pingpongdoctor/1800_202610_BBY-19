@@ -247,19 +247,28 @@ let lastCalculation = 0;
 
 // Geolocation API watchPosition method is invoked whenever the user location changes
 // We calculate the user speed by using the distance and time taken to travel from last position to the current position
+// watchPosition method is a callback function
 navigator.geolocation.watchPosition((pos) => {
+    console.log("user are moving")
+
     const now = Date.now();
     if (now - lastCalculation < 5000) {
+        console.log("not enough time")
         return;
     }
     lastCalculation = now;
-    33
+    
+    if(lastPos == null){
+        console.log("user has not had previous coordinates to calculate the distance")
+    }
+
     if (lastPos && lastTime) {
         // Use haversineDistanceWgs84 method from maptilerCilent library to calculate distance between two set of coordinates
         const distance = maptilerClient.math.haversineDistanceWgs84(
             [lastPos.longitude, lastPos.latitude],
-            [pos.longitude, pos.latitude]
+            [pos.coords.longitude, pos.coords.latitude]
         );
+        console.log("distance")
         const timeElapsed = (now - lastTime) / 1000; // convert to seconds
         const speed = distance / timeElapsed; // m/s
 
@@ -272,9 +281,12 @@ navigator.geolocation.watchPosition((pos) => {
         }
     }
 
+    // Set new values for last position and last time of the previous coordinates
     lastPos = pos.coords;
     lastTime = now;
-});
+}, (error)=>{
+    console.log("Geolocation API watchPostion method error" + error)
+}, {enableHighAccuracy: true});
 
 // Check if the map already finished loading (can happen if map.js loaded before this script)
 // If it has, start immediately. Otherwise wait for the load event.
