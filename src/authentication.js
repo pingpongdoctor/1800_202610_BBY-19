@@ -67,9 +67,11 @@ export async function signupUser(name, email, password) {
     await setDoc(doc(db, "users", user.uid), {
       name: name,
       email: email,
+      points: 0,
       items: [], // Default value
       challenges: [], // Default value
-      savedLocations: []     // Default value
+      savedLocations: [],     // Default value
+      theme: "default" //Default value
     });
     console.log("Firestore user document created successfully!");
 } catch (error) {

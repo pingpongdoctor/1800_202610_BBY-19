@@ -8,11 +8,12 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link id="theme" rel="stylesheet" type="text/css" href="/css/default.css" />
 
     <!-- Other libraries go here -->
     <script type="module" src="/src/components/site-footer.js"></script>
     <script type="module" src="/src/components/site-searchbar.js"></script>
+    <script type="module" src="/src/components/site-location-panel.js"></script>
     <script type="module" src="/src/components/map.js"></script>
     <script type="module" src="/src/locations.js"></script>
 </head>
@@ -27,6 +28,9 @@
     <div class="map-container">
         <div id="map"></div>
     </div>
+
+    <!-- LOCATION DETAIL PANEL -->
+    <site-location-panel></site-location-panel>
 
     <!-- NAV BAR -->
     <site-footer></site-footer>

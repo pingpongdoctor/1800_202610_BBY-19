@@ -27,10 +27,10 @@ White:                #F5FFF5 - White
  */
 
 :root {
-    --primary: #68E152;
-    --primary_compliment: #9AE184;
-    --secondary: #f0eb51;
-    --secondary_compliment: #e4e885;
+    --primary: #252fe6;
+    --primary_compliment: #42c3d4;
+    --secondary: #b651f0;
+    --secondary_compliment: #eb3dd1;
     --white: #F5FFF5;
     --black: #002100;
     /* Can be altered when needed */
@@ -89,7 +89,7 @@ nav {
 .btn,
 .btn-primary {
     color: var(--black) !important;
-    background-color: var(--primary_compliment) !important;
+    background-color: var(--primary) !important;
     border-color: var(--black) !important;
 }
 
