@@ -1,26 +1,26 @@
 import * as maptilerClient from '@maptiler/client';
 import { getAuth } from "firebase/auth";
-import { updateDoc, getDoc } from 'firebase/firestore';
-
-const auth = getAuth();
-const user = auth.currentUser;
-
-if (user == null) {
-    if (!window.location.pathname.endsWith('index.html')) {
-        location.href = 'index.html';
-    }
-
-    return; // Stop execution
-}
+import { updateDoc, getDoc, doc } from 'firebase/firestore';
+import { db } from "./firebaseConfig.js";
 
 async function updateUserPoint(steps){
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if(user==null){
+        console.log("User is not authenticated");
+        return;
+    }
+
     //get current points
     const docRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(docRef);
+    console.log(userDoc)
     const currentPoint = userDoc.data().points;
     const updatedStep = currentPoint + steps;
     //update points using the current points and new steps
     await updateDoc(docRef, {points: updatedStep})
+    console.log("user point is updated")
 }
 
 // This function is used to guess what kinds of transportation the users are using based on their current speed
@@ -49,7 +49,7 @@ let lastCalculation = 0;
 // Geolocation API watchPosition method is invoked whenever the user location changes
 // We calculate the user speed by using the distance and time taken to travel from last position to the current position
 // watchPosition method is a callback function
-navigator.geolocation.watchPosition((pos) => {
+navigator.geolocation.watchPosition(async (pos) => {
     console.log("user are moving")
 
     const now = Date.now();
@@ -69,7 +69,7 @@ navigator.geolocation.watchPosition((pos) => {
             [lastPos.longitude, lastPos.latitude],
             [pos.coords.longitude, pos.coords.latitude]
         );
-        console.log("distance")
+        console.log(distance)
         const timeElapsed = (now - lastTime) / 1000; // convert to seconds
         const speed = distance / timeElapsed; // m/s
 
@@ -78,8 +78,8 @@ navigator.geolocation.watchPosition((pos) => {
         // If users are walking, we can start counting steps
         if (mode == "walking") {
             const stepNum = distanceToSteps(distance);
-            console.log(distanceToSteps(distance))
-            updateUserPoint(stepNum);
+            console.log(stepNum)
+            await updateUserPoint(stepNum);
         }
     }
 
