@@ -88,4 +88,4 @@ navigator.geolocation.watchPosition(async (pos) => {
     lastTime = now;
 }, (error) => {
     console.log("Geolocation API watchPostion method error" + error)
-}, { enableHighAccuracy: true });
+}, { enableHighAccuracy: false });
