@@ -8,7 +8,6 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import '/css/default.css?url';
 import {
     loginUser,
     signupUser,
