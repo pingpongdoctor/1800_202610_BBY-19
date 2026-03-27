@@ -43,22 +43,24 @@
         
         <ul class="list-group list-group-flush" id="challengeList">
 
-             <template id="challengeItem">
-                <li class="list-group-item">
-                    <p id="challenge-title">Loading...</p>
-                    <div class="progress" role="progressbar" aria-label="Success example" 
-                    aria-valuemin="0" style="height: 30px; margin-left: 5%; margin-right: 5%;">
-                        <div class="progress-bar text-bg-success">0 / 0</div>
-                    </div>
-                    <br>
-                </li>
-             </template>
+
              
         </ul>
     </div>
 
 
     <br><br><br><br><br>
+
+             <template id="challengeItem">
+                <li class="list-group-item">
+                    <p class="challenge-title">Loading...</p>
+                    <div class="progress" role="progressbar" aria-label="Success example" 
+                    aria-valuemin="0" aria-valuemax="0" style="height: 30px; margin-left: 5%; margin-right: 5%;">
+                        <div class="progress-bar text-bg-success">0 / 0</div>
+                    </div>
+                    <br>
+                </li>
+             </template>
 
     <!-- NAV BAR -->
     <site-footer></site-footer>
