@@ -33,15 +33,15 @@ class SiteSearchbar extends HTMLElement {
         const filterMenu = this.querySelector('#filterMenu');
 
         // Load autocomplete suggestions from Firestore - REPLACE WITH ACTUAL LOCATIONS LATER!
-        let autocompleteSuggestions = [];
-        // fetch docs from specific collection, .then() runs ONLY after the fetch 
-        getDocs(collection(db, 'autocomplete')).then(snapshot => {
-            // Loops through each document, read specific field, adds to the array
-            snapshot.forEach(doc => {
-                const { suggestion } = doc.data();
-                if (suggestion) autocompleteSuggestions.push(suggestion);
-            });
-        });
+        // let autocompleteSuggestions = [];
+        // // fetch docs from specific collection, .then() runs ONLY after the fetch 
+        // getDocs(collection(db, 'autocomplete')).then(snapshot => {
+        //     // Loops through each document, read specific field, adds to the array
+        //     snapshot.forEach(doc => {
+        //         const { suggestion } = doc.data();
+        //         if (suggestion) autocompleteSuggestions.push(suggestion);
+        //     });
+        // });
 
         // Keeps track of markers placed by search so we can remove them between searches
         let searchMarkers = [];

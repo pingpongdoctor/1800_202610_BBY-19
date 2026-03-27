@@ -25,67 +25,49 @@
     <!------------------------------>
     <!-- Stuff for body goes here -->
 
-    <img src="/images/hike2.jpg" alt="banner" class="img-fluid  mx-auto rounded d-block">
+    <!-- <img src="/images/hike2.jpg" alt="banner" class="img-fluid  mx-auto rounded d-block"> -->
 
     <br>
 
     <div class="container-fluid text-center ">
         <h1>Welcome <span id="name-goes-here"></span></h1>
+        <p>You have <span id="pointsGoHere"></span> points!</p>
         <hr>
     </div>
 
-    <!-- ITEM SHOWCASE? -->
-    <div class="card" style="margin-left: 20%; margin-right: 20%;">
+    <!-- Saved Locations -->
+    <div class="card mx-auto" style="max-width: 50%;">
         <div class="card-header">
-            Item Showcase
+            Saved Locations
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">Item 1: <span id="item-showcase-1"></span></li>
-            <li class="list-group-item">Item 2: <span id="item-showcase-2"></span></li>
-            <li class="list-group-item">Item 3: <span id="item-showcase-3"></span></li>
+            <li class="list-group-item"><a href=""><span class="savedLocation1"> </span></a></li>
         </ul>
     </div>
 
+
     <br>
 
-    <!-- FRIENDS LIST? -->
-    <div class="card" style="margin-left: 20%; margin-right: 20%;">
-        <div class="card-header">
-            Friends
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Item 1: <span id="friend-1"></span></li>
-            <li class="list-group-item">Item 2: <span id="friend-2"></span></li>
-            <li class="list-group-item">Item 3: <span id="friend-3"></span></li>
-        </ul>
+
+    <div class="mx-auto" style="max-width: 50%;">
+        <label for="themeSelect">
+            <h4>Select your theme:</h4>
+        </label>
+        <select id="themeSelect" class="form-select" aria-label="Default select example">
+            <option value="defaultTheme" id="defaultTheme">Default</option>
+
+        </select>
     </div>
-
-    <br>
-
-    <!-- THEME SWITCH -->
-    <div id="themeSwitcher">
-        <button class="btn btn-outline-light mx-auto" id="default" type="button">Default</button>
-        <button class="btn btn-outline-light mx-auto" id="test" type="button">Test</button>
-    </div>
-
-
-    <br>
-
-    <select class="form-select" aria-label="Default select example">
-        <option selected>Open this select menu</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-    </select>
-
-    <br>
-
-
-    <!-- LOGOUT BUTTON -->
-    <div id="logoutGoesHere"><button class="btn btn-outline-light mx-auto d-block" id="logoutBtn" type="button"
-            style="min-width: 80px;">Log out</button></div>
 
     <br><br><br>
+
+    <!-- LOGOUT BUTTON -->
+    <div id="logoutGoesHere" class="mx-auto" style="max-width: fit-content;">
+        <button class="btn btn-outline-light" id="logoutBtn" type="button" style="min-width: 80px;  ">Log
+            out</button>
+    </div>
+    <br>
+
 
     <!-- NAV BAR -->
     <site-footer></site-footer>
@@ -97,11 +79,11 @@
     <!---------------------------------------------->
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/profile.js"></script>
-    <script type="module" src="/src/customization.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
+    <script type="module" src="/src/stepCounting.js"></script>
 </body>
 
 </html>

@@ -72,13 +72,15 @@ async function populateItems() {
         const data = doc.data();
         const chalTitle = data.title || "Error: no title";
         const chalGoal = data.goal || "Error: no goal";
+        const chalPercent = 100 * (2 / chalGoal);
         console.log(chalGoal);
 
         // Clone the template and update the content
         const itemCard = challengeItem.content.cloneNode(true);
         console.log(itemCard);
         itemCard.querySelector(".challenge-title").textContent = chalTitle;
-        itemCard.querySelector(".progress").setAttribute("aria-valuemax", chalGoal); // this line doesn't function correctly
+        itemCard.querySelector(".progress").setAttribute("aria-valuemax", chalGoal); 
+        itemCard.querySelector(".progress-bar").setAttribute("style", ("width: " + chalPercent + "%")) 
         console.log(typeof itemCard);
         itemList.appendChild(itemCard);
         console.log("iteration of loop")
