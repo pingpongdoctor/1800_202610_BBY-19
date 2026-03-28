@@ -15,26 +15,14 @@ const ORS_PROFILES = {
 
 // Stores fetched route data per mode so we dont refetch when switching tabs
 // Structure: { walking: { geometry, duration, distance }, cycling: {...}, transit: {...} }
-const routeCache = {};
+let routeCache = {};
 
-// Read the destination coordinates and name from the URL query params
-// These get passed from the Directions button in the location panel (mapFunctions.js)
-const params = new URLSearchParams(window.location.search);
-const destLat = parseFloat(params.get('lat'));
-const destLng = parseFloat(params.get('lng'));
-const destName = params.get('name') || 'Destination';
-
-// Display the destination name in the route panel so the user knows where they are going
-const destNameEl = document.getElementById('dest-name');
-if (destNameEl) {
-    destNameEl.textContent = destName;
-}
+// Current destination info (set when the panel is opened)
+let destLat = null;
+let destLng = null;
 
 // Calls the ORS directions API for a specific travel profile (walking, cycling, driving)
-// Uses the Authorization header instead of a query param to keep the key out of URLs
-// Returns the full GeoJSON FeatureCollection from ORS
 async function fetchRoute(profile, startLng, startLat, endLng, endLat) {
-    // ORS GET endpoint requires the api_key as a query parameter
     const url = `https://api.openrouteservice.org/v2/directions/${profile}`
         + `?api_key=${ORS_KEY}`
         + `&start=${startLng},${startLat}`
@@ -52,7 +40,6 @@ async function fetchRoute(profile, startLng, startLat, endLng, endLat) {
 }
 
 // Converts raw seconds into a readable duration string
-// Examples: "Under 1 min", "12 min", "1 hr 25 min"
 function formatDuration(seconds) {
     const mins = Math.round(seconds / 60);
     if (mins < 1) return 'Under 1 min';
@@ -64,23 +51,18 @@ function formatDuration(seconds) {
 }
 
 // Converts raw meters into a readable distance string
-// Shows meters under 1km, otherwise shows km with one decimal
 function formatDistance(meters) {
     if (meters < 1000) return `${Math.round(meters)} m`;
     return `${(meters / 1000).toFixed(1)} km`;
 }
 
 // Draws or updates the route polyline on the map
-// MapTiler is built on MapLibre which natively supports GeoJSON line layers
 function drawRoute(geometry) {
-    // Wrap the raw LineString geometry in a proper GeoJSON Feature
     const geojson = {
         type: 'Feature',
         geometry: geometry
     };
 
-    // If the source already exists from a previous draw, just swap the data
-    // Otherwise create the source and layer for the first time
     if (map.getSource('route')) {
         map.getSource('route').setData(geojson);
     } else {
@@ -106,7 +88,6 @@ function drawRoute(geometry) {
 }
 
 // Updates the duration and distance text in the route panel for the selected mode
-// Also redraws the route line on the map to match the selected mode
 function displayRouteInfo(mode) {
     const data = routeCache[mode];
     const durationEl = document.getElementById('route-duration');
@@ -123,7 +104,6 @@ function displayRouteInfo(mode) {
 }
 
 // Fetches routes from ORS for all three travel modes, then displays the default (walking)
-// Takes the user's origin coordinates as input
 async function initRoutes(originLng, originLat) {
     // Drop markers at the start (user) and end (destination) points
     addMarker([originLng, originLat], map);
@@ -135,8 +115,7 @@ async function initRoutes(originLng, originLat) {
     bounds.extend([destLng, destLat]);
     map.fitBounds(bounds, { padding: 80 });
 
-    // Fetch all three modes in parallel using Promise.allSettled
-    // allSettled lets individual modes fail without blocking the others
+    // Fetch all three modes in parallel
     const entries = Object.entries(ORS_PROFILES);
     const results = await Promise.allSettled(
         entries.map(([mode, profile]) =>
@@ -148,7 +127,6 @@ async function initRoutes(originLng, originLat) {
     results.forEach((result, i) => {
         const mode = entries[i][0];
         if (result.status === 'fulfilled') {
-            // Pull out the geometry, duration and distance from the ORS response
             const feature = result.value.features[0];
             routeCache[mode] = {
                 geometry: feature.geometry,
@@ -160,71 +138,109 @@ async function initRoutes(originLng, originLat) {
         }
     });
 
-    // Show the walking route by default (matches the initially active button)
+    // Show the walking route by default
     displayRouteInfo('walking');
 }
 
-// Mode button click handlers
-// Switches the active highlight and displays the selected mode's route
-document.querySelectorAll('.mode-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Remove the active class from all buttons
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        // Add active to the clicked button
-        btn.classList.add('active');
-        // Show that mode's cached route data and redraw the line
-        displayRouteInfo(btn.dataset.mode);
-    });
-});
-
-// Starts the route fetching process once the map is ready
-function startRouting() {
-    // Make sure we actually got destination coordinates from the URL
-    if (isNaN(destLat) || isNaN(destLng)) {
-        console.log('No destination coordinates found in URL params');
-        return;
-    }
-
-    // Try to get the user's real position as the route origin
-    navigator.geolocation.getCurrentPosition(
-        // Success: use the browser's reported position
-        (pos) => {
-            initRoutes(pos.coords.longitude, pos.coords.latitude);
-        },
-        // Denied or unavailable: fall back to the map center (Vancouver) as origin
-        () => {
-            console.log('Geolocation unavailable, using map center as origin');
-            const center = map.getCenter();
-            initRoutes(center.lng, center.lat);
-        }
-    );
-}
-
-// Confirm route button: hides the route panel and shows the cancel button
-document.getElementById('confirm-route-btn').addEventListener('click', () => {
-    document.querySelector('.route-panel').style.display = 'none';
-    document.getElementById('cancel-route-btn').style.display = 'block';
-});
-
-// Cancel route button: removes the route line from the map and brings the panel back
-document.getElementById('cancel-route-btn').addEventListener('click', () => {
-    // Remove the route line from the map if it exists
+// Removes the route line from the map and resets state
+function clearRoute() {
     if (map.getLayer('route-line')) {
         map.removeLayer('route-line');
     }
     if (map.getSource('route')) {
         map.removeSource('route');
     }
+    routeCache = {};
+}
 
-    // Hide the cancel button and show the route panel again
+// Closes the route panel and cleans up
+function closeRoutePanel() {
+    document.querySelector('.route-panel').classList.remove('open');
     document.getElementById('cancel-route-btn').style.display = 'none';
-    document.querySelector('.route-panel').style.display = '';
-});
+    clearRoute();
+}
 
-// Check if the map already finished loading (can happen if map.js loaded before this script)
-// If it has, start immediately. Otherwise wait for the load event.
-if (map.loaded()) {
-    startRouting();
+// Wire up event listeners once the component is in the DOM
+function setupRouteListeners() {
+    // Mode button click handlers
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            displayRouteInfo(btn.dataset.mode);
+        });
+    });
+
+    // Cancel button in the route panel — close panel and clean up
+    document.getElementById('route-panel-cancel').addEventListener('click', () => {
+        closeRoutePanel();
+    });
+
+    // Confirm route button: hides the route panel and shows the floating cancel button
+    document.getElementById('confirm-route-btn').addEventListener('click', () => {
+        document.querySelector('.route-panel').classList.remove('open');
+        document.getElementById('cancel-route-btn').style.display = 'block';
+    });
+
+    // Floating cancel route button: removes route and brings panel back
+    document.getElementById('cancel-route-btn').addEventListener('click', () => {
+        closeRoutePanel();
+    });
+}
+
+// Opens the route panel and starts fetching directions
+// Called from mapFunctions.js when user clicks "Directions"
+window.openRoutePanel = function (name, lat, lng) {
+    // Store destination
+    destLat = lat;
+    destLng = lng;
+
+    // Reset state
+    routeCache = {};
+    document.getElementById('route-duration').textContent = 'Loading...';
+    document.getElementById('route-distance').textContent = 'Loading...';
+
+    // Reset mode buttons to walking
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.mode-btn[data-mode="walking"]').classList.add('active');
+
+    // Display destination name
+    document.getElementById('dest-name').textContent = name;
+
+    // Close the location panel if it's open
+    const locationPanel = document.getElementById('location-panel');
+    if (locationPanel) {
+        locationPanel.classList.remove('open');
+    }
+
+    // Show the route panel
+    document.querySelector('.route-panel').classList.add('open');
+
+    // Start routing
+    const startRouting = () => {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                initRoutes(pos.coords.longitude, pos.coords.latitude);
+            },
+            () => {
+                console.log('Geolocation unavailable, using map center as origin');
+                const center = map.getCenter();
+                initRoutes(center.lng, center.lat);
+            }
+        );
+    };
+
+    if (map.loaded()) {
+        startRouting();
+    } else {
+        map.on('load', startRouting);
+    }
+};
+
+// Set up listeners once DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupRouteListeners);
 } else {
-    map.on('load', startRouting);
+    // Small delay to let the web component render its HTML
+    setTimeout(setupRouteListeners, 0);
 }
