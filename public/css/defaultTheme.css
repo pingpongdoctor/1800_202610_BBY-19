@@ -380,10 +380,10 @@ nav {
 /* Floating cancel route button, shown after confirming a route */
 .cancel-route-btn {
     position: fixed;
-    bottom: 2rem;
+    bottom: 7rem;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 150;
+    z-index: 1050;
     background-color: #e05252;
     color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
