@@ -172,7 +172,7 @@ nav {
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 1050;
     transform: translateY(100%);
     transition: transform 0.3s ease;
 }
