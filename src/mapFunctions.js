@@ -30,10 +30,6 @@ export async function addMarker(coordinates, map, locationData = null) {
     if (locationData) {
         const { name: locationName, description: locationDesc, type: locationType } = locationData;
 
-        // Passes the destination name + coords as query params to the routes page
-        const routeUrl =
-            `/app/html/route.html?name=${encodeURIComponent(locationName)}&lat=${coordinates[1]}&lng=${coordinates[0]}`;
-
         // Store location data in a global registry keyed by a unique ID.
         // This avoids passing raw strings through onclick attributes (escaping issues).
         const registryKey = `loc_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -41,7 +37,8 @@ export async function addMarker(coordinates, map, locationData = null) {
         // saveCallback is an optional function passed by the searchbar for unsaved locations
         // When present, the Save button in the detail panel becomes active
         window._locationRegistry[registryKey] = {
-            locationName, locationDesc, locationType, routeUrl,
+            locationName, locationDesc, locationType,
+            lat: coordinates[1], lng: coordinates[0],
             saveCallback: locationData.saveCallback ?? null
         };
 
@@ -65,13 +62,20 @@ export async function addMarker(coordinates, map, locationData = null) {
 
 // Opens the side panel and populates it with the location's data
 window.openLocationPanel = function (key) {
-    const { locationName, locationDesc, locationType, routeUrl, saveCallback } = window._locationRegistry[key];
+    const { locationName, locationDesc, locationType, lat, lng, saveCallback } = window._locationRegistry[key];
 
     // Populate panel fields
     document.getElementById("panel-type").textContent        = locationType ?? "Location";
     document.getElementById("panel-name").textContent        = locationName;
     document.getElementById("panel-description").textContent = locationDesc;
-    document.getElementById("panel-directions-btn").href     = routeUrl;
+
+    // Wire up the Directions button to open the route panel instead of navigating
+    const directionsBtn = document.getElementById("panel-directions-btn");
+    directionsBtn.href = "#";
+    directionsBtn.onclick = (e) => {
+        e.preventDefault();
+        window.openRoutePanel(locationName, lat, lng);
+    };
 
     // If a saveCallback exists (search result not yet saved), enable the Save button
     // Otherwise disable it (location already exists in Firestore)

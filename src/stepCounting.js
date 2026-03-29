@@ -86,6 +86,9 @@ navigator.geolocation.watchPosition(async (pos) => {
     // Set new values for last position and last time of the previous coordinates
     lastPos = pos.coords;
     lastTime = now;
+
+    // Share the user's position globally so other modules (e.g. routes) can use it
+    window._userPosition = { lng: pos.coords.longitude, lat: pos.coords.latitude };
 }, (error) => {
     console.log("Geolocation API watchPostion method error" + error)
 }, { enableHighAccuracy: false });
