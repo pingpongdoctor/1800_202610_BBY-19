@@ -105,41 +105,47 @@ function displayRouteInfo(mode) {
 
 // Fetches routes from ORS for all three travel modes, then displays the default (walking)
 async function initRoutes(originLng, originLat) {
-    // Drop markers at the start (user) and end (destination) points
-    addMarker([originLng, originLat], map);
-    addMarker([destLng, destLat], map);
+    try {
+        // Drop markers at the start (user) and end (destination) points
+        addMarker([originLng, originLat], map);
+        addMarker([destLng, destLat], map);
 
-    // Zoom the map so both origin and destination are visible with some padding
-    const bounds = new maptilersdk.LngLatBounds();
-    bounds.extend([originLng, originLat]);
-    bounds.extend([destLng, destLat]);
-    map.fitBounds(bounds, { padding: 80 });
+        // Zoom the map so both origin and destination are visible with some padding
+        const bounds = new maptilersdk.LngLatBounds();
+        bounds.extend([originLng, originLat]);
+        bounds.extend([destLng, destLat]);
+        map.fitBounds(bounds, { padding: 80 });
 
-    // Fetch all three modes in parallel
-    const entries = Object.entries(ORS_PROFILES);
-    const results = await Promise.allSettled(
-        entries.map(([mode, profile]) =>
-            fetchRoute(profile, originLng, originLat, destLng, destLat)
-        )
-    );
+        // Fetch all three modes in parallel
+        const entries = Object.entries(ORS_PROFILES);
+        const results = await Promise.allSettled(
+            entries.map(([mode, profile]) =>
+                fetchRoute(profile, originLng, originLat, destLng, destLat)
+            )
+        );
 
-    // Process each result and store it in the cache
-    results.forEach((result, i) => {
-        const mode = entries[i][0];
-        if (result.status === 'fulfilled') {
-            const feature = result.value.features[0];
-            routeCache[mode] = {
-                geometry: feature.geometry,
-                duration: feature.properties.summary.duration,
-                distance: feature.properties.summary.distance
-            };
-        } else {
-            console.log('Failed to fetch route for ' + mode + ': ' + result.reason);
-        }
-    });
+        // Process each result and store it in the cache
+        results.forEach((result, i) => {
+            const mode = entries[i][0];
+            if (result.status === 'fulfilled') {
+                const feature = result.value.features[0];
+                routeCache[mode] = {
+                    geometry: feature.geometry,
+                    duration: feature.properties.summary.duration,
+                    distance: feature.properties.summary.distance
+                };
+            } else {
+                console.log('Failed to fetch route for ' + mode + ': ' + result.reason);
+            }
+        });
 
-    // Show the walking route by default
-    displayRouteInfo('walking');
+        // Show the walking route by default
+        displayRouteInfo('walking');
+    } catch (err) {
+        console.error('initRoutes error:', err);
+        document.getElementById('route-duration').textContent = 'Error';
+        document.getElementById('route-distance').textContent = 'Try again later';
+    }
 }
 
 // Removes the route line from the map and resets state
@@ -216,18 +222,16 @@ window.openRoutePanel = function (name, lat, lng) {
     // Show the route panel
     document.querySelector('.route-panel').classList.add('open');
 
-    // Start routing
+    // Use the position from stepCounting's watchPosition if available,
+    // otherwise fall back to the map center
     const startRouting = () => {
-        navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                initRoutes(pos.coords.longitude, pos.coords.latitude);
-            },
-            () => {
-                console.log('Geolocation unavailable, using map center as origin');
-                const center = map.getCenter();
-                initRoutes(center.lng, center.lat);
-            }
-        );
+        if (window._userPosition) {
+            initRoutes(window._userPosition.lng, window._userPosition.lat);
+        } else {
+            console.log('User position not yet available, using map center as origin');
+            const center = map.getCenter();
+            initRoutes(center.lng, center.lat);
+        }
     };
 
     if (map.loaded()) {
