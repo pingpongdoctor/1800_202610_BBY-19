@@ -173,6 +173,12 @@ nav {
     left: 0;
     right: 0;
     z-index: 100;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.route-panel.open {
+    transform: translateY(0);
 }
 
 /* ---- MARKER POPUP (small, just name + Details button) ---- */
