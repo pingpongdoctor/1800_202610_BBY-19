@@ -44,7 +44,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--white) !important;
-    color: var(--primary) !important;
+    color: var(--primary);
 }
 
 /* ---- APP NAVIGATION ---- */
@@ -594,4 +594,24 @@ site-searchbar .dropdown-toggle {
 
 .cancel-route-btn:hover {
     background-color: var(--danger_hover);
+}
+
+.container {
+    position: relative;
+}
+
+.filter-list {
+    list-style: none;
+    padding: 0.5rem;
+    position: absolute;
+    top: 2.3rem;
+    right: 0;
+    z-index: 10000;
+    border: solid 1px black;
+    border-radius: 20px;
+    background-color: ivory;
+}
+
+.filter-item {
+    border-bottom: black solid 1px;
 }

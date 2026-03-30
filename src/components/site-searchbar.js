@@ -24,6 +24,13 @@ class SiteSearchbar extends HTMLElement {
                     </div>
                 </div>
                 <div id="suggestion-item" class="searchbar-suggestions"></div>
+                <ul class="filter-list">
+                    <li class="filter-item">Restaurant</li>
+                    <li class="filter-item">Hotel</li>
+                    <li class="filter-item">Cafe</li>
+                    <li class="filter-item">Transit</li>
+                    <li class="filter-item">Attraction</li>
+                </ul>
             </div>
         `;
 
@@ -161,6 +168,11 @@ class SiteSearchbar extends HTMLElement {
             });
             filterMenu.appendChild(applyBtn);
         });
+
+        // Add evenlisteners to the filter button to highlight options when hovering
+        function highlightFilterOption(){}
+
+
     }
 }
 customElements.define('site-searchbar', SiteSearchbar);
