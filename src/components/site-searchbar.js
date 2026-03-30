@@ -170,9 +170,21 @@ class SiteSearchbar extends HTMLElement {
         });
 
         // Add evenlisteners to the filter button to highlight options when hovering
-        function highlightFilterOption(){}
+        function highlightFilterItemWhenHover(){
+            const filterItems = document.querySelectorAll(".filter-item");
+            console.log(filterItems)
+            filterItems.forEach(filterItem =>{
+                filterItem.addEventListener("mouseover", (event)=>{
+                    filterItem.classList.add("filter-item-hover");
+                })
+                filterItem.addEventListener("mouseleave", (event)=>{
+                    filterItem.classList.remove("filter-item-hover");
+                })
+            })
+        }
 
-
+        highlightFilterItemWhenHover();
     }
 }
+
 customElements.define('site-searchbar', SiteSearchbar);

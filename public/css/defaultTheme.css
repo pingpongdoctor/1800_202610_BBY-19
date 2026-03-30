@@ -614,4 +614,9 @@ site-searchbar .dropdown-toggle {
 
 .filter-item {
     border-bottom: black solid 1px;
+    cursor: pointer;
+}
+
+.filter-item-hover {
+    background-color: rgb(186, 181, 181);
 }
