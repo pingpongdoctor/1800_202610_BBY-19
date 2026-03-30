@@ -68,20 +68,23 @@ export async function signupUser(name, email, password) {
       name: name,
       email: email,
       points: 0,
-      items: [], // Default value
-      challenges: [], // Default value
-      savedLocations: [],     // Default value
-      theme: "default" //Default value
+      steps: 0,
+      distance: 0,
+      items: [],
+      theme: "defaultTheme",
+      challengeCafes: 0,
+      challengeRestaurants: 0,
+      challengeSteps: 0
     });
     console.log("Firestore user document created successfully!");
-} catch (error) {
-  // Information for debugging: show the error code  
-  // In a real app, you might want to show a user-friendly message instead of the raw error.
-  // console.error("Error creating user document in Firestore:", error);
-  // console output may not be seen if redirection to main.html happens
-  // Therefore, we can try "alert".  
-  alert(`Error creating user document:\n${error.code || ""}\n${error.message || error}`);
-}
+  } catch (error) {
+    // Information for debugging: show the error code  
+    // In a real app, you might want to show a user-friendly message instead of the raw error.
+    // console.error("Error creating user document in Firestore:", error);
+    // console output may not be seen if redirection to main.html happens
+    // Therefore, we can try "alert".  
+    alert(`Error creating user document:\n${error.code || ""}\n${error.message || error}`);
+  }
   // Return the user object for further use (e.g., redirecting or showing a welcome message)
   return user;
 }

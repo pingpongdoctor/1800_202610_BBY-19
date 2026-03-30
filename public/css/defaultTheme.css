@@ -146,6 +146,98 @@ body {
     height: 100%;
 }
 
+#profileContainer {
+    height: 100vh;
+    max-width: 768px;
+    padding: 25px 25px 25px 105px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#profileContainer>div {
+    margin: 30px 0px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#profileContainer>div~div {
+    max-width: 95%;
+
+}
+
+#welcomeBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+
+}
+
+#welcomeBox h1 {
+    font-size: 3rem;
+}
+
+#welcomeBox img {
+    max-width: auto;
+    max-height: 80px;
+}
+
+#statsList .card div {
+    margin: 10px 20px;
+}
+
+#savedLocationsList {
+    max-height: 250px;
+}
+
+#profileButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+
+@media (max-width: 768px) {
+
+    #profileContainer {
+        height: 94vh;
+        padding: 25px;
+    }
+
+    #welcomeBox {
+        max-width: 600px;
+    }
+
+    #welcomeBox h1 {
+        font-size: 2.5rem;
+    }
+
+
+}
+
+@media (max-width: 425px) {
+
+    #profileContainer {
+        padding: 10px;
+    }
+
+    #welcomeBox h1 {
+        font-size: 2rem;
+    }
+
+    #welcomeBox {
+        justify-content: center;
+    }
+
+    #welcomeBox img {
+        display: none;
+    }
+
+
+}
+
+
+
 .btn-info,
 .btn,
 .btn-primary {
@@ -165,17 +257,14 @@ body {
     background-color: var(--secondary) !important;
 }
 
-.card {
+
+/* .list-group-item {
     background-color: var(--white) !important;
 }
 
-.list-group-item {
-    background-color: var(--secondary_compliment) !important;
-}
-
-#challenge_summary {
-    background-color: var(--primary_compliment) !important;
-}
+.card {
+    background-color: var(--white) !important;
+} */
 
 .progress {
     background-color: var(--white) !important;
@@ -346,7 +435,8 @@ site-searchbar .dropdown-toggle {
     height: 100%;
     background-color: var(--white);
     box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
-    z-index: 1050; /* above Bootstrap's fixed-bottom navbar (1030) */
+    z-index: 1050;
+    /* above Bootstrap's fixed-bottom navbar (1030) */
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
