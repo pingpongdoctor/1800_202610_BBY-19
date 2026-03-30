@@ -60,20 +60,20 @@
         </div>
     </div>
 
-    <!-- SHOP -->
-    <div class="card mx-auto" style="max-width: 600px;">
-        <div class="card-header">
-            <h2>Shop</h2>
-            <p class="card-text"><small class="text-body-secondary">You have: <b><span id="pointsGoHere"></span></b>
-                    points</small></p>
+    <div  id="shopPage">
+        <!-- SHOP -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Shop</h2>
+                <p class="card-text"><small class="text-body-secondary">You have: <b><span id="pointsGoHere"></span></b>
+                        points</small></p>
+            </div>
+            <br>
+            <div id="itemList"></div>
         </div>
-        <br>
-        <div id="itemList"></div>
-
     </div>
 
 
-    <br><br>
 
     <!-- NAV BAR -->
     <site-footer></site-footer>
@@ -81,8 +81,8 @@
     <!-- Item Template -->
     <template id="itemTemplate">
         <div class="card mb-3" style="margin-left: 3%; margin-right: 3%;">
-            <div class="row g-0">
-                <div class="col-8">
+            <div class="itemFlex">
+                <div>
                     <div class="card-body">
                         <h4 class="card-title itemTitle">title</h4>
                         <p class="card-text itemDesc">description</p>
@@ -92,8 +92,8 @@
                         <button type="button" class="btn btn-primary itemRedeem">Redeem</button>
                     </div>
                 </div>
-                <div class="col-4 my-auto">
-                    <img src="/images/badge.png" class="img-fluid rounded-start" alt="badge">
+                <div>
+                    <img src="/images/badge.png" alt="badge">
                 </div>
             </div>
         </div>

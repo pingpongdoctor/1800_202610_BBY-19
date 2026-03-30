@@ -64,6 +64,7 @@ onAuthReady(async (user) => {
                     itemCard.querySelector(".itemCost").textContent = itemCost;
                     itemCard.querySelector(".itemRedeem").id = doc.id + "Redeem";
                     itemCard.querySelector(".card").id = doc.id;
+                    itemCard.querySelector("img").src = `/images/${doc.id}.png`;
 
                     // Append the updated cloned item and add it to the list of items to be displayed
                     itemList.appendChild(itemCard);

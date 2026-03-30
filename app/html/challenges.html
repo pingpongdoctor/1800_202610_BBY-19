@@ -22,31 +22,31 @@
 
 
     <!-- CHALLENGES BOARD -->
-    <div class="card" style="width: 50%; margin-left: auto; margin-right: auto;">
-        <div class="card-header">
-            <h5>Weekly Challenges</h5>
+    <div id="challengesContainer">
+        <div class="card">
+            <div class="card-header">
+                <h2>Weekly Challenges</h2>
+                <p class="card-text"><small class="text-body-secondary">Complete these challenges!</small></p>
+            </div>
+
+            <ul class="list-group list-group-flush" id="challengeList">
+
+            </ul>
         </div>
-        
-        <ul class="list-group list-group-flush" id="challengeList">
-
-
-             
-        </ul>
     </div>
 
 
-    <br><br><br><br><br>
 
-             <template id="challengeItem">
-                <li class="list-group-item">
-                    <p class="challenge-title">Loading...</p>
-                    <div class="progress" role="progressbar" aria-label="Success example" 
-                    aria-valuemin="0" aria-valuemax="0" aria-valuenow="3" style="height: 30px; margin-left: 5%; margin-right: 5%;">
-                        <div class="progress-bar text-bg-success"></div>
-                    </div>
-                    <br>
-                </li>
-             </template>
+    <template id="challengeItem">
+        <li class="list-group-item">
+            <p class="challenge-title">Loading...</p>
+            <div class="progress" role="progressbar" aria-label="Success example" aria-valuemin="0" aria-valuemax="0"
+                aria-valuenow="3" style="height: 30px; margin-left: 5%; margin-right: 5%;">
+                <div class="progress-bar text-bg-success"></div>
+            </div>
+            <br>
+        </li>
+    </template>
 
     <!-- NAV BAR -->
     <site-footer></site-footer>
