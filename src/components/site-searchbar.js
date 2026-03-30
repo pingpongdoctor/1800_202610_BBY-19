@@ -1,6 +1,6 @@
 import { db } from '../firebaseConfig.js';
 import { collection, getDocs } from 'firebase/firestore';
-import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker } from "../mapFunctions.js";
+import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker, getLocationsInVacouverByType } from "../mapFunctions.js";
 import { map } from "./map.js"
 import {addNewLocation} from "../locations.js"
 
@@ -172,7 +172,6 @@ class SiteSearchbar extends HTMLElement {
         // Add evenlisteners to the filter button to highlight options when hovering
         function highlightFilterItemWhenHover(){
             const filterItems = document.querySelectorAll(".filter-item");
-            console.log(filterItems)
             filterItems.forEach(filterItem =>{
                 filterItem.addEventListener("mouseover", (event)=>{
                     filterItem.classList.add("filter-item-hover");
@@ -193,8 +192,27 @@ class SiteSearchbar extends HTMLElement {
             })
         }
 
+        // Show locations based on types when clicking options in filter menu
+        async function showLocationBasedOnType(type){
+            const locations = await getLocationsInVacouverByType(type);
+
+            // clear all marker before adding new ones
+            window._allMarkers.forEach(marker => marker.remove());
+            window._allMarkers = [];
+
+            locations.forEach(location => {
+                addMarker(
+                [location.center[0], location.center[1]],
+                map,
+                { name: location.text, description: location.text, type, id: location.id }
+                );
+            })
+        }
+
+        showLocationBasedOnType("restaurant");
         toggleFilterList();
         highlightFilterItemWhenHover();
+        showLocationBasedOnType();
     }
 }
 
