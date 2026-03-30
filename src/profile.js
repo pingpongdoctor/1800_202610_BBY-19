@@ -156,7 +156,7 @@ async function showSavedLocations(user) {
 
         })
 
-        if (!queryItems.empty) {savedLocationsElement.style = "visibility: visible;"}
+        if (!queryItems.empty) {savedLocationsElement.style = ""}
 
 
     } catch (error) {
