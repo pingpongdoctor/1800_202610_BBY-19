@@ -3,31 +3,35 @@ import { auth } from '../firebaseConfig.js'; // Firebase authentication connecti
 
 class SiteFooter extends HTMLElement {
     connectedCallback() {
-        onAuthStateChanged(auth, (user) => {
-            const userPage = user ? 'profile' : 'login';
-            const itemShopPage = user ? 'itemshop' : 'login';
-            const challengesPage = user ? 'challenges' : 'login';
+        // Render nav immediately so it never flashes in/out
+        this.innerHTML = `
+            <nav class="app-nav">
+                <a href="/index.html" class="nav-item">
+                    <img class="footer-image" src="/images/Location.png" alt="location">
+                    <span class="nav-label">Explore</span>
+                </a>
+                <a href="/app/html/challenges.html" class="nav-item" data-auth="challenges">
+                    <img class="footer-image" src="/images/Footprint.png" alt="footprint">
+                    <span class="nav-label">Challenges</span>
+                </a>
+                <a href="/app/html/itemshop.html" class="nav-item" data-auth="itemshop">
+                    <img class="footer-image" src="/images/Dollar Bag.png" alt="shop">
+                    <span class="nav-label">Shop</span>
+                </a>
+                <a href="/app/html/profile.html" class="nav-item" data-auth="profile">
+                    <img class="footer-image" src="/images/Person.png" alt="person">
+                    <span class="nav-label">Profile</span>
+                </a>
+            </nav>
+        `;
 
-            this.innerHTML = `
-                <nav class="app-nav">
-                    <a href="/index.html" class="nav-item">
-                        <img class="footer-image" src="/images/Location.png" alt="location">
-                        <span class="nav-label">Explore</span>
-                    </a>
-                    <a href="/app/html/${challengesPage}.html" class="nav-item">
-                        <img class="footer-image" src="/images/Footprint.png" alt="footprint">
-                        <span class="nav-label">Challenges</span>
-                    </a>
-                    <a href="/app/html/${itemShopPage}.html" class="nav-item">
-                        <img class="footer-image" src="/images/Dollar Bag.png" alt="shop">
-                        <span class="nav-label">Shop</span>
-                    </a>
-                    <a href="/app/html/${userPage}.html" class="nav-item">
-                        <img class="footer-image" src="/images/Person.png" alt="person">
-                        <span class="nav-label">Profile</span>
-                    </a>
-                </nav>
-            `;
+        // Once auth resolves, redirect unauthenticated users to login
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                this.querySelectorAll('[data-auth]').forEach(link => {
+                    link.href = '/app/html/login.html';
+                });
+            }
         });
     }
 }
