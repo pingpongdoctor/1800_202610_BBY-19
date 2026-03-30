@@ -1,6 +1,7 @@
 import * as maptilersdk from '@maptiler/sdk';
 import { map } from './components/map.js';
 import { addMarker } from './mapFunctions.js';
+import * as maptilerClient from '@maptiler/client';
 
 // ORS (OpenRouteService) API key loaded from the .env file via Vite
 const ORS_KEY = import.meta.env.VITE_ORS_KEY;
@@ -108,13 +109,17 @@ async function initRoutes(originLng, originLat) {
     try {
         // Drop markers at the start (user) and end (destination) points
         addMarker([originLng, originLat], map);
-        addMarker([destLng, destLat], map);
+        // addMarker([destLng, destLat], map); // Delete this to avoid creating two duplicate markers
 
         // Zoom the map so both origin and destination are visible with some padding
         const bounds = new maptilersdk.LngLatBounds();
         bounds.extend([originLng, originLat]);
         bounds.extend([destLng, destLat]);
         map.fitBounds(bounds, { padding: 80 });
+
+        // Save the destination coordinates to the window to track when users arrive the destination
+        window.curDestLng = destLng;
+        window.curDestLat = destLat;
 
         // Fetch all three modes in parallel
         const entries = Object.entries(ORS_PROFILES);
@@ -157,13 +162,47 @@ function clearRoute() {
         map.removeSource('route');
     }
     routeCache = {};
+    // Use the saved desKey to re-attach the popup to the marker
+    // if (window.desKey) {
+    //     const entry = window._locationRegistry[window.desKey]
+
+    //     if (entry?.marker && entry?.popupHTML) {
+    //         const popup = new maptilersdk.Popup({ offset: 30, closeButton: true, maxWidth: "200px" })
+    //             .setHTML(entry.popupHTML);
+
+    //         // Delete the previous popup before adding a new popup
+    //         const existingPopup = entry.marker.getPopup()
+    //         console.log(existingPopup)
+
+    //         if(existingPopup){
+    //             existingPopup.remove();
+    //         }
+
+    //         entry.marker.setPopup(popup);
+    //     }
+
+    //     window.desKey = null;
+    // }
 }
+
+// Save to arrivalInterval to clear it when the route is cancelled
+let arrivalInterval = null;
 
 // Closes the route panel and cleans up
 function closeRoutePanel() {
     document.querySelector('.route-panel').classList.remove('open');
     document.getElementById('cancel-route-btn').style.display = 'none';
     clearRoute();
+
+    // Clear interval if the route is cancelled
+    if (arrivalInterval) {
+        clearInterval(arrivalInterval);
+        arrivalInterval = null;
+    }
+
+    // Clear the destionation coordinations when closing route to stop tracking if users arrive the destination
+    window.curDestLng = null;
+    window.curDestLat = null;
 }
 
 // Wire up event listeners once the component is in the DOM
@@ -192,6 +231,25 @@ function setupRouteListeners() {
     document.getElementById('cancel-route-btn').addEventListener('click', () => {
         closeRoutePanel();
     });
+}
+
+// Function to track if users arrive the destination by 30m to cancel the route
+function cancelRouteWhenUserArrive() {
+    const desLng = window?.curDestLng;
+    const desLat = window?.curDestLat;
+    const userLng = window?._userPosition?.lng;
+    const userLat = window?._userPosition?.lat;
+
+    if (desLng && desLat && userLng && userLat) {
+        const distanceBetweenUserAndDes = maptilerClient.math.haversineDistanceWgs84(
+            [userLng, userLat],
+            [desLng, desLat]
+        );
+
+        if (distanceBetweenUserAndDes <= 30) {
+            closeRoutePanel();
+        }
+    }
 }
 
 // Opens the route panel and starts fetching directions
@@ -224,14 +282,22 @@ window.openRoutePanel = function (name, lat, lng) {
 
     // Use the position from stepCounting's watchPosition if available,
     // otherwise fall back to the map center
-    const startRouting = () => {
+    const startRouting = async () => {
         if (window._userPosition) {
-            initRoutes(window._userPosition.lng, window._userPosition.lat);
+            await initRoutes(window._userPosition.lng, window._userPosition.lat);
         } else {
             console.log('User position not yet available, using map center as origin');
             const center = map.getCenter();
-            initRoutes(center.lng, center.lat);
+            await initRoutes(center.lng, center.lat);
         }
+
+        // Start tracking users after routes are initialized
+        arrivalInterval = setInterval(() => {
+            if (window?.curDestLng && window?.curDestLat) {
+                cancelRouteWhenUserArrive();
+                console.log("User is being tracked to know when they arrive the destination to cancel the route");
+            }
+        }, 10000)
     };
 
     if (map.loaded()) {

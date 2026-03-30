@@ -24,7 +24,7 @@ export async function getLocationsInVacouverByType(type) {
     // Params are West, East, South, North
     const vancouverBoundary = [-123.224, 49.100, -122.900, 49.315];
 
-    const result = await geocoding.forward(type,{types: ["poi"], bbox: vancouverBoundary, limit: 10});
+    const result = await geocoding.forward(type, { types: ["poi"], bbox: vancouverBoundary, limit: 10 });
     return result?.features || [];
 }
 
@@ -69,11 +69,6 @@ export async function addMarker(coordinates, map, locationData = null) {
         window._locationRegistry = window._locationRegistry || {};
         // saveCallback is an optional function passed by the searchbar for unsaved locations
         // When present, the Save button in the detail panel becomes active
-        window._locationRegistry[registryKey] = {
-            locationName, locationDesc, locationType,
-            lat: coordinates[1], lng: coordinates[0],
-            saveCallback: locationData.saveCallback ?? null
-        };
 
         // Small popup — just the name + a Details button that opens the side panel
         const popupHTML = `
@@ -91,48 +86,57 @@ export async function addMarker(coordinates, map, locationData = null) {
             .setHTML(popupHTML);
 
         marker.setPopup(popup);
+
+        // Move this part to the end of the function to save marker and popup HTML element
+        window._locationRegistry[registryKey] = {
+            locationName, locationDesc, locationType,
+            lat: coordinates[1], lng: coordinates[0],
+            saveCallback: locationData.saveCallback ?? null,
+            popupHTML,
+            marker
+        };
     }
 
-// Opens the side panel and populates it with the location's data
-window.openLocationPanel = function (key) {
-    const { locationName, locationDesc, locationType, lat, lng, saveCallback } = window._locationRegistry[key];
+    // Opens the side panel and populates it with the location's data
+    window.openLocationPanel = function (key) {
+        const { locationName, locationDesc, locationType, lat, lng, saveCallback } = window._locationRegistry[key];
 
-    // Populate panel fields
-    document.getElementById("panel-type").textContent        = locationType ?? "Location";
-    document.getElementById("panel-name").textContent        = locationName;
-    document.getElementById("panel-description").textContent = locationDesc;
+        // Populate panel fields
+        document.getElementById("panel-type").textContent = locationType ?? "Location";
+        document.getElementById("panel-name").textContent = locationName;
+        document.getElementById("panel-description").textContent = locationDesc;
 
-    // Wire up the Directions button to open the route panel instead of navigating
-    const directionsBtn = document.getElementById("panel-directions-btn");
-    directionsBtn.href = "#";
-    directionsBtn.onclick = (e) => {
-        e.preventDefault();
-        window.openRoutePanel(locationName, lat, lng);
+        // Wire up the Directions button to open the route panel instead of navigating
+        const directionsBtn = document.getElementById("panel-directions-btn");
+        directionsBtn.href = "#";
+        directionsBtn.onclick = (e) => {
+            e.preventDefault();
+            window.openRoutePanel(locationName, lat, lng);
+        };
+
+        // If a saveCallback exists (search result not yet saved), enable the Save button
+        // Otherwise disable it (location already exists in Firestore)
+        const saveBtn = document.querySelector('.panel-save-btn');
+        if (saveCallback) {
+            saveBtn.disabled = false;
+            saveBtn.onclick = () => {
+                saveCallback();
+                // Disable after saving so the user cant double save
+                saveBtn.disabled = true;
+            };
+        } else {
+            saveBtn.disabled = true;
+            saveBtn.onclick = null;
+        }
+
+        // Slide the panel in
+        document.getElementById("location-panel").classList.add("open");
     };
 
-    // If a saveCallback exists (search result not yet saved), enable the Save button
-    // Otherwise disable it (location already exists in Firestore)
-    const saveBtn = document.querySelector('.panel-save-btn');
-    if (saveCallback) {
-        saveBtn.disabled = false;
-        saveBtn.onclick = () => {
-            saveCallback();
-            // Disable after saving so the user cant double save
-            saveBtn.disabled = true;
-        };
-    } else {
-        saveBtn.disabled = true;
-        saveBtn.onclick = null;
-    }
-
-    // Slide the panel in
-    document.getElementById("location-panel").classList.add("open");
-};
-
-// Closes the side panel by sliding it back out
-window.closeLocationPanel = function () {
-    document.getElementById("location-panel").classList.remove("open");
-};
+    // Closes the side panel by sliding it back out
+    window.closeLocationPanel = function () {
+        document.getElementById("location-panel").classList.remove("open");
+    };
 
     return marker;
 }
