@@ -79,7 +79,7 @@ function drawRoute(geometry) {
                 'line-cap': 'round'
             },
             paint: {
-                'line-color': '#68E152',
+                'line-color': getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#68E152',
                 'line-width': 5,
                 'line-opacity': 0.8
             }

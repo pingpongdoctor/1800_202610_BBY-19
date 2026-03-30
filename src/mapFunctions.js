@@ -22,8 +22,9 @@ export async function getLocationsByPlaceNameAndCountry(name, country, limit, pr
 
 // Function that allows to set a new marker
 export async function addMarker(coordinates, map, locationData = null) {
-    // Color the pin with the app's primary green
-    const marker = new maptilersdk.Marker({ color: "#68E152" })
+    // Color the pin with the app's primary color from CSS variables
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#68E152';
+    const marker = new maptilersdk.Marker({ color: primaryColor })
         .setLngLat(coordinates)
         .addTo(map);
 
