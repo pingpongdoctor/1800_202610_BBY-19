@@ -33,11 +33,11 @@ White:                #F5FFF5 - White
     --secondary_compliment: #e4e885;
     --white: #F5FFF5;
     --black: #002100;
-    --text-muted: #666;
-    --text-secondary: #444;
+    --text_muted: #666;
+    --text_secondary: #444;
     --border: #ddd;
     --danger: #e05252;
-    --danger-hover: #c94444;
+    --danger_hover: #c94444;
 }
 
 body {
@@ -303,7 +303,7 @@ site-searchbar .dropdown-toggle {
 
 .popup-type {
     font-size: 0.7rem;
-    color: var(--text-muted);
+    color: var(--text_muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 2px 0;
@@ -395,7 +395,7 @@ site-searchbar .dropdown-toggle {
 
 .panel-type {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--text_muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0;
@@ -410,7 +410,7 @@ site-searchbar .dropdown-toggle {
 
 .panel-description {
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: var(--text_secondary);
     line-height: 1.5;
     margin: 0;
     flex-grow: 1;
@@ -476,7 +476,7 @@ site-searchbar .dropdown-toggle {
 }
 
 .route-cancel-btn:hover {
-    background-color: var(--danger-hover);
+    background-color: var(--danger_hover);
     color: var(--white);
 }
 
@@ -503,5 +503,5 @@ site-searchbar .dropdown-toggle {
 }
 
 .cancel-route-btn:hover {
-    background-color: var(--danger-hover);
+    background-color: var(--danger_hover);
 }
