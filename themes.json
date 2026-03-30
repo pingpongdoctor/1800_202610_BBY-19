@@ -1,0 +1,58 @@
+{
+    "defaultTheme": {
+        "title": "Default",
+        "primary": "#68E152",
+        "primary_compliment": "#9AE184",
+        "secondary": "#f0eb51",
+        "secondary_compliment": "#e4e885",
+        "white": "#F5FFF5",
+        "black": "#002100",
+        "text_muted": "#666",
+        "text_secondary": "#444",
+        "border": "#ddd",
+        "danger": "#e05252",
+        "danger_hover": "#c94444"
+    },
+    "testTheme": {
+        "title": "Test",
+        "primary": "#252fe6",
+        "primary_compliment": "#42c3d4",
+        "secondary": "#b651f0",
+        "secondary_compliment": "#eb3dd1",
+        "white": "#F5FFF5",
+        "black": "#002100",
+        "text_muted": "#888",
+        "text_secondary": "#666",
+        "border": "#555",
+        "danger": "#e05252",
+        "danger_hover": "#c94444"
+    },
+    "franceTheme": {
+        "title": "France",
+        "primary": "#002395",
+        "primary_compliment": "#3355b0",
+        "secondary": "#ED2939",
+        "secondary_compliment": "#f06070",
+        "white": "#FFFFFF",
+        "black": "#1a1a2e",
+        "text_muted": "#6c7a99",
+        "text_secondary": "#3d4a66",
+        "border": "#c0c8d9",
+        "danger": "#ED2939",
+        "danger_hover": "#c9222f"
+    },
+    "spainTheme": {
+        "title": "Spain",
+        "primary": "#C60B1E",
+        "primary_compliment": "#d94050",
+        "secondary": "#FFC400",
+        "secondary_compliment": "#ffd54f",
+        "white": "#FFFDF5",
+        "black": "#1a0a0a",
+        "text_muted": "#8c6b6b",
+        "text_secondary": "#5c3a3a",
+        "border": "#d9c0b0",
+        "danger": "#C60B1E",
+        "danger_hover": "#a00818"
+    }
+}
