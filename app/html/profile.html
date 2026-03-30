@@ -20,53 +20,74 @@
 
 <body>
 
-    <!------------------------------>
-    <!-- Your HTML Layout go here -->
-    <!------------------------------>
-    <!-- Stuff for body goes here -->
+    <div id="profileContainer">
 
-    <!-- <img src="/images/hike2.jpg" alt="banner" class="img-fluid  mx-auto rounded d-block"> -->
 
-    <br>
-
-    <div class="container-fluid text-center ">
-        <h1>Welcome <span id="name-goes-here"></span></h1>
-        <p>You have <span id="pointsGoHere"></span> points!</p>
-        <hr>
-    </div>
-
-    <!-- Saved Locations -->
-    <div class="card mx-auto" style="max-width: 50%;">
-        <div class="card-header">
-            Saved Locations
+        <div id="welcomeBox">
+            <img src="/images/pfpPlaceholder.png" alt="pfp">
+            <div>
+                <h1>Welcome <span id="name-goes-here"></span></h1>
+                <h5 id="pointsGoHere"></h5>
+            </div>
+            <hr>
         </div>
-        <ul class="list-group list-group-flush" id="savedLocationsList">
-            <li class="list-group-item"><a href=""><span class="savedLocation1"> </span></a></li>
-        </ul>
+
+        <!-- Theme Select -->
+        <div>
+            <label for="themeSelect">
+                <h3>Select your theme:</h3>
+            </label>
+            <select id="themeSelect" class="form-select" aria-label="Default select example">
+                <option value="defaultTheme" id="defaultTheme">Default</option>
+
+            </select>
+        </div>
+
+        <!-- User Info -->
+        <div id="statsList">
+            <h3>Stats:</h3>
+
+            <div class="card">
+                <div>
+                    <h5>Distance Travelled (KM): </h5> <span id="distanceTravelled"></span>
+                </div>
+
+                <div>
+                    <h5>Steps: </h5><span id="stepsTravelled"></span>
+                </div>
+
+                <div>
+                    <h5>Items unlocked: </h5><span id="itemsUnlocked"></span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Saved Locations -->
+        <div id="savedLocationsElement" style="visibility: hidden;">
+            <h3>Saved locations:</h3>
+
+            <div class="list-group overflow-auto" id="savedLocationsList">
+                
+            </div>
+
+        </div>
+
+
+        <!-- Logout button -->
+        <div id="profileButtons">
+
+            <div id="logoutGoesHere">
+                <button class="btn btn-lg" id="logoutBtn" type="button">Log
+                    out</button>
+            </div>
+
+        </div>
+
+        <br>
+
+
     </div>
-
-
-    <br>
-
-
-    <div class="mx-auto mw-md-50">
-        <label for="themeSelect">
-            <h4>Select your theme:</h4>
-        </label>
-        <select id="themeSelect" class="form-select" aria-label="Default select example">
-            <option value="defaultTheme" id="defaultTheme">Default</option>
-
-        </select>
-    </div>
-
-    <br><br><br>
-
-    <!-- LOGOUT BUTTON -->
-    <div id="logoutGoesHere" class="mx-auto" style="max-width: fit-content;">
-        <button class="btn btn-outline-light" id="logoutBtn" type="button" style="min-width: 80px;  ">Log
-            out</button>
-    </div>
-    <br>
 
 
     <!-- NAV BAR -->
@@ -74,9 +95,6 @@
 
 
 
-    <!---------------------------------------------->
-    <!-- Your own JavaScript functions go here    -->
-    <!---------------------------------------------->
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/profile.js"></script>
 

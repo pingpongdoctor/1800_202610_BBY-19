@@ -22,7 +22,7 @@ function profilePage() {
 
         await switchThemeSelect(user)
         await showInfo(user);
-        // await showSavedLocations(user);     to be reworked to show saved locations
+        await showSavedLocations(user);
 
         // logout button functionality
         const logout = document.getElementById('logoutGoesHere').querySelector('#logoutBtn');
@@ -35,10 +35,12 @@ function profilePage() {
 // Function to fetch the signed-in user's name and display it in the UI
 async function showInfo(user) {
 
-    // Get the DOM element where the user's name will be displayed
-    // Example: <h1 id="name-goes-here"></h1>
     const nameElement = document.getElementById("name-goes-here");
     const pointsElement = document.getElementById("pointsGoHere");
+    const distanceElement = document.getElementById("distanceTravelled");
+    const stepsElement = document.getElementById("stepsTravelled");
+    const itemsUnlockedElement = document.getElementById("itemsUnlocked");
+
 
     // Get the user's Firestore document from the "users" collection
     // Document ID is the user's unique UID
@@ -50,10 +52,17 @@ async function showInfo(user) {
         : user.displayName || user.email;    // 3️⃣ Otherwise fallback to email
 
     const points = userDoc.data().points;
+    const distance = userDoc.data().distance;
+    const steps = userDoc.data().steps;
+    const itemsUnlocked = userDoc.data().items.length;
 
     // display the name and points
     if (nameElement) nameElement.textContent = `${name}`;
-    if (pointsElement) pointsElement.textContent = points;
+    if (pointsElement) pointsElement.textContent = `You have ${points} points!`;
+    if (distanceElement) distanceElement.textContent = distance;
+    if (stepsElement) stepsElement.textContent = steps;
+    if (itemsUnlockedElement) itemsUnlockedElement.textContent = itemsUnlocked;
+
 }
 
 
@@ -122,15 +131,40 @@ async function switchThemeSelect(user) {
 
 async function showSavedLocations(user) {
 
-    const LocationsListElement = document.getElementById("savedLocationsList");
-    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const savedLocationsElement = document.getElementById("savedLocationsElement");
+    let savedLocationsList = document.getElementById("savedLocationsList");
+     
+    try {
 
-    const items = userDoc.data().savedLocations;
+        // User's saved locations subcollection
+        const queryItems = await getDocs(collection(db, "users", user.uid, "savedLocations"));
 
-    // If the DOM element exists, display
-    if (LocationsListElement) {
-        LocationsListElement.textContent = `${items}`;
+        // Iterate through each document
+        queryItems.forEach((doc) => {
+            const data = doc.data();
+
+            const locationName = data.name || "Error: no name";
+            const locationLat = data.lat || "Error: no lat";
+            const locationLon = data.lon || "Error: no lon";
+
+            let locationItem = `<a href="/index.html" class="list-group-item list-group-item-action"><b>${locationName}</b></a>`
+
+            // If the DOM element exists, display
+            if (savedLocationsElement) {
+                savedLocationsList.innerHTML += locationItem;
+            }
+
+        })
+
+        if (!queryItems.empty) {savedLocationsElement.style = "visibility: visible;"}
+
+
+    } catch (error) {
+        console.error("Error loading saved locations: ", error);
     }
+
+
+
 }
 
 profilePage();
