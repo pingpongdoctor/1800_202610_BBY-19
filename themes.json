@@ -1,6 +1,8 @@
 {
     "defaultTheme": {
         "title": "Default",
+        "description": "BRAZIL NUMBER ONE PORRA.",
+        "cost": 1,
         "primary": "#68E152",
         "primary_compliment": "#9AE184",
         "secondary": "#f0eb51",
@@ -14,7 +16,9 @@
         "danger_hover": "#c94444"
     },
     "testTheme": {
-        "title": "Test",
+        "title": "Neon",
+        "description": "Test theme.",
+        "cost": 50,
         "primary": "#252fe6",
         "primary_compliment": "#42c3d4",
         "secondary": "#b651f0",
@@ -29,6 +33,8 @@
     },
     "franceTheme": {
         "title": "France",
+        "description": "French theme, uuuh cigarret and baguette and shi.",
+        "cost": 100,
         "primary": "#002395",
         "primary_compliment": "#3355b0",
         "secondary": "#ED2939",
@@ -43,6 +49,8 @@
     },
     "spainTheme": {
         "title": "Spain",
+        "description": "Donde esta la biblioteca manito?",
+        "cost": 100,
         "primary": "#C60B1E",
         "primary_compliment": "#d94050",
         "secondary": "#FFC400",
