@@ -20,6 +20,14 @@ export async function getLocationsByPlaceNameAndCountry(name, country, limit, pr
     return result?.features || [];
 }
 
+export async function getLocationsInVacouverByType(type) {
+    // Params are West, East, South, North
+    const vancouverBoundary = [-123.224, 49.100, -122.900, 49.315];
+
+    const result = await geocoding.forward(type,{types: ["poi"], bbox: vancouverBoundary, limit: 10});
+    return result?.features || [];
+}
+
 // Global registry of all markers so they can be re-colored when the theme changes
 window._allMarkers = window._allMarkers || [];
 
