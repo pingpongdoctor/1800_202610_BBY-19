@@ -15,7 +15,7 @@ class SiteSearchbar extends HTMLElement {
                     <input type="text" id="searchInput" class="form-control" placeholder="Search..." autocomplete="off">
                     <button id="searchBtn" class="btn btn-primary" type="button">Search</button>
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <button class="btn btn-outline-secondary dropdown-toggle btn-filter-list" type="button" id="filterBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             Filters
                         </button>
                         <div class="dropdown-menu p-3" id="filterMenu" style="min-width: 220px;">
@@ -183,6 +183,17 @@ class SiteSearchbar extends HTMLElement {
             })
         }
 
+        // Make the filter list appear and disappear by clicking the filter button
+        function toggleFilterList(){
+            const filterMenu = document.querySelector(".filter-list");
+            const filterButton = document.querySelector(".btn-filter-list");
+
+            filterButton.addEventListener("click", (event)=>{
+                filterMenu.classList.toggle("filter-list-appear");
+            })
+        }
+
+        toggleFilterList();
         highlightFilterItemWhenHover();
     }
 }

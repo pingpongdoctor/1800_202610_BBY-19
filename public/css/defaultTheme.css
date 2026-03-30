@@ -600,7 +600,13 @@ site-searchbar .dropdown-toggle {
     position: relative;
 }
 
+@keyframes slideDown {
+    0%   { transform: translateY(-30px); opacity: 0; }
+    100% { transform: translateY(1);     opacity: 1; }
+}
+
 .filter-list {
+    visibility: hidden;
     list-style: none;
     padding: 0.5rem;
     position: absolute;
@@ -610,6 +616,12 @@ site-searchbar .dropdown-toggle {
     border: solid 1px black;
     border-radius: 20px;
     background-color: ivory;
+}
+
+.filter-list-appear {
+    visibility: visible;
+    z-index: 1;
+    animation: slideDown 1s ease-in-out;
 }
 
 .filter-item {
