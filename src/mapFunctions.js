@@ -20,12 +20,37 @@ export async function getLocationsByPlaceNameAndCountry(name, country, limit, pr
     return result?.features || [];
 }
 
+// Global registry of all markers so they can be re-colored when the theme changes
+window._allMarkers = window._allMarkers || [];
+
+// Re-colors all existing markers to match the current theme
+export function recolorMarkers() {
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#68E152';
+    for (const marker of window._allMarkers) {
+        const svg = marker.getElement().querySelector('svg');
+        if (svg) {
+            // The pin shape is the second <g> with a [fill] attribute (index 1)
+            // Structure: [0] shadow ellipses, [1] pin body, [2] pin outline, [3] inner white, [4-5] center dot
+            const groups = svg.querySelectorAll('[fill]');
+            if (groups.length > 1) {
+                groups[1].setAttribute('fill', color);
+            }
+        }
+    }
+}
+// Expose on window so main.js can call it without circular imports
+window.recolorMarkers = recolorMarkers;
+
 // Function that allows to set a new marker
 export async function addMarker(coordinates, map, locationData = null) {
-    // Color the pin with the app's primary green
-    const marker = new maptilersdk.Marker({ color: "#68E152" })
+    // Color the pin with the app's primary color from CSS variables
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#68E152';
+    const marker = new maptilersdk.Marker({ color: primaryColor })
         .setLngLat(coordinates)
         .addTo(map);
+
+    // Track the marker so it can be re-colored on theme change
+    window._allMarkers.push(marker);
 
     if (locationData) {
         const { name: locationName, description: locationDesc, type: locationType } = locationData;

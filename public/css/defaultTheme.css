@@ -33,9 +33,11 @@ White:                #F5FFF5 - White
     --secondary_compliment: #e4e885;
     --white: #F5FFF5;
     --black: #002100;
-    /* Can be altered when needed */
-    --test: red;
-    /* -------------------------- */
+    --text_muted: #666;
+    --text_secondary: #444;
+    --border: #ddd;
+    --danger: #e05252;
+    --danger_hover: #c94444;
 }
 
 body {
@@ -339,8 +341,8 @@ site-searchbar .dropdown-toggle {
 
 .searchbar-suggestions {
     position: absolute;
-    border: 1px solid #ddd;
-    background-color: #fff;
+    border: 1px solid var(--border);
+    background-color: var(--white);
     max-height: 200px;
     overflow-y: auto;
     z-index: 1000;
@@ -352,7 +354,7 @@ site-searchbar .dropdown-toggle {
 }
 
 .suggestion-item:hover {
-    background-color: #f8f9fa;
+    background-color: var(--primary_compliment);
 }
 
 .mode-btn {
@@ -390,7 +392,7 @@ site-searchbar .dropdown-toggle {
 
 .popup-type {
     font-size: 0.7rem;
-    color: #666;
+    color: var(--text_muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 2px 0;
@@ -483,7 +485,7 @@ site-searchbar .dropdown-toggle {
 
 .panel-type {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--text_muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0;
@@ -498,7 +500,7 @@ site-searchbar .dropdown-toggle {
 
 .panel-description {
     font-size: 0.9rem;
-    color: #444;
+    color: var(--text_secondary);
     line-height: 1.5;
     margin: 0;
     flex-grow: 1;
@@ -510,7 +512,7 @@ site-searchbar .dropdown-toggle {
     gap: 0.75rem;
     margin-top: auto;
     padding-top: 1rem;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--border);
 }
 
 /* Shared base style for both panel buttons */
@@ -559,13 +561,13 @@ site-searchbar .dropdown-toggle {
 
 /* Cancel button in the route panel (goes back to index) */
 .route-cancel-btn {
-    background-color: #e05252;
-    color: white;
+    background-color: var(--danger);
+    color: var(--white);
 }
 
 .route-cancel-btn:hover {
-    background-color: #c94444;
-    color: white;
+    background-color: var(--danger_hover);
+    color: var(--white);
 }
 
 /* Go button in the route panel (confirms the route) */
@@ -585,11 +587,11 @@ site-searchbar .dropdown-toggle {
     left: 50%;
     transform: translateX(-50%);
     z-index: 1050;
-    background-color: #e05252;
-    color: white;
+    background-color: var(--danger);
+    color: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .cancel-route-btn:hover {
-    background-color: #c94444;
+    background-color: var(--danger_hover);
 }
