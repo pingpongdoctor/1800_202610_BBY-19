@@ -108,7 +108,7 @@ async function initRoutes(originLng, originLat) {
     try {
         // Drop markers at the start (user) and end (destination) points
         addMarker([originLng, originLat], map);
-        addMarker([destLng, destLat], map);
+        // addMarker([destLng, destLat], map); // Delete this to avoid creating two duplicate markers
 
         // Zoom the map so both origin and destination are visible with some padding
         const bounds = new maptilersdk.LngLatBounds();
@@ -157,6 +157,28 @@ function clearRoute() {
         map.removeSource('route');
     }
     routeCache = {};
+
+    // Use the saved desKey to re-attach the popup to the marker
+    // if (window.desKey) {
+    //     const entry = window._locationRegistry[window.desKey]
+
+    //     if (entry?.marker && entry?.popupHTML) {
+    //         const popup = new maptilersdk.Popup({ offset: 30, closeButton: true, maxWidth: "200px" })
+    //             .setHTML(entry.popupHTML);
+            
+    //         // Delete the previous popup before adding a new popup
+    //         const existingPopup = entry.marker.getPopup()
+    //         console.log(existingPopup)
+
+    //         if(existingPopup){
+    //             existingPopup.remove();
+    //         }
+
+    //         entry.marker.setPopup(popup);
+    //     }
+
+    //     window.desKey = null;
+    // }
 }
 
 // Closes the route panel and cleans up
