@@ -25,6 +25,11 @@ export function applyTheme(themeData) {
             root.style.setProperty(cssVar, themeData[key]);
         }
     }
+
+    // Re-color map markers to match the new theme
+    if (typeof window.recolorMarkers === 'function') {
+        window.recolorMarkers();
+    }
 }
 
 // Fetches a theme from Firestore and applies it
