@@ -1,8 +1,8 @@
 import { db } from '../firebaseConfig.js';
 import { collection, getDocs } from 'firebase/firestore';
-import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker } from "../mapFunctions.js";
+import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker, getLocationsInVacouverByType } from "../mapFunctions.js";
 import { map } from "./map.js"
-import {addNewLocation} from "../locations.js"
+import { addNewLocation } from "../locations.js"
 
 // Defines a custom HTML element (for search bar)
 class SiteSearchbar extends HTMLElement {
@@ -15,7 +15,7 @@ class SiteSearchbar extends HTMLElement {
                     <input type="text" id="searchInput" class="form-control" placeholder="Search..." autocomplete="off">
                     <button id="searchBtn" class="btn btn-primary" type="button">Search</button>
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <button class="btn btn-outline-secondary dropdown-toggle btn-filter-list" type="button" id="filterBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             Filters
                         </button>
                         <div class="dropdown-menu p-3" id="filterMenu" style="min-width: 220px;">
@@ -24,6 +24,13 @@ class SiteSearchbar extends HTMLElement {
                     </div>
                 </div>
                 <div id="suggestion-item" class="searchbar-suggestions"></div>
+                <ul class="filter-list">
+                    <li class="filter-item">Restaurant</li>
+                    <li class="filter-item">Hotel</li>
+                    <li class="filter-item">Coffee</li>
+                    <li class="filter-item">Transit</li>
+                    <li class="filter-item">Attraction</li>
+                </ul>
             </div>
         `;
 
@@ -71,7 +78,7 @@ class SiteSearchbar extends HTMLElement {
                     if (set.has(result.text)) {
                         return;
                     }
-
+                    console.log(result)
                     set.add(result.text)
 
                     const suggestionItem = document.createElement('div');
@@ -161,6 +168,95 @@ class SiteSearchbar extends HTMLElement {
             });
             filterMenu.appendChild(applyBtn);
         });
+
+        // Add evenlisteners to the filter button to highlight options when hovering
+        function highlightFilterItemWhenHover() {
+            const filterItems = document.querySelectorAll(".filter-item");
+            filterItems.forEach(filterItem => {
+                filterItem.addEventListener("mouseover", (event) => {
+                    filterItem.classList.add("filter-item-hover");
+                })
+                filterItem.addEventListener("mouseleave", (event) => {
+                    filterItem.classList.remove("filter-item-hover");
+                })
+            })
+        }
+
+        // Make the filter list appear and disappear by clicking the filter button
+        function toggleFilterList() {
+            const filterMenu = document.querySelector(".filter-list");
+            const filterButton = document.querySelector(".btn-filter-list");
+
+            filterButton.addEventListener("click", (event) => {
+                filterMenu.classList.toggle("filter-list-appear");
+            })
+        }
+
+        // Show locations based on types when clicking options in filter menu
+        async function showLocationBasedOnType(types) {
+            // clear all marker before adding new ones
+            window._allMarkers.forEach(marker => marker.remove());
+            window._allMarkers = [];
+            types.forEach(async (type) => {
+                const locations = await getLocationsInVacouverByType(type);
+
+                locations.forEach(location => {
+                    addMarker(
+                        [location.center[0], location.center[1]],
+                        map,
+                        { name: location.text, description: location.text, type, id: location.id }
+                    );
+                })
+            })
+
+
+        }
+
+        // Queries data that corresponds to the location type
+        const restaurantQueries = ["restaurant", "food", "dining", "eatery", "diner", "bistro", "grill", "kitchen"];
+        const hotelQueries = ["hotel", "motel", "inn", "hostel", "resort", "lodge", "suites", "accommodation"];
+        const coffeeQueries = ["coffee", "cafe", "espresso", "coffeehouse", "coffee shop", "tea house", "bakery", "roastery"];
+        const transitQueries = ["transit", "bus stop", "skytrain", "subway", "train station", "bus station", "ferry", "bus terminal"];
+        const attractionQueries = ["attraction", "museum", "park", "gallery", "landmark", "theatre", "aquarium", "zoo", "stadium", "monument"];
+
+        const queryMap = {
+            restaurant: restaurantQueries,
+            hotel: hotelQueries,
+            coffee: coffeeQueries,
+            transit: transitQueries,
+            attraction: attractionQueries,
+        };
+
+        // Add the evenlistener to the filter items to add locations when clicking them
+        function clickFilterItemsToShowLocationsByType() {
+            const filterItems = document.querySelectorAll(".filter-item");
+
+            filterItems.forEach(filterItem => {
+                const type = filterItem.textContent.toLocaleLowerCase();
+
+                filterItem.addEventListener("click", (event) => {
+                    showLocationBasedOnType(queryMap[type]);
+                })
+            })
+        }
+
+        // Function that allows closing the filter list when clicking somewhere else
+        function closeFilterListWhenClickingOtherComponents() {
+            const filterMenuContainer = document.querySelector(".container");
+            const filterMenu = document.querySelector(".filter-list");
+            window.addEventListener('click', (e) => {
+                console.log(filterMenu.contains(e.target));
+                if (!filterMenuContainer.contains(e.target)) {
+                    filterMenu.classList.remove("filter-list-appear");
+                }
+            })
+        }
+
+        toggleFilterList();
+        highlightFilterItemWhenHover();
+        clickFilterItemsToShowLocationsByType();
+        closeFilterListWhenClickingOtherComponents();
     }
 }
+
 customElements.define('site-searchbar', SiteSearchbar);
