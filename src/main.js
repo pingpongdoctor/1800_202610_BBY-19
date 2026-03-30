@@ -4,44 +4,66 @@ import { db } from "./firebaseConfig.js";
 import { doc, getDoc } from "firebase/firestore";
 import { onAuthReady } from '/src/authentication.js';
 
-// import '/css/defaultTheme.css?url';
+// CSS variable names that map to theme fields in Firestore
+// Firestore uses underscores (text_muted), CSS uses hyphens (--text-muted)
+const THEME_VARS = [
+    'primary', 'primary_compliment',
+    'secondary', 'secondary_compliment',
+    'white', 'black',
+    'text_muted', 'text_secondary',
+    'border', 'danger', 'danger_hover'
+];
 
-
-export function switchTheme(theme) {
-    // Obtain the name of stylesheet 
-    // as a parameter and set it 
-    // using href attribute.
-    const sheets = document.getElementsByTagName('link');
-    sheets[0].href = `/css/${theme}.css`;
+// Applies a theme by setting CSS variables on :root
+// themeData is an object from Firestore with color values
+export function applyTheme(themeData) {
+    const root = document.documentElement;
+    for (const key of THEME_VARS) {
+        if (themeData[key]) {
+            // Use the key as-is to match CSS variable names (which use underscores)
+            const cssVar = `--${key}`;
+            root.style.setProperty(cssVar, themeData[key]);
+        }
+    }
 }
 
-function chosenTheme() {
-    // Wait until Firebase Auth finishes checking the user's auth state
-    onAuthReady(async (user) => {
+// Fetches a theme from Firestore and applies it
+// Falls back to defaultTheme if the requested theme doesn't exist
+export async function switchTheme(themeId) {
+    if (!themeId || themeId === 'default') {
+        themeId = 'defaultTheme';
+    }
 
-        // If no user is logged in, stop execution
-        if (!user) {
-            return; // Stop execution
+    const themeDoc = await getDoc(doc(db, 'themes', themeId));
+
+    if (themeDoc.exists()) {
+        applyTheme(themeDoc.data());
+    } else {
+        // Fallback: try loading defaultTheme
+        console.log(`Theme "${themeId}" not found, falling back to defaultTheme`);
+        const fallback = await getDoc(doc(db, 'themes', 'defaultTheme'));
+        if (fallback.exists()) {
+            applyTheme(fallback.data());
         }
+    }
+}
 
-        // Get the user's Firestore document from the "users" collection
-        // Document ID is the user's unique UID
+// Loads the user's chosen theme on page load
+function chosenTheme() {
+    onAuthReady(async (user) => {
+        if (!user) return;
+
         const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userTheme = userDoc.exists() ? userDoc.data().theme : 'defaultTheme';
 
-        // grab what theme is set for the user
-        const userTheme = userDoc.data().theme;
-
-        console.log("Loaded user theme: " + userTheme);
-        switchTheme(userTheme);
+        await switchTheme(userTheme);
 
         // In the profile page, set the selected item in the dropdown to the set theme
         if (window.location.pathname.endsWith('profile.html')) {
-            document.getElementById("themeSelect").value = userTheme;
+            const select = document.getElementById("themeSelect");
+            if (select) select.value = userTheme;
         }
-
-
     });
 }
 
 chosenTheme();
-
