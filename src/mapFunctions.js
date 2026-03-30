@@ -112,8 +112,6 @@ export async function addMarker(coordinates, map, locationData = null) {
         directionsBtn.onclick = (e) => {
             e.preventDefault();
             window.openRoutePanel(locationName, lat, lng);
-            // Save the destination registryKey globally
-            window.desKey = key;
         };
 
         // If a saveCallback exists (search result not yet saved), enable the Save button
