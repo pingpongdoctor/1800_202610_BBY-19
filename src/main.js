@@ -26,6 +26,15 @@ export function applyTheme(themeData) {
         }
     }
 
+    // Cache theme data in localStorage so next page load can apply it instantly
+    try {
+        const toCache = {};
+        for (const key of THEME_VARS) {
+            if (themeData[key]) toCache[key] = themeData[key];
+        }
+        localStorage.setItem('cachedTheme', JSON.stringify(toCache));
+    } catch (_) { /* localStorage may be unavailable */ }
+
     // Re-color map markers to match the new theme
     if (typeof window.recolorMarkers === 'function') {
         window.recolorMarkers();
@@ -53,7 +62,19 @@ export async function switchTheme(themeId) {
     }
 }
 
-// Loads the user's chosen theme on page load
+// Apply cached theme instantly to prevent flash of default colors on page load
+try {
+    const cached = localStorage.getItem('cachedTheme');
+    if (cached) {
+        const themeData = JSON.parse(cached);
+        const root = document.documentElement;
+        for (const key of THEME_VARS) {
+            if (themeData[key]) root.style.setProperty(`--${key}`, themeData[key]);
+        }
+    }
+} catch (_) { /* ignore parse errors or missing storage */ }
+
+// Loads the user's chosen theme on page load (Firestore is the source of truth)
 function chosenTheme() {
     onAuthReady(async (user) => {
         if (!user) return;
