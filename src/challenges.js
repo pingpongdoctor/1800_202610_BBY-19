@@ -38,15 +38,17 @@ async function populateItems() {
         const chalPercent = 100 * (chalValue / chalGoal);
         console.log(chalValue);
 
-        // Clone the template and update the content
-        const itemCard = challengeItem.content.cloneNode(true);
-        console.log(itemCard);
-        itemCard.querySelector(".challenge-title").textContent = chalTitle;
-        itemCard.querySelector(".progress").setAttribute("aria-valuemax", chalGoal);
-        itemCard.querySelector(".progress-bar").setAttribute("style", ("width: " + chalPercent + "%"))
-        console.log(typeof itemCard);
-        itemList.appendChild(itemCard);
-        console.log("iteration of loop")
+        if (chalValue < chalGoal) {
+            // Clone the template and update the content
+            const itemCard = challengeItem.content.cloneNode(true);
+            console.log(itemCard);
+            itemCard.querySelector(".challenge-title").textContent = chalTitle;
+            itemCard.querySelector(".progress").setAttribute("aria-valuemax", chalGoal);
+            itemCard.querySelector(".progress-bar").setAttribute("style", ("width: " + chalPercent + "%"))
+            console.log(typeof itemCard);
+            itemList.appendChild(itemCard);
+            console.log("iteration of loop")
+        }
     })
 
 
