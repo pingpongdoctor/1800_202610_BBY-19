@@ -4,6 +4,7 @@ import * as maptilersdk from '@maptiler/sdk';
 import {getLocationsByPlaceName, addMarker} from "../mapFunctions";
 
 maptilersdk.config.apiKey = import.meta.env.VITE_MAPTILER_KEY;
+console.log(import.meta.env.VITE_MAPTILER_KEY);
 
 // Get the coordinate of Vancouver
 const result = await getLocationsByPlaceName("Vancouver, BC, Canada");
