@@ -103,8 +103,21 @@ async function moveCloseTo(type) {
 
 // Function to check types of challenges that the current user to start tracking user location as well as their progresses
 async function trackUserChallengeProgresses() {
+        const auth = getAuth();
+        const user = auth.currentUser;
     
+        if(user==null){
+            console.log("User is not authenticated");
+            return;
+        }
+    
+        //get current points
+        const docRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(docRef);
+        console.log(userDoc)
 }
+
+trackUserChallengeProgresses()
 
 populateItems();
 
