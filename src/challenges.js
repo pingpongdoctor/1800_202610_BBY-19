@@ -48,16 +48,15 @@ async function populateItems() {
         itemList.appendChild(itemCard);
         console.log("iteration of loop")
     })
-
-
-
 })
-
-
-
-
-
 }
+
+// Function that is used to recognize if users move close to a certain type of location
+function moveCloseTo(type){
+    
+}
+
+
 populateItems();
 
 
