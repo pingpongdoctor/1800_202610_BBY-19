@@ -8,7 +8,7 @@ import { addNewLocation } from "../locations.js"
 export const queryMap = {
     restaurant: ["restaurant", "food", "dining", "eatery", "diner", "bistro", "grill", "kitchen"],
     hotel: ["hotel", "motel", "inn", "hostel", "resort", "lodge", "suites", "accommodation"],
-    coffee: ["coffee", "cafe", "espresso", "coffeehouse", "coffee shop", "tea house", "bakery", "roastery"],
+    cafe: ["coffee", "cafe", "espresso", "coffeehouse", "coffee shop", "tea house", "bakery", "roastery"],
     transit: ["transit", "bus stop", "skytrain", "subway", "train station", "bus station", "ferry", "bus terminal"],
     attraction: ["attraction", "museum", "park", "gallery", "landmark", "theatre", "aquarium", "zoo", "stadium", "monument"]
 };
@@ -36,7 +36,7 @@ class SiteSearchbar extends HTMLElement {
                 <ul class="filter-list">
                     <li class="filter-item">Restaurant</li>
                     <li class="filter-item">Hotel</li>
-                    <li class="filter-item">Coffee</li>
+                    <li class="filter-item">Cafe</li>
                     <li class="filter-item">Transit</li>
                     <li class="filter-item">Attraction</li>
                 </ul>
