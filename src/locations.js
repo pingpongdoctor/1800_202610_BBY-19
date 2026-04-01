@@ -4,24 +4,24 @@ import { map } from "./components/map.js";    // the live Map instance
 import { addMarker } from "./mapFunctions.js"; // marker + popup function
 
 //add sample locations
-function addSampleLocationData() {
-    const locationsRef = collection(db, "locations");
-    addDoc(locationsRef, {
-        name: "name1", description: "description1",
-        type: "type1", lat: 49.2467097082573, lng: -122.9187029619698,
-        last_updated: serverTimestamp()
-    });
-    addDoc(locationsRef, {
-        name: "name2", description: "description2",
-        type: "type2", lat: 49.2467097082573, lng: -122.9187029619698,
-        last_updated: serverTimestamp()
-    });
-}
+// function addSampleLocationData() {
+//     const locationsRef = collection(db, "locations");
+//     addDoc(locationsRef, {
+//         name: "name1", description: "description1",
+//         type: "type1", lat: 49.2467097082573, lng: -122.9187029619698,
+//         last_updated: serverTimestamp()
+//     });
+//     addDoc(locationsRef, {
+//         name: "name2", description: "description2",
+//         type: "type2", lat: 49.2467097082573, lng: -122.9187029619698,
+//         last_updated: serverTimestamp()
+//     });
+// }
 
-const locations = await getDocs(collection(db, "locations"));
-if (locations.empty) {
-    addSampleLocationData();
-}
+// const locations = await getDocs(collection(db, "locations"));
+// if (locations.empty) {
+//     addSampleLocationData();
+// }
 
 // Loop every Firestore location and drop a marker on the map with a popup
 locations.forEach(docSnap => {
