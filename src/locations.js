@@ -18,7 +18,7 @@ import { addMarker } from "./mapFunctions.js"; // marker + popup function
 //     });
 // }
 
-// const locations = await getDocs(collection(db, "locations"));
+const locations = await getDocs(collection(db, "locations"));
 // if (locations.empty) {
 //     addSampleLocationData();
 // }
