@@ -17,5 +17,5 @@ export const map = new maptilersdk.Map({
   center: result[0]?.center || [],
 });
 
-// Add a default marker in Vancouver
-addMarker(result[0]?.center || [], map)
+// // Add a default marker in Vancouver TODO: pan to user's location instead of center of the map.
+// addMarker(result[0]?.center || [], map)
