@@ -210,7 +210,14 @@ body {
     align-items: center;
 }
 
+#challengeList li {
+    padding: 25px 25px;
+}
 
+#challengeList .progress {
+    height: 35px;
+    margin: 15px 0px;
+}
 
 @media (max-width: 768px) {
 
@@ -284,7 +291,7 @@ body {
 
 #itemShopContainer .card-header,
 #challengesContainer .card-header {
-    height: 90px;
+    height: 100px;
 }
 
 
