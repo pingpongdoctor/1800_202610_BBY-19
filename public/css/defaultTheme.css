@@ -147,7 +147,7 @@ body {
     height: 100%;
 }
 
-#profileContainer {
+#profileContainer, #challengesContainer, #itemShopContainer, #loginContainer {
     max-width: 768px;
     padding: 25px 25px 25px 105px;
     margin-left: auto;
@@ -196,14 +196,7 @@ body {
     justify-content: center;
 }
 
-#shopPage {
-    max-width: 768px;
-    padding: 25px 25px 25px 105px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#shopPage img {
+#itemShopContainer img {
     width: 100px;
     height: auto;
     margin-right: 50px;
@@ -217,20 +210,25 @@ body {
     align-items: center;
 }
 
-#challengesContainer {
-    max-width: 768px;
-    padding: 25px 25px 25px 105px;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 
 @media (max-width: 768px) {
 
-    #profileContainer {
+    #profileContainer, #loginContainer, #challengesContainer, #itemShopContainer {
         height: calc(100dvh - 74.4px);
         overflow: auto;
+    }
+
+    #profileContainer {
         padding: 25px;
+    }
+    
+    #loginContainer {
+        padding: 100px 25px;
+    }
+    
+    #challengesContainer, #itemShopContainer {
+        padding: 0;
     }
 
     #welcomeBox {
@@ -239,18 +237,6 @@ body {
 
     #welcomeBox h1 {
         font-size: 2.5rem;
-    }
-
-    #shopPage {
-        height: calc(100dvh - 74.4px);
-        overflow: auto;
-        padding: 0;
-    }
-
-    #challengesContainer {
-        height: calc(100dvh - 74.4px);
-        overflow: auto;
-        padding: 0;
     }
 }
 
@@ -272,7 +258,7 @@ body {
         display: none;
     }
 
-    #shopPage img {
+    #itemShopContainer img {
         margin-right: 20px;
     }
 }
@@ -296,7 +282,7 @@ body {
     background-color: var(--secondary) !important;
 }
 
-#shopPage .card-header,
+#itemShopContainer .card-header,
 #challengesContainer .card-header {
     height: 90px;
 }
