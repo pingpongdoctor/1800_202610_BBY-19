@@ -1,8 +1,9 @@
 import { db } from '../firebaseConfig.js';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, doc } from 'firebase/firestore';
 import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker, getLocationsInVacouverByType } from "../mapFunctions.js";
 import { map } from "./map.js"
 import { addNewLocation } from "../locations.js"
+import { onAuthReady } from '/src/authentication.js';
 
 // Queries data that corresponds to the location type
 export const queryMap = {
@@ -39,6 +40,10 @@ class SiteSearchbar extends HTMLElement {
                     <li class="filter-item">Transit</li>
                     <li class="filter-item">Attraction</li>
                 </ul>
+                <div class="card" id="mapStats" style="display: none;">
+                    <h6 id="pointsDisplay"></h6>
+                    <h6 id="stepsDisplay"></h6>
+                </div>
             </div>
         `;
 
@@ -46,6 +51,33 @@ class SiteSearchbar extends HTMLElement {
         const searchInput = this.querySelector('#searchInput');
         const suggestions = this.querySelector('#suggestion-item');
         const filterMenu = this.querySelector('#filterMenu');
+
+        const mapStats = this.querySelector('#mapStats');
+        const pointsDisplay = this.querySelector('#pointsDisplay');
+        const stepsDisplay = this.querySelector('#stepsDisplay');
+
+        // Wait until Firebase Auth finishes checking the user's auth state
+        onAuthReady(async (user) => {
+
+            if (!user) {
+                return; // Stop execution
+            }
+
+            // Setup a listener on the user's doc that automatically updates when the data is changed
+            const userSnapshot = onSnapshot(doc(db, "users", user.uid), (doc) => {
+                const points = doc.data().points;
+                const steps = doc.data().steps;
+
+                mapStats.style = "";
+                if (pointsDisplay) pointsDisplay.textContent = `Points: ${points}`;
+                if (stepsDisplay) stepsDisplay.textContent = `Steps: ${steps}`;
+            });
+
+        });
+
+
+
+
 
         // Load autocomplete suggestions from Firestore - REPLACE WITH ACTUAL LOCATIONS LATER!
         // let autocompleteSuggestions = [];

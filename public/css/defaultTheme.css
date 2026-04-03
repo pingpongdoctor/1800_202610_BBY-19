@@ -32,6 +32,7 @@ White:                #F5FFF5 - White
     --secondary: #f0eb51;
     --secondary_compliment: #e4e885;
     --white: #F5FFF5;
+    --whiteTransparent: #F5FFF5; 
     --black: #002100;
     --text_muted: #666;
     --text_secondary: #444;
@@ -196,6 +197,20 @@ body {
     justify-content: center;
 }
 
+#mapStats {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: fit-content;
+    background: var(--whiteTransparent);
+    margin: 5px;
+    margin-left: 25px;
+}
+
+#mapStats h6 {
+    margin: 5px;
+}
+
 #itemShopContainer img {
     width: 100px;
     height: auto;
@@ -210,7 +225,14 @@ body {
     align-items: center;
 }
 
+#challengeList li {
+    padding: 25px 25px;
+}
 
+#challengeList .progress {
+    height: 35px;
+    margin: 15px 0px;
+}
 
 @media (max-width: 768px) {
 
@@ -284,7 +306,7 @@ body {
 
 #itemShopContainer .card-header,
 #challengesContainer .card-header {
-    height: 90px;
+    height: 100px;
 }
 
 
