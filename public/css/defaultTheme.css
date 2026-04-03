@@ -32,6 +32,7 @@ White:                #F5FFF5 - White
     --secondary: #f0eb51;
     --secondary_compliment: #e4e885;
     --white: #F5FFF5;
+    --whiteTransparent: #F5FFF5; 
     --black: #002100;
     --text_muted: #666;
     --text_secondary: #444;
@@ -194,6 +195,20 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
+}
+
+#mapStats {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: fit-content;
+    background: var(--whiteTransparent);
+    margin: 5px;
+    margin-left: 25px;
+}
+
+#mapStats h6 {
+    margin: 5px;
 }
 
 #itemShopContainer img {
