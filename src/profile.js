@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db, auth } from "./firebaseConfig.js";
-import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, setDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, setDoc, onSnapshot, orderBy } from "firebase/firestore";
 import { logoutUser, onAuthReady } from '/src/authentication.js';
 import { switchTheme } from '/src/main.js';
 
@@ -140,17 +140,21 @@ async function showSavedLocations(user) {
     try {
 
         // User's saved locations subcollection
-        const queryItems = await getDocs(collection(db, "users", user.uid, "savedLocations"));
+        const savedLocationsRef = collection(db, "users", user.uid, "savedLocations");
+        // Query and sort by last updated in ascending order
+        const q = query(savedLocationsRef, orderBy("last_updated", "asc"))
+        const queryItems = await getDocs(q);
 
         // Iterate through each document
         queryItems.forEach((doc) => {
             const data = doc.data();
 
             const locationName = data.name || "Error: no name";
+            const locationDesc = data.description || "Error: no description";
             const locationLat = data.lat || "Error: no lat";
-            const locationLon = data.lon || "Error: no lon";
+            const locationLng = data.lng || "Error: no lng";
 
-            let locationItem = `<a href="/index.html" class="list-group-item list-group-item-action"><b>${locationName}</b></a>`
+            let locationItem = `<a href="/index.html?coord=${locationLng}&coord=${locationLat}" class="list-group-item list-group-item-action"><b>${locationName}</b><p>${locationDesc}</p></a>`
 
             // If the DOM element exists, display
             if (savedLocationsElement) {
