@@ -70,14 +70,11 @@ export async function addMarker(coordinates, map, locationData = null) {
         // saveCallback is an optional function passed by the searchbar for unsaved locations
         // When present, the Save button in the detail panel becomes active
 
-        // Small popup — just the name + a Details button that opens the side panel
+        // Small popup — just the name (panel opens automatically alongside it)
         const popupHTML = `
             <div class="map-popup">
                 <p class="popup-type">${locationType ?? "Location"}</p>
                 <h4 class="popup-name">${locationName}</h4>
-                <button class="popup-details-btn" onclick="openLocationPanel('${registryKey}')">
-                    Details
-                </button>
             </div>
         `;
 
@@ -86,6 +83,16 @@ export async function addMarker(coordinates, map, locationData = null) {
             .setHTML(popupHTML);
 
         marker.setPopup(popup);
+
+        // Open the location panel automatically when the popup opens
+        popup.on('open', () => {
+            window.openLocationPanel(registryKey);
+        });
+
+        // Close the location panel when the popup is closed
+        popup.on('close', () => {
+            window.closeLocationPanel();
+        });
 
         // Move this part to the end of the function to save marker and popup HTML element
         window._locationRegistry[registryKey] = {
