@@ -62,5 +62,21 @@
         "border": "#d9c0b0",
         "danger": "#C60B1E",
         "danger_hover": "#a00818"
+    },
+    "brazilTheme": {
+        "title": "Brazil",
+        "description": "Ordem e Progresso! Verde e amarelo porra!",
+        "cost": 100,
+        "primary": "#009739",
+        "primary_compliment": "#33b35e",
+        "secondary": "#FFDF00",
+        "secondary_compliment": "#ffe84d",
+        "white": "#F5FFF8",
+        "black": "#002108",
+        "text_muted": "#4a7a5a",
+        "text_secondary": "#2a5a3a",
+        "border": "#b0d9b8",
+        "danger": "#e05252",
+        "danger_hover": "#c94444"
     }
 }
