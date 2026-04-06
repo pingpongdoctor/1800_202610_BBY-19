@@ -31,6 +31,9 @@ export async function getLocationsInVacouverByType(type) {
 // Global registry of all markers so they can be re-colored when the theme changes
 window._allMarkers = window._allMarkers || [];
 
+// Tracks the currently active popup so close events from stale popups are ignored
+window._activePopupKey = null;
+
 // Re-colors all existing markers to match the current theme
 export function recolorMarkers() {
     const color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#68E152';
@@ -70,14 +73,11 @@ export async function addMarker(coordinates, map, locationData = null) {
         // saveCallback is an optional function passed by the searchbar for unsaved locations
         // When present, the Save button in the detail panel becomes active
 
-        // Small popup — just the name + a Details button that opens the side panel
+        // Small popup — just the name (panel opens automatically alongside it)
         const popupHTML = `
             <div class="map-popup">
                 <p class="popup-type">${locationType ?? "Location"}</p>
                 <h4 class="popup-name">${locationName}</h4>
-                <button class="popup-details-btn" onclick="openLocationPanel('${registryKey}')">
-                    Details
-                </button>
             </div>
         `;
 
@@ -86,6 +86,21 @@ export async function addMarker(coordinates, map, locationData = null) {
             .setHTML(popupHTML);
 
         marker.setPopup(popup);
+
+        // Open the location panel automatically when the popup opens
+        popup.on('open', () => {
+            window._activePopupKey = registryKey;
+            window.openLocationPanel(registryKey);
+        });
+
+        // Close the location panel only if this popup is still the active one
+        // (prevents a stale close from overriding a newly opened panel)
+        popup.on('close', () => {
+            if (window._activePopupKey === registryKey) {
+                window._activePopupKey = null;
+                window.closeLocationPanel();
+            }
+        });
 
         // Move this part to the end of the function to save marker and popup HTML element
         window._locationRegistry[registryKey] = {

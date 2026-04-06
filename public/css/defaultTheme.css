@@ -506,24 +506,6 @@ site-searchbar .dropdown-toggle {
     margin: 0 0 8px 0;
 }
 
-/* Small pill button that opens the side panel */
-.popup-details-btn {
-    display: inline-block;
-    background-color: var(--primary);
-    color: var(--black);
-    border: none;
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.popup-details-btn:hover {
-    background-color: var(--primary_compliment);
-}
-
 /* ---- LOCATION DETAIL PANEL ---- */
 /* Desktop: slides in from the left like Google Maps */
 /* Mobile: slides up from the bottom like the Google Maps app */
