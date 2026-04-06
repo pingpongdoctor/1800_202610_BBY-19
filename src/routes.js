@@ -252,6 +252,9 @@ function cancelRouteWhenUserArrive() {
     }
 }
 
+// Expose closeRoutePanel globally so other components (searchbar, location panel) can close it
+window.closeRoutePanel = closeRoutePanel;
+
 // Opens the route panel and starts fetching directions
 // Called from mapFunctions.js when user clicks "Directions"
 window.openRoutePanel = function (name, lat, lng) {

@@ -59,6 +59,11 @@ class SiteSearchbar extends HTMLElement {
             searchMarkers = [];
         }
 
+        // Close the route panel when the user focuses the search bar
+        searchInput.addEventListener('focus', () => {
+            if (window.closeRoutePanel) window.closeRoutePanel();
+        });
+
         // Autocomplete, fires everytime user types a character in search box
         searchInput.addEventListener('input', async function () {
             const query = searchInput.value.toLowerCase();
