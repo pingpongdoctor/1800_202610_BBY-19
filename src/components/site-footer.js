@@ -11,11 +11,11 @@ class SiteFooter extends HTMLElement {
                     <span class="nav-label">Explore</span>
                 </a>
                 <a href="/app/html/challenges.html" class="nav-item" data-auth="challenges">
-                    <img class="footer-image" src="/images/Footprint.png" alt="footprint">
+                    <img class="footer-image" src="/images/climb.png" alt="footprint">
                     <span class="nav-label">Challenges</span>
                 </a>
                 <a href="/app/html/itemshop.html" class="nav-item" data-auth="itemshop">
-                    <img class="footer-image" src="/images/Dollar Bag.png" alt="shop">
+                    <img class="footer-image" src="/images/shopIcon.png" alt="shop">
                     <span class="nav-label">Shop</span>
                 </a>
                 <a href="/app/html/profile.html" class="nav-item" data-auth="profile">
