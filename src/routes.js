@@ -2,6 +2,7 @@ import * as maptilersdk from '@maptiler/sdk';
 import { map } from './components/map.js';
 import { addMarker } from './mapFunctions.js';
 import * as maptilerClient from '@maptiler/client';
+import {centerTheMapToUserLocaiton} from "./components/map.js";
 
 // ORS (OpenRouteService) API key loaded from the .env file via Vite
 const ORS_KEY = import.meta.env.VITE_ORS_KEY;
@@ -107,6 +108,10 @@ function displayRouteInfo(mode) {
 // Fetches routes from ORS for all three travel modes, then displays the default (walking)
 async function initRoutes(originLng, originLat) {
     try {
+        // Drop markers at the start (user) and end (destination) points
+        // addMarker([originLng, originLat], map, null); // No need to create a marker for user location
+        // addMarker([destLng, destLat], map); // Delete this to avoid creating two duplicate markers
+
         // Zoom the map so both origin and destination are visible with some padding
         const bounds = new maptilersdk.LngLatBounds();
         bounds.extend([originLng, originLat]);
@@ -304,6 +309,9 @@ window.openRoutePanel = function (name, lat, lng) {
     } else {
         map.on('load', startRouting);
     }
+
+    // Center the map based on user current location when a route is set
+    centerTheMapToUserLocaiton();
 };
 
 // Set up listeners once DOM is ready

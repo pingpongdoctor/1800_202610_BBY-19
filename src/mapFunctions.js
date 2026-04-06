@@ -53,10 +53,10 @@ export function recolorMarkers() {
 window.recolorMarkers = recolorMarkers;
 
 // Function that allows to set a new marker
-export async function addMarker(coordinates, map, locationData = null) {
+export async function addMarker(coordinates, map, locationData = null, color = null) {
     // Color the pin with the app's primary color from CSS variables
     const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#68E152';
-    const marker = new maptilersdk.Marker({ color: primaryColor })
+    const marker = new maptilersdk.Marker({ color: color || primaryColor })
         .setLngLat(coordinates)
         .addTo(map);
 

@@ -23,5 +23,17 @@ export const map = new maptilersdk.Map({
   center: (paramLocation != "" && paramLocation.length == 2) ? paramLocation : result[0]?.center || [], 
 });
 
+const geolocate = new maptilersdk.GeolocateControl({
+  positionOptions: { enableHighAccuracy: true },
+  trackUserLocation: true,
+});
+
+map.addControl(geolocate, 'top-right');
+
+export function centerTheMapToUserLocaiton() {
+  if(map){
+    geolocate.trigger();
+  }
+}
 // // Add a default marker in Vancouver TODO: pan to user's location instead of center of the map.
 // addMarker(result[0]?.center || [], map)
