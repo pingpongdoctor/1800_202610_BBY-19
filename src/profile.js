@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db, auth } from "./firebaseConfig.js";
-import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, setDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, setDoc, onSnapshot, orderBy } from "firebase/firestore";
 import { logoutUser, onAuthReady } from '/src/authentication.js';
 import { switchTheme } from '/src/main.js';
 
@@ -51,17 +51,20 @@ async function showInfo(user) {
         ? userDoc.data().name                // 2️⃣ Otherwise fallback to Firebase displayName
         : user.displayName || user.email;    // 3️⃣ Otherwise fallback to email
 
-    const points = userDoc.data().points;
-    const distance = userDoc.data().distance;
-    const steps = userDoc.data().steps;
-    const itemsUnlocked = userDoc.data().items.length;
+    // Setup a listener on the user's doc that automatically updates when the data is changed
+    const userSnapshot = onSnapshot(doc(db, "users", user.uid), (doc) => {
+        const points = doc.data().points;
+        const distance = doc.data().distance;
+        const steps = doc.data().steps;
+        const itemsUnlocked = doc.data().items.length;
 
-    // display the name and points
-    if (nameElement) nameElement.textContent = `${name}`;
-    if (pointsElement) pointsElement.textContent = `You have ${points} points!`;
-    if (distanceElement) distanceElement.textContent = distance;
-    if (stepsElement) stepsElement.textContent = steps;
-    if (itemsUnlockedElement) itemsUnlockedElement.textContent = itemsUnlocked;
+        // display the name and points
+        if (nameElement) nameElement.textContent = `${name}`;
+        if (pointsElement) pointsElement.textContent = `You have ${points} points!`;
+        if (distanceElement) distanceElement.textContent = distance;
+        if (stepsElement) stepsElement.textContent = steps;
+        if (itemsUnlockedElement) itemsUnlockedElement.textContent = itemsUnlocked;
+    });
 
 }
 
@@ -73,7 +76,7 @@ async function switchThemeSelect(user) {
         const userRef = doc(db, "users", user.uid);
         // User's currently owned items
         const userItems = userDoc.data().items;
-        console.log("User's purchased items:", userItems);
+        // console.log("User's purchased items:", userItems);
 
         const userChosenTheme = userDoc.data().theme;
 
@@ -133,21 +136,25 @@ async function showSavedLocations(user) {
 
     const savedLocationsElement = document.getElementById("savedLocationsElement");
     let savedLocationsList = document.getElementById("savedLocationsList");
-     
+
     try {
 
         // User's saved locations subcollection
-        const queryItems = await getDocs(collection(db, "users", user.uid, "savedLocations"));
+        const savedLocationsRef = collection(db, "users", user.uid, "savedLocations");
+        // Query and sort by last updated in ascending order
+        const q = query(savedLocationsRef, orderBy("last_updated", "asc"))
+        const queryItems = await getDocs(q);
 
         // Iterate through each document
         queryItems.forEach((doc) => {
             const data = doc.data();
 
             const locationName = data.name || "Error: no name";
+            const locationDesc = data.description || "Error: no description";
             const locationLat = data.lat || "Error: no lat";
-            const locationLon = data.lon || "Error: no lon";
+            const locationLng = data.lng || "Error: no lng";
 
-            let locationItem = `<a href="/index.html" class="list-group-item list-group-item-action"><b>${locationName}</b></a>`
+            let locationItem = `<a href="/index.html?coord=${locationLng}&coord=${locationLat}" class="list-group-item list-group-item-action"><b>${locationName}</b><p>${locationDesc}</p></a>`
 
             // If the DOM element exists, display
             if (savedLocationsElement) {
@@ -156,7 +163,7 @@ async function showSavedLocations(user) {
 
         })
 
-        if (!queryItems.empty) {savedLocationsElement.style = ""}
+        if (!queryItems.empty) { savedLocationsElement.style = "" }
 
 
     } catch (error) {
