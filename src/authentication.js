@@ -100,6 +100,8 @@ export async function signupUser(name, email, password) {
 // -------------------------------------------------------------
 export async function logoutUser() {
   await signOut(auth);
+  // Clear the cached theme so logged-out users revert to the default
+  try { localStorage.removeItem('cachedTheme'); } catch (_) {}
   window.location.href = "index.html";
 }
 
