@@ -107,10 +107,6 @@ function displayRouteInfo(mode) {
 // Fetches routes from ORS for all three travel modes, then displays the default (walking)
 async function initRoutes(originLng, originLat) {
     try {
-        // Drop markers at the start (user) and end (destination) points
-        addMarker([originLng, originLat], map);
-        // addMarker([destLng, destLat], map); // Delete this to avoid creating two duplicate markers
-
         // Zoom the map so both origin and destination are visible with some padding
         const bounds = new maptilersdk.LngLatBounds();
         bounds.extend([originLng, originLat]);
