@@ -84,10 +84,14 @@ function chosenTheme() {
 
         await switchTheme(userTheme);
 
-        // In the profile page, set the selected item in the dropdown to the set theme
+        // In the profile page, highlight the active theme card
         if (window.location.pathname.endsWith('profile.html')) {
-            const select = document.getElementById("themeSelect");
-            if (select) select.value = userTheme;
+            const container = document.getElementById("themeSelect");
+            if (container) {
+                container.querySelectorAll(".theme-card").forEach(c => {
+                    c.classList.toggle("active", c.dataset.themeId === userTheme);
+                });
+            }
         }
     });
 }

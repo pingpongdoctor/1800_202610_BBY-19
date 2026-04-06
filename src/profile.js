@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db, auth } from "./firebaseConfig.js";
-import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, setDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, setDoc, onSnapshot, orderBy } from "firebase/firestore";
 import { logoutUser, onAuthReady } from '/src/authentication.js';
 import { switchTheme } from '/src/main.js';
 
@@ -51,81 +51,63 @@ async function showInfo(user) {
         ? userDoc.data().name                // 2️⃣ Otherwise fallback to Firebase displayName
         : user.displayName || user.email;    // 3️⃣ Otherwise fallback to email
 
-    const points = userDoc.data().points;
-    const distance = userDoc.data().distance;
-    const steps = userDoc.data().steps;
-    const itemsUnlocked = userDoc.data().items.length;
+    // Setup a listener on the user's doc that automatically updates when the data is changed
+    const userSnapshot = onSnapshot(doc(db, "users", user.uid), (doc) => {
+        const points = doc.data().points;
+        const distance = doc.data().distance;
+        const steps = doc.data().steps;
+        const itemsUnlocked = doc.data().items.length;
 
-    // display the name and points
-    if (nameElement) nameElement.textContent = `${name}`;
-    if (pointsElement) pointsElement.textContent = `You have ${points} points!`;
-    if (distanceElement) distanceElement.textContent = distance;
-    if (stepsElement) stepsElement.textContent = steps;
-    if (itemsUnlockedElement) itemsUnlockedElement.textContent = itemsUnlocked;
+        // display the name and points
+        if (nameElement) nameElement.textContent = `${name}`;
+        if (pointsElement) pointsElement.textContent = `You have ${points} points!`;
+        if (distanceElement) distanceElement.textContent = distance;
+        if (stepsElement) stepsElement.textContent = steps;
+        if (itemsUnlockedElement) itemsUnlockedElement.textContent = itemsUnlocked;
+    });
 
 }
 
 
 async function switchThemeSelect(user) {
-    try {
+    const container = document.getElementById("themeSelect");
 
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const userRef = doc(db, "users", user.uid);
-        // User's currently owned items
-        const userItems = userDoc.data().items;
-        console.log("User's purchased items:", userItems);
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const userItems = userDoc.data().items;
+    const userChosenTheme = userDoc.data().theme;
 
-        const userChosenTheme = userDoc.data().theme;
+    // Build the default theme card first
+    const themes = [{ id: "defaultTheme", title: "Default" }];
 
-        // Shop items collection
-        const q = query(collection(db, "items"));
-        const queryItems = await getDocs(q);
+    // Add unlocked themes from the items collection
+    const queryItems = await getDocs(query(collection(db, "items")));
+    queryItems.forEach((d) => {
+        if (userItems.includes(d.id)) {
+            themes.push({ id: d.id, title: d.data().title || d.id });
+        }
+    });
 
-        // Iterate through each document in the "items" collection
-        queryItems.forEach((doc) => {
+    // Render theme cards with flag images
+    container.innerHTML = "";
+    themes.forEach(({ id, title }) => {
+        const card = document.createElement("div");
+        card.className = "theme-card" + (id === userChosenTheme ? " active" : "");
+        card.dataset.themeId = id;
+        card.innerHTML = `
+            <img src="/images/${id}.png" alt="${title}">
+            <span>${title}</span>
+        `;
+        card.addEventListener("click", () => {
+            // Update active state
+            container.querySelectorAll(".theme-card").forEach(c => c.classList.remove("active"));
+            card.classList.add("active");
 
-            // Only display items that the user doesn't already own
-            if (userItems.includes(doc.id)) {
-                const data = doc.data();
-
-                // Grab the values of each item's fields to be added to the template
-                const itemTitle = data.title || "Error: no title";
-                const itemID = doc.id || "Error: no id";
-
-                let html = `<option value="${itemID}" id="${itemID}">${itemTitle}</option>`
-
-
-                // Append the updated cloned item and add it to the list of items to be displayed
-                document.getElementById("themeSelect").innerHTML += (html);
-
-
-            }
-
-        })
-        document.getElementById("themeSelect").value = userChosenTheme;
-
-    } catch (error) {
-        console.error("Error loading theme select: ", error);
-    }
-
-    // Listener on the dropdown select
-    document.getElementById("themeSelect").addEventListener("change", function (e) {
-        let selectedTheme = e.target.value;
-
-        switchTheme(selectedTheme);
-
-        // Get the user's Firestore document from the "users" collection
-        // Document ID is the user's unique UID
-        const userDoc = doc(db, "users", user.uid);
-
-        // Update the theme field for the user
-        updateDoc(userDoc, { // await ???
-            theme: selectedTheme
+            // Apply and persist the theme
+            switchTheme(id);
+            updateDoc(doc(db, "users", user.uid), { theme: id });
         });
-        console.log("Theme changed to: " + selectedTheme);
-
-    })
-
+        container.appendChild(card);
+    });
 }
 
 
@@ -133,21 +115,25 @@ async function showSavedLocations(user) {
 
     const savedLocationsElement = document.getElementById("savedLocationsElement");
     let savedLocationsList = document.getElementById("savedLocationsList");
-     
+
     try {
 
         // User's saved locations subcollection
-        const queryItems = await getDocs(collection(db, "users", user.uid, "savedLocations"));
+        const savedLocationsRef = collection(db, "users", user.uid, "savedLocations");
+        // Query and sort by last updated in ascending order
+        const q = query(savedLocationsRef, orderBy("last_updated", "asc"))
+        const queryItems = await getDocs(q);
 
         // Iterate through each document
         queryItems.forEach((doc) => {
             const data = doc.data();
 
             const locationName = data.name || "Error: no name";
+            const locationDesc = data.description || "Error: no description";
             const locationLat = data.lat || "Error: no lat";
-            const locationLon = data.lon || "Error: no lon";
+            const locationLng = data.lng || "Error: no lng";
 
-            let locationItem = `<a href="/index.html" class="list-group-item list-group-item-action"><b>${locationName}</b></a>`
+            let locationItem = `<a href="/index.html?coord=${locationLng}&coord=${locationLat}" class="list-group-item list-group-item-action"><b>${locationName}</b><p>${locationDesc}</p></a>`
 
             // If the DOM element exists, display
             if (savedLocationsElement) {
@@ -156,7 +142,7 @@ async function showSavedLocations(user) {
 
         })
 
-        if (!queryItems.empty) {savedLocationsElement.style = ""}
+        if (!queryItems.empty) { savedLocationsElement.style = "" }
 
 
     } catch (error) {

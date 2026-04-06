@@ -1,8 +1,18 @@
 import { db } from '../firebaseConfig.js';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, doc } from 'firebase/firestore';
 import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker, getLocationsInVacouverByType } from "../mapFunctions.js";
 import { map } from "./map.js"
 import { addNewLocation } from "../locations.js"
+import { onAuthReady } from '/src/authentication.js';
+
+// Queries data that corresponds to the location type
+export const queryMap = {
+    restaurant: ["restaurant", "food", "dining", "eatery", "diner", "bistro", "grill", "kitchen"],
+    hotel: ["hotel", "motel", "inn", "hostel", "resort", "lodge", "suites", "accommodation"],
+    cafe: ["coffee", "cafe", "espresso", "coffeehouse", "coffee shop", "tea house", "bakery", "roastery"],
+    transit: ["transit", "bus stop", "skytrain", "subway", "train station", "bus station", "ferry", "bus terminal"],
+    attraction: ["attraction", "museum", "park", "gallery", "landmark", "theatre", "aquarium", "zoo", "stadium", "monument"]
+};
 
 // Defines a custom HTML element (for search bar)
 class SiteSearchbar extends HTMLElement {
@@ -13,7 +23,6 @@ class SiteSearchbar extends HTMLElement {
             <div class="container mt-3">
                 <div class="input-group">
                     <input type="text" id="searchInput" class="form-control" placeholder="Search..." autocomplete="off">
-                    <button id="searchBtn" class="btn btn-primary" type="button">Search</button>
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle btn-filter-list" type="button" id="filterBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             Filters
@@ -27,10 +36,14 @@ class SiteSearchbar extends HTMLElement {
                 <ul class="filter-list">
                     <li class="filter-item">Restaurant</li>
                     <li class="filter-item">Hotel</li>
-                    <li class="filter-item">Coffee</li>
+                    <li class="filter-item">Cafe</li>
                     <li class="filter-item">Transit</li>
                     <li class="filter-item">Attraction</li>
                 </ul>
+                <div class="card" id="mapStats" style="display: none;">
+                    <h6 id="pointsDisplay"></h6>
+                    <h6 id="stepsDisplay"></h6>
+                </div>
             </div>
         `;
 
@@ -38,6 +51,33 @@ class SiteSearchbar extends HTMLElement {
         const searchInput = this.querySelector('#searchInput');
         const suggestions = this.querySelector('#suggestion-item');
         const filterMenu = this.querySelector('#filterMenu');
+
+        const mapStats = this.querySelector('#mapStats');
+        const pointsDisplay = this.querySelector('#pointsDisplay');
+        const stepsDisplay = this.querySelector('#stepsDisplay');
+
+        // Wait until Firebase Auth finishes checking the user's auth state
+        onAuthReady(async (user) => {
+
+            if (!user) {
+                return; // Stop execution
+            }
+
+            // Setup a listener on the user's doc that automatically updates when the data is changed
+            const userSnapshot = onSnapshot(doc(db, "users", user.uid), (doc) => {
+                const points = doc.data().points;
+                const steps = doc.data().steps;
+
+                mapStats.style = "";
+                if (pointsDisplay) pointsDisplay.textContent = `Points: ${points}`;
+                if (stepsDisplay) stepsDisplay.textContent = `Steps: ${steps}`;
+            });
+
+        });
+
+
+
+
 
         // Load autocomplete suggestions from Firestore - REPLACE WITH ACTUAL LOCATIONS LATER!
         // let autocompleteSuggestions = [];
@@ -58,6 +98,11 @@ class SiteSearchbar extends HTMLElement {
             searchMarkers.forEach(marker => marker.remove());
             searchMarkers = [];
         }
+
+        // Close the route panel when the user focuses the search bar
+        searchInput.addEventListener('focus', () => {
+            if (window.closeRoutePanel) window.closeRoutePanel();
+        });
 
         // Autocomplete, fires everytime user types a character in search box
         searchInput.addEventListener('input', async function () {
@@ -211,21 +256,6 @@ class SiteSearchbar extends HTMLElement {
 
 
         }
-
-        // Queries data that corresponds to the location type
-        const restaurantQueries = ["restaurant", "food", "dining", "eatery", "diner", "bistro", "grill", "kitchen"];
-        const hotelQueries = ["hotel", "motel", "inn", "hostel", "resort", "lodge", "suites", "accommodation"];
-        const coffeeQueries = ["coffee", "cafe", "espresso", "coffeehouse", "coffee shop", "tea house", "bakery", "roastery"];
-        const transitQueries = ["transit", "bus stop", "skytrain", "subway", "train station", "bus station", "ferry", "bus terminal"];
-        const attractionQueries = ["attraction", "museum", "park", "gallery", "landmark", "theatre", "aquarium", "zoo", "stadium", "monument"];
-
-        const queryMap = {
-            restaurant: restaurantQueries,
-            hotel: hotelQueries,
-            coffee: coffeeQueries,
-            transit: transitQueries,
-            attraction: attractionQueries,
-        };
 
         // Add the evenlistener to the filter items to add locations when clicking them
         function clickFilterItemsToShowLocationsByType() {
