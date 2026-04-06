@@ -99,6 +99,9 @@ export async function addMarker(coordinates, map, locationData = null) {
 
     // Opens the side panel and populates it with the location's data
     window.openLocationPanel = function (key) {
+        // Close the route panel if it's open
+        if (window.closeRoutePanel) window.closeRoutePanel();
+
         const { locationName, locationDesc, locationType, lat, lng, saveCallback } = window._locationRegistry[key];
 
         // Populate panel fields
