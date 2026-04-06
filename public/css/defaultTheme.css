@@ -166,6 +166,51 @@ body {
 
 }
 
+/* Theme picker grid */
+.theme-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.theme-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--white);
+    width: 100px;
+}
+
+.theme-card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.theme-card span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--black);
+    text-align: center;
+}
+
+.theme-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.theme-card.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary_compliment);
+}
+
 #welcomeBox {
     display: flex;
     flex-direction: row;

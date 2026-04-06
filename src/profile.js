@@ -70,65 +70,44 @@ async function showInfo(user) {
 
 
 async function switchThemeSelect(user) {
-    try {
+    const container = document.getElementById("themeSelect");
 
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const userRef = doc(db, "users", user.uid);
-        // User's currently owned items
-        const userItems = userDoc.data().items;
-        // console.log("User's purchased items:", userItems);
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const userItems = userDoc.data().items;
+    const userChosenTheme = userDoc.data().theme;
 
-        const userChosenTheme = userDoc.data().theme;
+    // Build the default theme card first
+    const themes = [{ id: "defaultTheme", title: "Default" }];
 
-        // Shop items collection
-        const q = query(collection(db, "items"));
-        const queryItems = await getDocs(q);
+    // Add unlocked themes from the items collection
+    const queryItems = await getDocs(query(collection(db, "items")));
+    queryItems.forEach((d) => {
+        if (userItems.includes(d.id)) {
+            themes.push({ id: d.id, title: d.data().title || d.id });
+        }
+    });
 
-        // Iterate through each document in the "items" collection
-        queryItems.forEach((doc) => {
+    // Render theme cards with flag images
+    container.innerHTML = "";
+    themes.forEach(({ id, title }) => {
+        const card = document.createElement("div");
+        card.className = "theme-card" + (id === userChosenTheme ? " active" : "");
+        card.dataset.themeId = id;
+        card.innerHTML = `
+            <img src="/images/${id}.png" alt="${title}">
+            <span>${title}</span>
+        `;
+        card.addEventListener("click", () => {
+            // Update active state
+            container.querySelectorAll(".theme-card").forEach(c => c.classList.remove("active"));
+            card.classList.add("active");
 
-            // Only display items that the user doesn't already own
-            if (userItems.includes(doc.id)) {
-                const data = doc.data();
-
-                // Grab the values of each item's fields to be added to the template
-                const itemTitle = data.title || "Error: no title";
-                const itemID = doc.id || "Error: no id";
-
-                let html = `<option value="${itemID}" id="${itemID}">${itemTitle}</option>`
-
-
-                // Append the updated cloned item and add it to the list of items to be displayed
-                document.getElementById("themeSelect").innerHTML += (html);
-
-
-            }
-
-        })
-        document.getElementById("themeSelect").value = userChosenTheme;
-
-    } catch (error) {
-        console.error("Error loading theme select: ", error);
-    }
-
-    // Listener on the dropdown select
-    document.getElementById("themeSelect").addEventListener("change", function (e) {
-        let selectedTheme = e.target.value;
-
-        switchTheme(selectedTheme);
-
-        // Get the user's Firestore document from the "users" collection
-        // Document ID is the user's unique UID
-        const userDoc = doc(db, "users", user.uid);
-
-        // Update the theme field for the user
-        updateDoc(userDoc, { // await ???
-            theme: selectedTheme
+            // Apply and persist the theme
+            switchTheme(id);
+            updateDoc(doc(db, "users", user.uid), { theme: id });
         });
-        console.log("Theme changed to: " + selectedTheme);
-
-    })
-
+        container.appendChild(card);
+    });
 }
 
 
