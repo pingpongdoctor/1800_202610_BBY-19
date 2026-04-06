@@ -16,5 +16,15 @@ export const map = new maptilersdk.Map({
   center: result[0]?.center || [],
 });
 
-// Add a default marker in Vancouver
-addMarker(result[0]?.center || [], map)
+const geolocate = new maptilersdk.GeolocateControl({
+  positionOptions: { enableHighAccuracy: true },
+  trackUserLocation: true,
+});
+
+map.addControl(geolocate, 'top-right');
+
+export function centerTheMapToUserLocaiton() {
+  if(map){
+    geolocate.trigger();
+  }
+}
