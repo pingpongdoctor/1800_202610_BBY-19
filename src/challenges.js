@@ -34,7 +34,7 @@ async function populateItems() {
 
             const chalTitle = data.title || "Error: no title";
             const chalGoal = data.goal || "Error: no goal";
-            const chalValue = userDoc.data()[id] || 0; // must grab the value stored in the user db for the current challenge ----------------------------------
+            const chalValue = userDoc.data()[id] || 0; 
             const chalPercent = 100 * (chalValue / chalGoal);
             console.log(chalValue);
 
