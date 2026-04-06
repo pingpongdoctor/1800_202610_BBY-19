@@ -31,6 +31,9 @@ export async function getLocationsInVacouverByType(type) {
 // Global registry of all markers so they can be re-colored when the theme changes
 window._allMarkers = window._allMarkers || [];
 
+// Tracks the currently active popup so close events from stale popups are ignored
+window._activePopupKey = null;
+
 // Re-colors all existing markers to match the current theme
 export function recolorMarkers() {
     const color = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#68E152';
@@ -86,12 +89,17 @@ export async function addMarker(coordinates, map, locationData = null) {
 
         // Open the location panel automatically when the popup opens
         popup.on('open', () => {
+            window._activePopupKey = registryKey;
             window.openLocationPanel(registryKey);
         });
 
-        // Close the location panel when the popup is closed
+        // Close the location panel only if this popup is still the active one
+        // (prevents a stale close from overriding a newly opened panel)
         popup.on('close', () => {
-            window.closeLocationPanel();
+            if (window._activePopupKey === registryKey) {
+                window._activePopupKey = null;
+                window.closeLocationPanel();
+            }
         });
 
         // Move this part to the end of the function to save marker and popup HTML element
