@@ -43,15 +43,11 @@ async function populateItems(user) {
             itemList.innerHTML = "";
             QuerySnapshot.forEach((challengesDoc) => {
 
-                // Grab the values of each item's fields to be added to the template
-                const data = challengesDoc.data();
-                const id = challengesDoc.id;
-
-                const chalTitle = data.title || "Error: no title";
-                const chalGoal = data.goal || "Error: no goal";
-                const chalValue = userDoc.data()[id] || 0; // must grab the value stored in the user db for the current challenge
-                const chalPercent = 100 * (chalValue / chalGoal);
-                const progressString = chalValue + "/" + chalGoal;
+            const chalTitle = data.title || "Error: no title";
+            const chalGoal = data.goal || "Error: no goal";
+            const chalValue = userDoc.data()[id] || 0; 
+            const chalPercent = 100 * (chalValue / chalGoal);
+            console.log(chalValue);
 
                 // Clone the template and update the content
                 if (chalValue < chalGoal) {
