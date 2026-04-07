@@ -40,6 +40,7 @@ class SiteSearchbar extends HTMLElement {
                     <li class="filter-item">Transit</li>
                     <li class="filter-item">Attraction</li>
                 </ul>
+                <button class="clear-btn">Clear All</button>
                 <div class="card" id="mapStats" style="display: none;">
                     <h6 id="pointsDisplay"></h6>
                     <h6 id="stepsDisplay"></h6>
@@ -313,9 +314,11 @@ class SiteSearchbar extends HTMLElement {
             })
         }
 
-        function clearFilterMarkerWhenClickTheClearBtn() {
-
-        }
+        // Clear all markers when clicking the clear button
+        const clearBtn = document.querySelector(".clear-btn");
+        clearBtn.addEventListener("click", ()=>{
+            clearFilterMarkers();
+        })
 
         toggleFilterList();
         highlightFilterItemWhenHover();

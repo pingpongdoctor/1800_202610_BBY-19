@@ -738,3 +738,18 @@ site-searchbar .dropdown-toggle {
 .filter-item-hover {
     background-color: rgb(186, 181, 181);
 }
+
+.clear-btn {
+    background-color: red;
+    position: absolute;
+    top: 0.2rem;
+    right: -6rem;
+    background-color: ivory;
+    border: 1px red solid;
+    border-radius: 20px;
+    padding: 0.2rem 0.8rem;
+}
+
+.clear-btn:hover {
+    background-color: var(--primary_compliment);
+}
