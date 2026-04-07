@@ -258,11 +258,17 @@ class SiteSearchbar extends HTMLElement {
             })
         }
 
+        // Clear all filter markers
+        function clearFilterMarkers() {
+            window._allMarkers.forEach(marker => marker.remove());
+            window._allMarkers = [];
+        }
+
         // Show locations based on types when clicking options in filter menu
         async function showLocationBasedOnType(types) {
             // clear all marker before adding new ones
-            window._allMarkers.forEach(marker => marker.remove());
-            window._allMarkers = [];
+            clearFilterMarkers()
+
             types.forEach(async (type) => {
                 const locations = await getLocationsInVacouverByType(type);
 
@@ -274,33 +280,41 @@ class SiteSearchbar extends HTMLElement {
                     );
                 })
             })
-
-
         }
 
         // Add the evenlistener to the filter items to add locations when clicking them
         function clickFilterItemsToShowLocationsByType() {
             const filterItems = document.querySelectorAll(".filter-item");
+            const filterList = document.querySelector(".filter-list");
 
             filterItems.forEach(filterItem => {
                 const type = filterItem.textContent.toLocaleLowerCase();
 
                 filterItem.addEventListener("click", (event) => {
                     showLocationBasedOnType(queryMap[type]);
+                
+                    // Hide the filter list when user clicks a filter option
+                    if (filterList.classList.contains("filter-list-appear")) {
+                        filterList.classList.remove("filter-list-appear");
+                    }
                 })
             })
         }
 
         // Function that allows closing the filter list when clicking somewhere else
         function closeFilterListWhenClickingOtherComponents() {
-            const filterMenuContainer = document.querySelector(".container");
-            const filterMenu = document.querySelector(".filter-list");
+            const filterListContainer = document.querySelector(".container");
+            const filterList = document.querySelector(".filter-list");
             window.addEventListener('click', (e) => {
-                console.log(filterMenu.contains(e.target));
-                if (!filterMenuContainer.contains(e.target)) {
-                    filterMenu.classList.remove("filter-list-appear");
+                console.log(filterList.contains(e.target));
+                if (!filterListContainer.contains(e.target)) {
+                    filterList.classList.remove("filter-list-appear");
                 }
             })
+        }
+
+        function clearFilterMarkerWhenClickTheClearBtn() {
+
         }
 
         toggleFilterList();
