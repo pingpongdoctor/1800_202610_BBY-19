@@ -267,10 +267,11 @@ class SiteSearchbar extends HTMLElement {
                 const locations = await getLocationsInVacouverByType(type);
 
                 locations.forEach(location => {
+                    console.log(location);
                     addMarker(
                         [location.center[0], location.center[1]],
                         map,
-                        { name: location.text, description: location.text, type, id: location.id }
+                        { name: location.text, description: location.place_name, type, id: location.id }
                     );
                 })
             })
