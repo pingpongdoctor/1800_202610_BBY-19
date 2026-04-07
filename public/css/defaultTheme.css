@@ -450,7 +450,9 @@ site-searchbar .dropdown-toggle {
     z-index: 1000;
     width: 300px;
     border-radius: 20px;
-    padding: 1rem;
+    padding: 0 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .hidden-suggestion {
@@ -460,6 +462,11 @@ site-searchbar .dropdown-toggle {
 .suggestion-item {
     padding: 10px;
     cursor: pointer;
+    border-bottom: #666 1px solid;
+}
+
+.suggestion-item:last-child {
+    border: none;
 }
 
 .suggestion-item:hover {
