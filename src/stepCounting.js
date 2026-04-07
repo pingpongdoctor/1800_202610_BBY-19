@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { updateDoc, getDoc, doc } from 'firebase/firestore';
 import { db } from "./firebaseConfig.js";
 
-async function updateUserPoint(steps){
+async function updateUserPointStepDistance(steps){
     const auth = getAuth();
     const user = auth.currentUser;
 
@@ -16,11 +16,19 @@ async function updateUserPoint(steps){
     const docRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(docRef);
     console.log(userDoc)
-    const currentPoint = userDoc.data().points;
-    const updatedStep = currentPoint + steps;
+    const userData = userDoc.data();
+
+    const currentPoint = userData.points;
+    const currentStep = userData.steps;
+    const currentDistance = userData.distance;
+
+    const updatedStep = currentStep + steps;
+    const updatedPoint = currentPoint + steps;
+    const updatedDistance = currentDistance + (steps * 0.7)/1000;
+    
     //update points using the current points and new steps
-    await updateDoc(docRef, {points: updatedStep})
-    console.log("user point is updated")
+    await updateDoc(docRef, {points: updatedPoint, steps: updatedStep, distance: updatedDistance});
+    console.log("user point, step and distance are updated since users are walking")
 }
 
 // This function is used to guess what kinds of transportation the users are using based on their current speed
@@ -72,14 +80,14 @@ navigator.geolocation.watchPosition(async (pos) => {
         console.log(distance)
         const timeElapsed = (now - lastTime) / 1000; // convert to seconds
         const speed = distance / timeElapsed; // m/s
-
         const mode = detectTransportMode(speed);
+        console.log(`Transportation type: + ${mode}`)
 
         // If users are walking, we can start counting steps
         if (mode == "walking") {
             const stepNum = distanceToSteps(distance);
             console.log(stepNum)
-            await updateUserPoint(stepNum);
+            await updateUserPointStepDistance(stepNum);
         }
     }
 
