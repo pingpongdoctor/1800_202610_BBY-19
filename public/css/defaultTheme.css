@@ -441,12 +441,20 @@ site-searchbar .dropdown-toggle {
 }
 
 .searchbar-suggestions {
+    visibility: visible;
     position: absolute;
     border: 1px solid var(--border);
     background-color: var(--white);
     max-height: 200px;
     overflow-y: auto;
     z-index: 1000;
+    width: 300px;
+    border-radius: 20px;
+    padding: 1rem;
+}
+
+.hidden-suggestion {
+    visibility: hidden;
 }
 
 .suggestion-item {

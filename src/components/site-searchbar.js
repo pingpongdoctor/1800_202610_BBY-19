@@ -32,7 +32,7 @@ class SiteSearchbar extends HTMLElement {
                         </div>
                     </div>
                 </div>
-                <div id="suggestion-item" class="searchbar-suggestions"></div>
+                <div id="suggestion-item" class="searchbar-suggestions hidden-suggestion"></div>
                 <ul class="filter-list">
                     <li class="filter-item">Restaurant</li>
                     <li class="filter-item">Hotel</li>
@@ -113,7 +113,7 @@ class SiteSearchbar extends HTMLElement {
                 // Fetch Vancouver coordinates for bounding the search
                 const vancouverCoordinates = await getLocationsByPlaceName("Vancouver, BC, Canada");
                 // Fetch locations from MapTiler using the input value
-                const data = await getLocationsByPlaceNameAndCountry(query, ["ca"], 10, vancouverCoordinates[0].center, vancouverCoordinates[0].bbox)
+                const data = await getLocationsByPlaceNameAndCountry(query, ["ca"], 10, vancouverCoordinates[0].center, vancouverCoordinates[0].bbox);
 
                 // Use a Set to track unique results and avoid duplicate suggestion items
                 const set = new Set();
@@ -160,13 +160,34 @@ class SiteSearchbar extends HTMLElement {
 
                     suggestions.appendChild(suggestionItem);
                 });
+
+                // Show a text indicating that there are not found matching search result
+                if (set.size == 0 && suggestions.innerHTML == "") {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.classList.add('suggestion-item');
+                    suggestionItem.textContent = "No found results";
+                    suggestions.appendChild(suggestionItem);
+                }
+            }
+            // Hide the suggestion bar when the input is empty
+            if (searchInput.value.trim() == "") {
+                if (!suggestions.classList.contains("hidden-suggestion")) {
+                    suggestions.classList.add("hidden-suggestion")
+                }
+            } else {
+                if (suggestions.classList.contains("hidden-suggestion")) {
+                    suggestions.classList.remove("hidden-suggestion")
+                }
             }
         });
 
         // Listens for any click outside of the search bar, if that happens, it closes the suggestions
         document.addEventListener('click', function (event) {
             if (event.target !== searchInput) {
-                suggestions.innerHTML = '';
+                if (!suggestions.classList.contains("hidden-suggestion")) {
+                    suggestions.classList.add("hidden-suggestion")
+                }
+                searchInput.value = "";
             }
         });
 
