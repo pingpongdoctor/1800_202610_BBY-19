@@ -1,8 +1,41 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db } from "./firebaseConfig.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc} from "firebase/firestore";
 import { onAuthReady } from '/src/authentication.js';
+import { geocoding, config } from "@maptiler/client";
+
+config.apiKey = import.meta.env.VITE_MAPTILER_KEY;
+
+let trackUserChallengesInterval;
+
+
+// Loads the user's chosen theme on page load (Firestore is the source of truth)
+function userFunctions() {
+    onAuthReady(async (user) => {
+        if (!user) return;
+
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userTheme = userDoc.exists() ? userDoc.data().theme : 'defaultTheme';
+
+        await switchTheme(userTheme);
+
+        // In the profile page, highlight the active theme card
+        if (window.location.pathname.endsWith('profile.html')) {
+            const container = document.getElementById("themeSelect");
+            if (container) {
+                container.querySelectorAll(".theme-card").forEach(c => {
+                    c.classList.toggle("active", c.dataset.themeId === userTheme);
+                });
+            }
+        }
+
+        trackUserChallengesInterval = setInterval(() => { trackUserMoveCloseToChallengePlaces(user) }, 5000);
+
+
+    });
+}
+
 
 // CSS variable names that map to theme fields in Firestore
 // Firestore uses underscores (text_muted), CSS uses hyphens (--text-muted)
@@ -74,26 +107,151 @@ try {
     }
 } catch (_) { /* ignore parse errors or missing storage */ }
 
-// Loads the user's chosen theme on page load (Firestore is the source of truth)
-function chosenTheme() {
-    onAuthReady(async (user) => {
-        if (!user) return;
+const restaurantTypes = ["restaurant", "food", "dining", "eatery", "diner", "bistro", "grill", "kitchen"];
+const cafeTypes = ["coffee", "cafe", "espresso", "coffeehouse", "coffee shop", "tea house", "bakery", "roastery"];
 
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const userTheme = userDoc.exists() ? userDoc.data().theme : 'defaultTheme';
+// Function that is used to recognize if users move close to a cafe or a restaurant
+// Update the user database if the users move close these places
+async function moveCloseToCafe(userRef, userCafeChallenges, cafeGoal) {
+    const userLng = window._userPosition?.lng;
+    const userLat = window._userPosition?.lat;
 
-        await switchTheme(userTheme);
+    if (!userLng || !userLat) {
+        console.log("can not track user");
+        return;
+    };
 
-        // In the profile page, highlight the active theme card
-        if (window.location.pathname.endsWith('profile.html')) {
-            const container = document.getElementById("themeSelect");
-            if (container) {
-                container.querySelectorAll(".theme-card").forEach(c => {
-                    c.classList.toggle("active", c.dataset.themeId === userTheme);
-                });
-            }
+    // Convert 50m radius to degrees
+    const offset = 0.00045;
+
+    // Calculate the bounding box to search for a location type in 50m radius
+    const bbox = [
+        userLng - offset,
+        userLat - offset,
+        userLng + offset,
+        userLat + offset
+    ];
+
+    // Get the queries data for the location type input
+
+    let moveCloseCafe = false;
+
+
+    for (const cafeType of cafeTypes) {
+        const result = await geocoding.forward(cafeType, {
+            proximity: [userLng, userLat], // Set current user location to proximity to look for locations around the user
+            bbox,
+            types: ["poi"],
+            limit: 10
+        });
+
+        const locations = result?.features || [];
+
+        if (locations.length > 0) {
+            console.log(`user just move close to a ${cafeType}`)
+            moveCloseCafe = true;
+            break;
         }
-    });
+    }
+
+    if (!moveCloseCafe) {
+        console.log("user do not move to any close cafe")
+    }
+
+
+    if (moveCloseCafe && (userCafeChallenges < cafeGoal)) {
+        // Increment user cafe challenge field if user moves close to a cafe and the goal has not been achieved
+        await updateDoc(userRef, {
+            challengeCafes: userCafeChallenges + 1
+        });
+        console.log("user userCafeChallenges is updated")
+    }
 }
 
-chosenTheme();
+async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaurantGoal) {
+    const userLng = window._userPosition?.lng;
+    const userLat = window._userPosition?.lat;
+
+    if (!userLng || !userLat) {
+        console.log("can not track user");
+        return;
+    };
+
+    // Convert 50m radius to degrees
+    const offset = 0.00045;
+
+    // Calculate the bounding box to search for a location type in 50m radius
+    const bbox = [
+        userLng - offset,
+        userLat - offset,
+        userLng + offset,
+        userLat + offset
+    ];
+
+    // Get the queries data for the location type input
+
+    let moveCloseRestaurant = false;
+
+    for (const restaurantType of restaurantTypes) {
+        const result = await geocoding.forward(restaurantType, {
+            proximity: [userLng, userLat],
+            bbox,
+            types: ["poi"],
+            limit: 10
+        });
+
+        const locations = result?.features || [];
+
+        if (locations.length > 0) {
+            console.log(`user just move close to a ${restaurantType}`)
+            moveCloseRestaurant = true;
+            break;
+        }
+    }
+
+    if (!moveCloseRestaurant) {
+        console.log("user does not move close to any restaurant")
+    }
+
+    if (moveCloseRestaurant && (userRestaurantChallenges < restaurantGoal)) {
+        // Increment user cafe challenge field if user moves close to a cafe and the goal has not been achieved
+        await updateDoc(userRef, {
+            challengeRestaurants: userRestaurantChallenges + 1
+        });
+        console.log("user challengeRestaurants is updated")
+    }
+}
+
+async function trackUserMoveCloseToChallengePlaces(user) {
+
+    // Get the challenges points that users have obtained
+    const userRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userRef, user.uid);
+    const userData = userDoc.data();
+
+    const userCafeChallenges = userData.challengeCafes;
+    const userRestaurantChallenges = userData.challengeRestaurants;
+
+    // Get the goal of each challenges from the challenges collection
+    const cafeChallengesDocSnap = await getDoc(doc(db, "challenges", "challengeCafes"));
+    const cafeGoal = cafeChallengesDocSnap.data().goal;
+    const restaurantsChallengesDocSnap = await getDoc(doc(db, "challenges", "challengeRestaurants"));
+    const restaurantGoal = restaurantsChallengesDocSnap.data().goal;
+
+    if (userCafeChallenges < cafeGoal) {
+        moveCloseToCafe(userRef, userCafeChallenges, cafeGoal)
+    }
+
+    if (userRestaurantChallenges < restaurantGoal) {
+        moveCloseToRestaurant(userRef, userRestaurantChallenges, restaurantGoal)
+    }
+
+    if ((userCafeChallenges >= cafeGoal) && (userRestaurantChallenges >= restaurantGoal)) {
+        if (trackUserChallengesInterval) {
+            clearInterval(trackUserChallengesInterval);
+            trackUserChallengesInterval = null;
+        }
+    }
+}
+
+userFunctions();
