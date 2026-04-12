@@ -91,7 +91,7 @@ export async function addNewLocation(id, name, description, type, lng, lat) {
 
             // if the location exists, send an alert
             if (!querySnapshot.empty) {
-                alert("Location is already saved")
+                alert("Location is already saved");
                 return;
             }
 
@@ -106,7 +106,6 @@ export async function addNewLocation(id, name, description, type, lng, lat) {
 
             // We generate id for the location document by using the id taken from the map api database document
             await setDoc(doc(db, "users", user.uid, "savedLocations", id), location);
-            alert("New location is added")
 
 
 
