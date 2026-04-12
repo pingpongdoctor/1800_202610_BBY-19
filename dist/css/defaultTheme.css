@@ -1,0 +1,755 @@
+/*
+* --------------------------------------------------
+* Custom styles overriding Bootstrap defaults
+* --------------------------------------------------
+*
+* Design principles applied:
+*
+* 1) 20/80 Rule
+*    A small number of targeted changes (colours on key
+*    components like buttons, navbar, and backgrounds)
+*    create most of the visual impact without rewriting
+*    Bootstrap’s core styles.
+*
+* 2) 60 / 30 / 10 Colour Rule
+*    - 60% dominant: lighter for backgrounds and large surfaces
+*    - 30% primary/secondary: primary for main actions, secondary for supporting elements
+*    - 10% accent: used sparingly for hover or emphasis
+*/
+
+/* ---Colour Palette---
+Main:                 #68E152 - Green
+Main complement:      #9AE184 - Soft Green
+Secondary:            #E0DD4C - Yellow
+Secondary complement: #DCE07F - Soft Yellow
+Black:                #002100 - Black
+White:                #F5FFF5 - White
+ */
+
+:root {
+    --primary: #68E152;
+    --primary_compliment: #9AE184;
+    --secondary: #f0eb51;
+    --secondary_compliment: #e4e885;
+    --white: #F5FFF5;
+    --whiteTransparent: #F5FFF5; 
+    --black: #002100;
+    --text_muted: #666;
+    --text_secondary: #444;
+    --border: #ddd;
+    --danger: #e05252;
+    --danger_hover: #c94444;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: var(--white) !important;
+    color: var(--primary);
+}
+
+/* ---- APP NAVIGATION ---- */
+/* Mobile: bottom bar | Desktop: left sidebar */
+
+.app-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5rem 0;
+    background-color: var(--primary);
+    z-index: 1030;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    color: var(--black);
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+    background-color: var(--primary_compliment);
+    color: var(--black);
+}
+
+.footer-image {
+    width: 32px;
+    height: auto;
+}
+
+.nav-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* Desktop: left sidebar */
+@media (min-width: 769px) {
+    .app-nav {
+        top: 0;
+        right: auto;
+        bottom: 0;
+        width: 80px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.5rem;
+        padding: 1rem 0;
+        border-top: none;
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0;
+    }
+
+    .footer-image {
+        width: 36px;
+    }
+
+    .nav-label {
+        font-size: 0.6rem;
+    }
+}
+
+.hero {
+    background-image: url('/img/MapPlaceholder.png');
+    background-size: cover;
+    background-position: center;
+    min-height: 75vh;
+}
+
+.map-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--secondary_compliment);
+}
+
+/* Shift map right on desktop to make room for the sidebar */
+@media (min-width: 769px) {
+    .map-container {
+        left: 80px;
+    }
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#profileContainer, #challengesContainer, #itemShopContainer, #loginContainer {
+    max-width: 768px;
+    padding: 25px 25px 25px 105px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#profileContainer>div {
+    margin: 20px 0px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#profileContainer>div~div {
+    max-width: 95%;
+
+}
+
+/* Theme picker grid */
+.theme-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.theme-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--white);
+    width: 100px;
+}
+
+.theme-card img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.theme-card span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--black);
+    text-align: center;
+}
+
+.theme-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.theme-card.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary_compliment);
+}
+
+#welcomeBox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+
+}
+
+#welcomeBox h1 {
+    font-size: 3rem;
+}
+
+#welcomeBox img {
+    max-width: auto;
+    max-height: 80px;
+}
+
+#statsList .card div {
+    margin: 10px 20px;
+}
+
+#savedLocationsList {
+    max-height: 250px;
+}
+
+#profileButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#mapStats {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: fit-content;
+    background: var(--whiteTransparent);
+    margin: 5px;
+    margin-left: 25px;
+}
+
+#mapStats h6 {
+    margin: 5px;
+}
+
+#itemShopContainer img {
+    width: 100px;
+    height: auto;
+    margin-right: 50px;
+}
+
+
+.itemFlex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#challengeList li {
+    padding: 25px 25px;
+}
+
+#challengeList .progress {
+    height: 35px;
+    margin: 15px 0px;
+}
+
+@media (max-width: 768px) {
+
+    #profileContainer, #loginContainer, #challengesContainer, #itemShopContainer {
+        height: calc(100dvh - 74.4px);
+        overflow: auto;
+    }
+
+    #profileContainer {
+        padding: 25px;
+    }
+    
+    #loginContainer {
+        padding: 100px 25px;
+    }
+    
+    #challengesContainer, #itemShopContainer {
+        padding: 0;
+    }
+
+    #welcomeBox {
+        max-width: 600px;
+    }
+
+    #welcomeBox h1 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 426px) {
+
+    #profileContainer {
+        padding: 10px;
+    }
+
+    #welcomeBox h1 {
+        font-size: 2rem;
+    }
+
+    #welcomeBox {
+        justify-content: center;
+    }
+
+    #welcomeBox img {
+        display: none;
+    }
+
+    #itemShopContainer img {
+        margin-right: 20px;
+    }
+}
+
+.btn-info,
+.btn,
+.btn-primary {
+    color: var(--black) !important;
+    background-color: var(--primary_compliment) !important;
+    border-color: var(--black) !important;
+}
+
+.btn-info:hover,
+.btn-info:focus {
+    background-color: var(--secondary);
+    border-color: var(--white);
+    border-width: var(--btn-border-width-hover);
+}
+
+.card-header {
+    background-color: var(--secondary) !important;
+}
+
+#itemShopContainer .card-header,
+#challengesContainer .card-header {
+    height: 100px;
+}
+
+
+/* .list-group-item {
+    background-color: var(--white) !important;
+}
+
+.card {
+    background-color: var(--white) !important;
+} */
+
+.progress {
+    background-color: var(--white) !important;
+}
+
+.progress-bar.text-bg-success {
+    background-color: var(--primary) !important;
+    color: var(--black) !important;
+}
+
+.route-img {
+    background-color: var(--primary) !important;
+}
+
+.route-odd {
+    background-color: var(--primary_compliment) !important;
+}
+
+.route-even {
+    background-color: var(--secondary_compliment) !important;
+}
+
+site-searchbar {
+    position: relative;
+    z-index: 1040;
+    display: block;
+    padding: 0.75rem;
+}
+
+site-searchbar .container {
+    max-width: calc(100dvw - 160px);
+    padding: 0;
+    margin: 0;
+}
+
+site-searchbar .input-group {
+    background: var(--white);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    border: none;
+}
+
+site-searchbar .form-control {
+    border: none;
+    border-radius: 999px 0 0 999px;
+    padding-left: 1.25rem;
+    background: var(--white);
+}
+
+site-searchbar .form-control:focus {
+    box-shadow: none;
+    background: var(--white);
+}
+
+site-searchbar .btn {
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+site-searchbar .dropdown-toggle {
+    border-radius: 0 999px 999px 0 !important;
+}
+
+/* Desktop: position near the sidebar */
+@media (min-width: 769px) {
+    site-searchbar {
+        position: fixed;
+        top: 0.75rem;
+        left: 90px;
+        width: 400px;
+    }
+
+    site-searchbar .container {
+        max-width: 100%;
+    }
+}
+
+.searchbar-suggestions {
+    visibility: visible;
+    position: absolute;
+    border: 1px solid var(--border);
+    background-color: var(--white);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 300px;
+    border-radius: 20px;
+    padding: 0 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hidden-suggestion {
+    visibility: hidden;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: #666 1px solid;
+}
+
+.suggestion-item:last-child {
+    border: none;
+}
+
+.suggestion-item:hover {
+    background-color: var(--primary_compliment);
+}
+
+.mode-btn {
+    background-color: var(--primary_compliment);
+    color: var(--black);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.mode-btn.active {
+    background-color: var(--primary);
+    filter: brightness(0.85);
+}
+
+.route-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.route-panel.open {
+    transform: translateY(0);
+}
+
+/* ---- MARKER POPUP (small, just name + Details button) ---- */
+
+.map-popup {
+    min-width: 160px;
+    padding: 2px 4px 6px;
+}
+
+.popup-type {
+    font-size: 0.7rem;
+    color: var(--text_muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 2px 0;
+}
+
+.popup-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0 0 8px 0;
+}
+
+/* ---- LOCATION DETAIL PANEL ---- */
+/* Desktop: slides in from the left like Google Maps */
+/* Mobile: slides up from the bottom like the Google Maps app */
+
+.location-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100%;
+    background-color: var(--white);
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+    /* above Bootstrap's fixed-bottom navbar (1030) */
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+
+.location-panel.open {
+    transform: translateX(0);
+}
+
+/* Mobile bottom sheet — kicks in below 768px */
+@media (max-width: 768px) {
+    .location-panel {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+        max-height: 55vh;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+        /* Slide down instead of left */
+        transform: translateY(100%);
+    }
+
+    .location-panel.open {
+        transform: translateY(0);
+    }
+}
+
+/* X button — top right corner of the panel */
+.panel-close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--black);
+    padding: 0;
+    line-height: 1;
+}
+
+.panel-type {
+    font-size: 0.75rem;
+    color: var(--text_muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.panel-name {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--black);
+    margin: 0;
+}
+
+.panel-description {
+    font-size: 0.9rem;
+    color: var(--text_secondary);
+    line-height: 1.5;
+    margin: 0;
+    flex-grow: 1;
+}
+
+/* Row of action buttons at the bottom of the panel */
+.panel-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+/* Shared base style for both panel buttons */
+.panel-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.panel-directions-btn {
+    background-color: var(--primary);
+    color: var(--black);
+}
+
+.panel-directions-btn:hover {
+    background-color: var(--primary_compliment);
+    color: var(--black);
+}
+
+/* Save route button */
+.panel-save-btn {
+    background-color: var(--secondary_compliment);
+}
+
+/* Shared pill style for route panel action buttons */
+.route-cancel-btn,
+.route-go-btn,
+.cancel-route-btn {
+    border: 2px solid var(--black);
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Cancel button in the route panel (goes back to index) */
+.route-cancel-btn {
+    background-color: var(--danger);
+    color: var(--white);
+}
+
+.route-cancel-btn:hover {
+    background-color: var(--danger_hover);
+    color: var(--white);
+}
+
+/* Go button in the route panel (confirms the route) */
+.route-go-btn {
+    background-color: var(--primary);
+    color: var(--white);
+}
+
+.route-go-btn:hover {
+    background-color: var(--primary_compliment);
+}
+
+/* Floating cancel route button, shown after confirming a route */
+.cancel-route-btn {
+    position: fixed;
+    bottom: 7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    background-color: var(--danger);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-route-btn:hover {
+    background-color: var(--danger_hover);
+}
+
+.container {
+    position: relative;
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(1);
+        opacity: 1;
+    }
+}
+
+.filter-list {
+    visibility: hidden;
+    list-style: none;
+    padding: 0.5rem;
+    position: absolute;
+    top: 2.3rem;
+    right: 0;
+    z-index: 10000;
+    border: solid 1px black;
+    border-radius: 20px;
+    background-color: ivory;
+}
+
+.filter-list-appear {
+    visibility: visible;
+    z-index: 1;
+    animation: slideDown 1s ease-in-out;
+}
+
+.filter-item {
+    border-bottom: black solid 1px;
+    cursor: pointer;
+}
+
+.filter-item-hover {
+    background-color: rgb(186, 181, 181);
+}
+
+.clear-btn {
+    background-color: red;
+    position: absolute;
+    top: 0.2rem;
+    right: -6rem;
+    background-color: ivory;
+    border: 1px red solid;
+    border-radius: 20px;
+    padding: 0.2rem 0.8rem;
+}
+
+.clear-btn:hover {
+    background-color: var(--primary_compliment);
+}
