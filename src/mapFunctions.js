@@ -1,6 +1,5 @@
 import { geocoding } from "@maptiler/client";
 import * as maptilersdk from '@maptiler/sdk';
-import { removeLocation } from "./locations.js";
 
 // Function that is used to get Location information object using the place name
 export async function getLocationsByPlaceName(name) {
