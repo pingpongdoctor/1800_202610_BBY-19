@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Guide19</title>
+    <meta name="comp1800 template" content="My 1800 App">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link id="theme" rel="stylesheet" type="text/css" href="/css/defaultTheme.css" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <!-- Other libraries go here -->
+
+  <script type="module" crossorigin src="/assets/profile-0tMe0fNE.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/main-shPQZRtj.js">
+  <link rel="modulepreload" crossorigin href="/assets/stepCounting-DKUARBNT.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-DBkz-poX.css">
+</head>
+
+<body>
+
+    <div id="profileContainer">
+
+
+        <div id="welcomeBox">
+            <img src="/images/pfpPlaceholder.png" alt="pfp">
+            <div>
+                <h1>Welcome <span id="name-goes-here"></span></h1>
+                <h5 id="pointsGoHere"></h5>
+            </div>
+            <hr>
+        </div>
+
+        <!-- Theme Select -->
+        <div>
+            <h3>Select your theme:</h3>
+            <div id="themeSelect" class="theme-picker"></div>
+        </div>
+
+        <!-- User Info -->
+        <div id="statsList">
+            <h3>Stats:</h3>
+
+            <div class="card">
+                <div>
+                    <h5>Distance Travelled (KM): </h5> <span id="distanceTravelled"></span>
+                </div>
+
+                <div>
+                    <h5>Steps: </h5><span id="stepsTravelled"></span>
+                </div>
+
+                <div>
+                    <h5>Items unlocked: </h5><span id="itemsUnlocked"></span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Saved Locations -->
+        <div id="savedLocationsElement" style="display: none;">
+            <h3>Saved locations:</h3>
+
+            <div class="list-group overflow-auto" id="savedLocationsList">
+                
+            </div>
+
+        </div>
+
+
+        <!-- Logout button -->
+        <div id="profileButtons">
+
+            <div id="logoutGoesHere">
+                <button class="btn btn-lg" id="logoutBtn" type="button"><b>Log out</b></button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- NAV BAR -->
+    <site-footer></site-footer>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
