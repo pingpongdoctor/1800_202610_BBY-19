@@ -150,12 +150,13 @@ export async function addMarker(coordinates, map, locationData = null, color = n
         if (saveCallback || entry.saved) {
             saveBtn.disabled = false;
             updateSaveBtn(entry.saved);
-            saveBtn.onclick = () => {
+            saveBtn.onclick = async () => {
                 if (entry.saved) {
                     // Unsave the location
                     const idToRemove = entry.locationId;
                     if (idToRemove) {
-                        removeLocation(idToRemove);
+                        const { removeLocation } = await import("./locations.js");
+                        await removeLocation(idToRemove);
                         entry.saved = false;
                         updateSaveBtn(false);
                     }
