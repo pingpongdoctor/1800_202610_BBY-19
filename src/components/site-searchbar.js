@@ -150,6 +150,7 @@ class SiteSearchbar extends HTMLElement {
                                 name: text,
                                 description: place_name,
                                 type: properties?.categories?.[0] || '',
+                                id: id,
                                 saveCallback: () => {
                                     addNewLocation(id, text, place_name, properties?.categories?.[0] || '', center[0], center[1]);
                                 }
