@@ -8,7 +8,7 @@ onAuthReady(async (user) => {
     // If no user is logged in, redirect to the login page
     if (!user) {
         if (!window.location.pathname.endsWith('index.html')) {
-            location.href = 'index.html';
+            location.href = '/app/html/login.html';
         }
 
         return; // Stop execution

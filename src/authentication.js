@@ -98,11 +98,13 @@ export async function signupUser(name, email, password) {
 // Usage:
 //   await logoutUser();
 // -------------------------------------------------------------
-export async function logoutUser() {
-  await signOut(auth);
+export function logoutUser() {
   // Clear the cached theme so logged-out users revert to the default
   try { localStorage.removeItem('cachedTheme'); } catch (_) {}
-  window.location.href = "index.html";
+  // Navigate away BEFORE signOut so auth-state listeners on the current
+  // page don't race with this redirect.
+  window.location.href = "/index.html";
+  signOut(auth);
 }
 
 // -------------------------------------------------------------
@@ -122,13 +124,10 @@ export async function logoutUser() {
 // -------------------------------------------------------------
 export function checkAuthState() {
   onAuthStateChanged(auth, (user) => {
-    if (window.location.pathname.endsWith("main.html")) {
-      if (user) {
-        const displayName = user.displayName || user.email;
-        $("#welcomeMessage").text(`Hello, ${displayName}!`);
-      } else {
-        window.location.href = "index.html";
-      }
+    if (user) {
+      const displayName = user.displayName || user.email;
+      const welcomeEl = document.getElementById("welcomeMessage");
+      if (welcomeEl) welcomeEl.textContent = `Hello, ${displayName}!`;
     }
   });
 }
