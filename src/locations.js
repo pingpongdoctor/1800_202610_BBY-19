@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, serverTimestamp, query, where, setDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, serverTimestamp, query, where, setDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from "./firebaseConfig.js";
 import { map } from "./components/map.js";    // the live Map instance
 import { addMarker } from "./mapFunctions.js"; // marker + popup function
@@ -129,4 +129,12 @@ export async function addNewLocation(id, name, description, type, lng, lat) {
     catch (e) {
         console.log("Error adding new document" + e)
     }
+}
+
+// Function to remove a saved location
+export async function removeLocation(id) {
+    onAuthReady(async (user) => {
+        if (!user) return;
+        await deleteDoc(doc(db, "users", user.uid, "savedLocations", id));
+    });
 }
