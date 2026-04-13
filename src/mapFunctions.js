@@ -107,6 +107,8 @@ export async function addMarker(coordinates, map, locationData = null, color = n
             locationName, locationDesc, locationType,
             lat: coordinates[1], lng: coordinates[0],
             saveCallback: locationData.saveCallback ?? null,
+            locationId: locationData.id ?? null,
+            saved: locationData.saved || false,
             popupHTML,
             marker
         };
@@ -132,19 +134,43 @@ export async function addMarker(coordinates, map, locationData = null, color = n
             window.openRoutePanel(locationName, lat, lng);
         };
 
-        // If a saveCallback exists (search result not yet saved), enable the Save button
-        // Otherwise disable it (location already exists in Firestore)
+        const entry = window._locationRegistry[key];
         const saveBtn = document.querySelector('.panel-save-btn');
-        if (saveCallback) {
+        const filledIcon = saveBtn.querySelector('.bookmark-filled');
+        const outlineIcon = saveBtn.querySelector('.bookmark-outline');
+        const saveLabel = saveBtn.querySelector('.save-label');
+
+        // Helper to update button appearance based on saved state
+        function updateSaveBtn(isSaved) {
+            filledIcon.style.display = isSaved ? '' : 'none';
+            outlineIcon.style.display = isSaved ? 'none' : '';
+            saveLabel.textContent = isSaved ? 'Saved' : 'Save';
+        }
+
+        if (saveCallback || entry.saved) {
             saveBtn.disabled = false;
-            saveBtn.onclick = () => {
-                saveCallback();
-                // Disable after saving so the user cant double save
-                saveBtn.disabled = true;
+            updateSaveBtn(entry.saved);
+            saveBtn.onclick = async () => {
+                if (entry.saved) {
+                    // Unsave the location
+                    const idToRemove = entry.locationId;
+                    if (idToRemove) {
+                        const { removeLocation } = await import("./locations.js");
+                        await removeLocation(idToRemove);
+                        entry.saved = false;
+                        updateSaveBtn(false);
+                    }
+                } else {
+                    // Save the location
+                    saveCallback();
+                    entry.saved = true;
+                    updateSaveBtn(true);
+                }
             };
         } else {
             saveBtn.disabled = true;
             saveBtn.onclick = null;
+            updateSaveBtn(false);
         }
 
         // Slide the panel in

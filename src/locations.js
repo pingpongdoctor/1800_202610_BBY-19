@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, serverTimestamp, query, where, setDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, serverTimestamp, query, where, setDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from "./firebaseConfig.js";
 import { map } from "./components/map.js";    // the live Map instance
 import { addMarker } from "./mapFunctions.js"; // marker + popup function
@@ -27,11 +27,17 @@ const locations = await getDocs(collection(db, "locations"));
 // Loop every Firestore location and drop a marker on the map with a popup
 locations.forEach(docSnap => {
     const data = docSnap.data();
+    const id = docSnap.id;
     // MapTiler expects [lng, lat] order (opposite of Firestore storage)
     addMarker(
         [data.lng, data.lat],
         map,
-        { name: data.name, description: data.description, type: data.type, id: docSnap.id }
+        {
+            name: data.name, description: data.description, type: data.type, id,
+            saveCallback: () => {
+                addNewLocation(id, data.name, data.description, data.type, data.lng, data.lat);
+            }
+        }
     );
 });
 
@@ -48,11 +54,18 @@ onAuthReady(async (user) => {
     // Loop every saved location and drop a marker on the map with a popup
     savedLocations.forEach(docSnap => {
         const data = docSnap.data();
+        const id = docSnap.id;
         // MapTiler expects [lng, lat] order (opposite of Firestore storage)
         addMarker(
             [data.lng, data.lat],
             map,
-            { name: data.name, description: data.description, type: data.type, id: docSnap.id }
+            {
+                name: data.name, description: data.description, type: data.type, id,
+                saved: true,
+                saveCallback: () => {
+                    addNewLocation(id, data.name, data.description, data.type, data.lng, data.lat);
+                }
+            }
         );
     });
 
@@ -91,7 +104,7 @@ export async function addNewLocation(id, name, description, type, lng, lat) {
 
             // if the location exists, send an alert
             if (!querySnapshot.empty) {
-                alert("Location is already saved")
+                alert("Location is already saved");
                 return;
             }
 
@@ -106,7 +119,6 @@ export async function addNewLocation(id, name, description, type, lng, lat) {
 
             // We generate id for the location document by using the id taken from the map api database document
             await setDoc(doc(db, "users", user.uid, "savedLocations", id), location);
-            alert("New location is added")
 
 
 
@@ -129,4 +141,12 @@ export async function addNewLocation(id, name, description, type, lng, lat) {
     catch (e) {
         console.log("Error adding new document" + e)
     }
+}
+
+// Function to remove a saved location
+export async function removeLocation(id) {
+    onAuthReady(async (user) => {
+        if (!user) return;
+        await deleteDoc(doc(db, "users", user.uid, "savedLocations", id));
+    });
 }
