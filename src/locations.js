@@ -4,25 +4,7 @@ import { map } from "./components/map.js";    // the live Map instance
 import { addMarker } from "./mapFunctions.js"; // marker + popup function
 import { onAuthReady } from '/src/authentication.js';
 
-//add sample locations
-// function addSampleLocationData() {
-//     const locationsRef = collection(db, "locations");
-//     addDoc(locationsRef, {
-//         name: "name1", description: "description1",
-//         type: "type1", lat: 49.2467097082573, lng: -122.9187029619698,
-//         last_updated: serverTimestamp()
-//     });
-//     addDoc(locationsRef, {
-//         name: "name2", description: "description2",
-//         type: "type2", lat: 49.2467097082573, lng: -122.9187029619698,
-//         last_updated: serverTimestamp()
-//     });
-// }
-
 const locations = await getDocs(collection(db, "locations"));
-// if (locations.empty) {
-//     addSampleLocationData();
-// }
 
 // Loop every Firestore location and drop a marker on the map with a popup
 locations.forEach(docSnap => {
@@ -43,7 +25,6 @@ locations.forEach(docSnap => {
 
 // If logged in, display saved locations with same logic as above
 onAuthReady(async (user) => {
-    
     // If no user, stop execution
     if (!user) {
         return;
@@ -71,30 +52,16 @@ onAuthReady(async (user) => {
 
 });
 
-
-
-// Function to get a location
-export async function getALocation() {
-    try {
-        const docSnap = await getDoc
-    }
-    catch {
-
-    }
-}
 // Function to add a new locaton
 export async function addNewLocation(id, name, description, type, lng, lat) {
     try {
-
         // Wait until Firebase Auth finishes checking the user's auth state
         onAuthReady(async (user) => {
-
             // If no user, send an alert and stop execution
             if (!user) {
                 alert("Please log in to save locations!");
                 return;
             }
-
 
             const locationsRef = collection(db, "users", user.uid, "savedLocations");
             // Check if location exists
@@ -119,23 +86,7 @@ export async function addNewLocation(id, name, description, type, lng, lat) {
 
             // We generate id for the location document by using the id taken from the map api database document
             await setDoc(doc(db, "users", user.uid, "savedLocations", id), location);
-
-
-
-
-
-
-
         });
-
-
-
-
-
-
-
-
-
     }
 
     catch (e) {
