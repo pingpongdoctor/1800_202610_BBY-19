@@ -13,7 +13,6 @@ app.use("/font", express.static("./public/fonts"));
 app.use("/components", express.static("./src/components"))
 
 app.get("/", function (req, res) {
-    //console.log(process.env);
     // retrieve and send an HTML document from the file system
     let doc = fs.readFileSync("./index.html", "utf8");
     res.send(doc);

@@ -124,7 +124,6 @@ class SiteSearchbar extends HTMLElement {
                     if (set.has(result.text)) {
                         return;
                     }
-                    console.log(result)
                     set.add(result.text)
 
                     const suggestionItem = document.createElement('div');
@@ -275,7 +274,6 @@ class SiteSearchbar extends HTMLElement {
                 const locations = await getLocationsInVacouverByType(type);
 
                 locations.forEach(location => {
-                    console.log(location);
                     addMarker(
                         [location.center[0], location.center[1]],
                         map,
@@ -309,7 +307,6 @@ class SiteSearchbar extends HTMLElement {
             const filterListContainer = document.querySelector(".container");
             const filterList = document.querySelector(".filter-list");
             window.addEventListener('click', (e) => {
-                console.log(filterList.contains(e.target));
                 if (!filterListContainer.contains(e.target)) {
                     filterList.classList.remove("filter-list-appear");
                 }

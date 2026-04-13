@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db } from "./firebaseConfig.js";
-import { doc, getDoc, updateDoc} from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthReady } from '/src/authentication.js';
 import { geocoding, config } from "@maptiler/client";
 
@@ -87,7 +87,6 @@ export async function switchTheme(themeId) {
         applyTheme(themeDoc.data());
     } else {
         // Fallback: try loading defaultTheme
-        console.log(`Theme "${themeId}" not found, falling back to defaultTheme`);
         const fallback = await getDoc(doc(db, 'themes', 'defaultTheme'));
         if (fallback.exists()) {
             applyTheme(fallback.data());
@@ -117,7 +116,7 @@ async function moveCloseToCafe(userRef, userCafeChallenges, cafeGoal) {
     const userLat = window._userPosition?.lat;
 
     if (!userLng || !userLat) {
-        console.log("can not track user");
+        console.log("User position unavailable. Skipping cafe proximity check");
         return;
     };
 
@@ -148,14 +147,15 @@ async function moveCloseToCafe(userRef, userCafeChallenges, cafeGoal) {
         const locations = result?.features || [];
 
         if (locations.length > 0) {
-            console.log(`user just move close to a ${cafeType}`)
+            console.log(`Cafe detected nearby (matched type: ${cafeType}). Counting as cafe visit`)
             moveCloseCafe = true;
             break;
         }
     }
 
     if (!moveCloseCafe) {
-        console.log("user do not move to any close cafe")
+        console.log("No cafe found within 50m. Cafe challenge progress is unchanged")
+
     }
 
 
@@ -164,7 +164,8 @@ async function moveCloseToCafe(userRef, userCafeChallenges, cafeGoal) {
         await updateDoc(userRef, {
             challengeCafes: userCafeChallenges + 1
         });
-        console.log("user userCafeChallenges is updated")
+        console.log(`Cafe challenge progress updated: ${userCafeChallenges + 1}/${cafeGoal}${userCafeChallenges + 1 >= cafeGoal ? " .Challenge complete! 🎉" : ""}`)
+
     }
 }
 
@@ -173,7 +174,7 @@ async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaura
     const userLat = window._userPosition?.lat;
 
     if (!userLng || !userLat) {
-        console.log("can not track user");
+        console.log("User position unavailable. Skipping restaurant proximity check.");
         return;
     };
 
@@ -203,14 +204,14 @@ async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaura
         const locations = result?.features || [];
 
         if (locations.length > 0) {
-            console.log(`user just move close to a ${restaurantType}`)
+            console.log(`Restaurant detected nearby (matched type: ${restaurantType}). Counting as restaurant visit`)
             moveCloseRestaurant = true;
             break;
         }
     }
 
     if (!moveCloseRestaurant) {
-        console.log("user does not move close to any restaurant")
+        console.log("No restaurant found within 50m. Restaurant challenge progress is unchanged")
     }
 
     if (moveCloseRestaurant && (userRestaurantChallenges < restaurantGoal)) {
@@ -218,7 +219,7 @@ async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaura
         await updateDoc(userRef, {
             challengeRestaurants: userRestaurantChallenges + 1
         });
-        console.log("user challengeRestaurants is updated")
+        console.log(`Restaurant challenge progress updated: ${userRestaurantChallenges + 1}/${restaurantGoal}${userRestaurantChallenges + 1 >= restaurantGoal ? ". Challenge complete! 🎉" : ""}`)
     }
 }
 

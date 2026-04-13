@@ -8,14 +8,13 @@ async function updateUserPointStepDistance(steps){
     const user = auth.currentUser;
 
     if(user==null){
-        console.log("User is not authenticated");
+        console.log("Skipping step count update since user is not authenticated");
         return;
     }
 
     //get current points
     const docRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(docRef);
-    console.log(userDoc)
     const userData = userDoc.data();
 
     const currentPoint = userData.points;
@@ -28,7 +27,7 @@ async function updateUserPointStepDistance(steps){
     
     //update points using the current points and new steps
     await updateDoc(docRef, {points: updatedPoint, steps: updatedStep, distance: updatedDistance});
-    console.log("user point, step and distance are updated since users are walking")
+    console.log(`Step count is updated: +${steps} | Total steps: ${updatedStep} | Points: ${updatedPoint} | Distance: ${updatedDistance}km`);
 }
 
 // This function is used to guess what kinds of transportation the users are using based on their current speed
@@ -58,17 +57,15 @@ let lastCalculation = 0;
 // We calculate the user speed by using the distance and time taken to travel from last position to the current position
 // watchPosition method is a callback function
 navigator.geolocation.watchPosition(async (pos) => {
-    console.log("user are moving")
-
+    console.log("User position updated. Analyze transport mode to determine if the user is walking");
     const now = Date.now();
     if (now - lastCalculation < 5000) {
-        console.log("not enough time")
         return;
     }
     lastCalculation = now;
 
     if (lastPos == null) {
-        console.log("user has not had previous coordinates to calculate the distance")
+        console.log("No previous position recorded. Skipping distance calculation until next update");
     }
 
     if (lastPos && lastTime) {
@@ -77,16 +74,15 @@ navigator.geolocation.watchPosition(async (pos) => {
             [lastPos.longitude, lastPos.latitude],
             [pos.coords.longitude, pos.coords.latitude]
         );
-        console.log(distance)
         const timeElapsed = (now - lastTime) / 1000; // convert to seconds
         const speed = distance / timeElapsed; // m/s
         const mode = detectTransportMode(speed);
-        console.log(`Transportation type: + ${mode}`)
+        
+        console.log(`Transport mode detected: ${mode} at ${speed}m/s`);
 
         // If users are walking, we can start counting steps
         if (mode == "walking") {
             const stepNum = distanceToSteps(distance);
-            console.log(stepNum)
             await updateUserPointStepDistance(stepNum);
         }
     }

@@ -76,7 +76,6 @@ export async function signupUser(name, email, password) {
       challengeRestaurants: 0,
       challengeSteps: 0
     });
-    console.log("Firestore user document created successfully!");
   } catch (error) {
     // Information for debugging: show the error code  
     // In a real app, you might want to show a user-friendly message instead of the raw error.
