@@ -15,7 +15,6 @@ async function updateUserPointStepDistance(steps){
     //get current points
     const docRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(docRef);
-    console.log(userDoc)
     const userData = userDoc.data();
 
     const currentPoint = userData.points;
@@ -77,7 +76,6 @@ navigator.geolocation.watchPosition(async (pos) => {
             [lastPos.longitude, lastPos.latitude],
             [pos.coords.longitude, pos.coords.latitude]
         );
-        console.log(distance)
         const timeElapsed = (now - lastTime) / 1000; // convert to seconds
         const speed = distance / timeElapsed; // m/s
         const mode = detectTransportMode(speed);
@@ -86,7 +84,6 @@ navigator.geolocation.watchPosition(async (pos) => {
         // If users are walking, we can start counting steps
         if (mode == "walking") {
             const stepNum = distanceToSteps(distance);
-            console.log(stepNum)
             await updateUserPointStepDistance(stepNum);
         }
     }
