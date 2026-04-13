@@ -27,11 +27,17 @@ const locations = await getDocs(collection(db, "locations"));
 // Loop every Firestore location and drop a marker on the map with a popup
 locations.forEach(docSnap => {
     const data = docSnap.data();
+    const id = docSnap.id;
     // MapTiler expects [lng, lat] order (opposite of Firestore storage)
     addMarker(
         [data.lng, data.lat],
         map,
-        { name: data.name, description: data.description, type: data.type, id: docSnap.id }
+        {
+            name: data.name, description: data.description, type: data.type, id,
+            saveCallback: () => {
+                addNewLocation(id, data.name, data.description, data.type, data.lng, data.lat);
+            }
+        }
     );
 });
 
@@ -48,11 +54,18 @@ onAuthReady(async (user) => {
     // Loop every saved location and drop a marker on the map with a popup
     savedLocations.forEach(docSnap => {
         const data = docSnap.data();
+        const id = docSnap.id;
         // MapTiler expects [lng, lat] order (opposite of Firestore storage)
         addMarker(
             [data.lng, data.lat],
             map,
-            { name: data.name, description: data.description, type: data.type, id: docSnap.id }
+            {
+                name: data.name, description: data.description, type: data.type, id,
+                saved: true,
+                saveCallback: () => {
+                    addNewLocation(id, data.name, data.description, data.type, data.lng, data.lat);
+                }
+            }
         );
     });
 

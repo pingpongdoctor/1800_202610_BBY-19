@@ -108,7 +108,7 @@ export async function addMarker(coordinates, map, locationData = null, color = n
             lat: coordinates[1], lng: coordinates[0],
             saveCallback: locationData.saveCallback ?? null,
             locationId: locationData.id ?? null,
-            saved: !locationData.saveCallback,
+            saved: locationData.saved || false,
             popupHTML,
             marker
         };
