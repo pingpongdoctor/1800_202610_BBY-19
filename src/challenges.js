@@ -39,24 +39,28 @@ async function populateItems(user) {
 
                 // Grab the values of each item's fields to be added to the template
                 const data = challengesDoc.data();
-                const id = challengesDoc.id;
+                let id = challengesDoc.id;
+
+                if (id == "challengeWalking") {
+                    id = "steps";
+                }
 
                 const chalTitle = data.title || "Error: no title";
                 const chalGoal = data.goal || "Error: no goal";
                 const chalValue = userDoc.data()[id] || 0; // must grab the value stored in the user db for the current challenge
                 const chalPercent = 100 * (chalValue / chalGoal);
-                const progressString = chalValue + "/" + chalGoal;
+                const progressString = (chalPercent < 20) ? "" : (chalValue + "/" + chalGoal);
 
                 // Clone the template and update the content
-                if (chalValue < chalGoal) {
-                    // Clone the template and update the content
-                    const itemCard = challengeItem.content.cloneNode(true);
-                    itemCard.querySelector(".challenge-title").textContent = chalTitle;
-                    itemCard.querySelector(".progress").setAttribute("aria-valuemax", chalGoal);
-                    itemCard.querySelector(".progress-bar").setAttribute("style", ("width: " + chalPercent + "%"));
-                    itemCard.querySelector(".progress-bar").innerHTML = "<h6>" + progressString + "</h6>";
-                    itemList.appendChild(itemCard);
-                }
+                const itemCard = challengeItem.content.cloneNode(true);
+                itemCard.querySelector(".challenge-title").textContent = chalTitle;
+                itemCard.querySelector(".progress").setAttribute("aria-valuemax", chalGoal);
+                itemCard.querySelector(".progress-bar").setAttribute("style", ("width: " + chalPercent + "%"));
+                itemCard.querySelector(".progress-bar").innerHTML = "<h6><small>" + progressString + "<small></h6>";
+                itemList.appendChild(itemCard);
+
+                // if (chalValue >= chalGoal) {}
+                
             })
         })
     })
