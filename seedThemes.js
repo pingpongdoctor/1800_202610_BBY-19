@@ -26,7 +26,6 @@ async function seed() {
     for (const [id, themeData] of Object.entries(themes)) {
         // Write full theme data to the themes collection
         await setDoc(doc(db, 'themes', id), themeData);
-        console.log(`Seeded theme: ${id} (${themeData.title})`);
 
         // Write shop item to the items collection (skip default — it's free for everyone)
         if (id !== 'defaultTheme') {
@@ -35,10 +34,8 @@ async function seed() {
                 description: themeData.description || '',
                 cost: themeData.cost ?? 0
             });
-            console.log(`Seeded shop item: ${id}`);
         }
     }
-    console.log('Done! All themes and shop items seeded.');
     process.exit(0);
 }
 
