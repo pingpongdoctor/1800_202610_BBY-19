@@ -128,7 +128,8 @@ Once the application is running:
 - **Alex Minty** - I'm here to code games and kick ass. And I'm all out of ass.\
 Fun Fact: Chaos is a requirement for fun >:D
 
-- **Simon** - BCIT CST Student, local expert on map APIs
+- **Simon** - Hi, I’m a Term 1 Computer Systems Technology student at BCIT, currently building a strong foundation in programming.\
+I aim to become a software engineer specializing in cybersecurity.
 
 - **Carlos Fonseca** I'm Carlos, I like games and programming and I want to be a game programmer.
 
