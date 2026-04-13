@@ -54,9 +54,11 @@ async function showInfo(user) {
     // Setup a listener on the user's doc that automatically updates when the data is changed
     const userSnapshot = onSnapshot(doc(db, "users", user.uid), (doc) => {
         const points = doc.data().points;
-        const distance = doc.data().distance;
+        const distance = (doc.data().distance).toFixed(2);
         const steps = doc.data().steps;
         const itemsUnlocked = doc.data().items.length;
+
+        
 
         // display the name and points
         if (nameElement) nameElement.textContent = `${name}`;
