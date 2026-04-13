@@ -34,7 +34,6 @@ async function fetchRoute(profile, startLng, startLat, endLng, endLat) {
 
     if (!response.ok) {
         const body = await response.text();
-        console.log('ORS error for ' + profile + ': ' + response.status + ' ' + body);
         throw new Error(`ORS returned status ${response.status}`);
     }
 
