@@ -162,27 +162,6 @@ function clearRoute() {
         map.removeSource('route');
     }
     routeCache = {};
-    // Use the saved desKey to re-attach the popup to the marker
-    // if (window.desKey) {
-    //     const entry = window._locationRegistry[window.desKey]
-
-    //     if (entry?.marker && entry?.popupHTML) {
-    //         const popup = new maptilersdk.Popup({ offset: 30, closeButton: true, maxWidth: "200px" })
-    //             .setHTML(entry.popupHTML);
-
-    //         // Delete the previous popup before adding a new popup
-    //         const existingPopup = entry.marker.getPopup()
-    //         console.log(existingPopup)
-
-    //         if(existingPopup){
-    //             existingPopup.remove();
-    //         }
-
-    //         entry.marker.setPopup(popup);
-    //     }
-
-    //     window.desKey = null;
-    // }
 }
 
 // Save to arrivalInterval to clear it when the route is cancelled
@@ -289,7 +268,6 @@ window.openRoutePanel = function (name, lat, lng) {
         if (window._userPosition) {
             await initRoutes(window._userPosition.lng, window._userPosition.lat);
         } else {
-            console.log('User position not yet available, using map center as origin');
             const center = map.getCenter();
             await initRoutes(center.lng, center.lat);
         }
@@ -298,7 +276,7 @@ window.openRoutePanel = function (name, lat, lng) {
         arrivalInterval = setInterval(() => {
             if (window?.curDestLng && window?.curDestLat) {
                 cancelRouteWhenUserArrive();
-                console.log("User is being tracked to know when they arrive the destination to cancel the route");
+                console.log("Track user arrival to automatically cancel the route upon reaching the destination");
             }
         }, 10000)
     };
