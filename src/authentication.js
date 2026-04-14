@@ -69,12 +69,11 @@ export async function signupUser(name, email, password) {
       email: email,
       points: 0,
       steps: 0,
-      distance: 0,
+      distance: 0.0,
       items: [],
       theme: "defaultTheme",
       challengeCafes: 0,
       challengeRestaurants: 0,
-      challengeSteps: 0
     });
   } catch (error) {
     // Information for debugging: show the error code  
