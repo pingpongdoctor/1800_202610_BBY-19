@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig.js";
-import { doc, getDoc, collection, getDocs, query, updateDoc, onSnapshot, QuerySnapshot } from "firebase/firestore";
+import { doc, collection, query, onSnapshot, } from "firebase/firestore";
 import { onAuthReady } from '/src/authentication.js';
 
 function challengesPage() {
@@ -48,6 +48,8 @@ async function populateItems(user) {
                 const chalTitle = data.title || "Error: no title";
                 const chalGoal = data.goal || "Error: no goal";
                 const chalValue = userDoc.data()[id] || 0; // must grab the value stored in the user db for the current challenge
+
+                if (chalValue != -1) {
                 const chalPercent = 100 * (chalValue / chalGoal);
                 const progressString = (chalPercent < 20) ? "" : (chalValue + "/" + chalGoal);
 
@@ -58,8 +60,7 @@ async function populateItems(user) {
                 itemCard.querySelector(".progress-bar").setAttribute("style", ("width: " + chalPercent + "%"));
                 itemCard.querySelector(".progress-bar").innerHTML = "<h6><small>" + progressString + "<small></h6>";
                 itemList.appendChild(itemCard);
-
-                // if (chalValue >= chalGoal) {}
+                }
                 
             })
         })
