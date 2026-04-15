@@ -18,7 +18,7 @@
     "belgiumTheme": {
         "title": "Belgium",
         "description": "More than just waffles!",
-        "cost": 50,
+        "cost": 500,
         "primary": "#DD0000",
         "primary_compliment": "#000000",
         "secondary": "#FFCC00",
@@ -31,26 +31,10 @@
         "danger": "#e05252",
         "danger_hover": "#c94444"
     },
-    "azureTheme": {
-        "title": "Azure",
-        "description": "Azure blue and purple.",
-        "cost": 50,
-        "primary": "#252fe6",
-        "primary_compliment": "#42c3d4",
-        "secondary": "#b651f0",
-        "secondary_compliment": "#eb3dd1",
-        "white": "#FAFFF5",
-        "black": "#100021",
-        "text_muted": "#888",
-        "text_secondary": "#666",
-        "border": "#555",
-        "danger": "#e05252",
-        "danger_hover": "#c94444"
-    },
     "franceTheme": {
         "title": "France",
-        "description": "French theme, uuuh cigarret and baguette and shi.",
-        "cost": 100,
+        "description": "Plays with flair, complains with elegance.",
+        "cost": 500,
         "primary": "#002395",
         "primary_compliment": "#3355b0",
         "secondary": "#ED2939",
@@ -66,7 +50,7 @@
     "spainTheme": {
         "title": "Spain",
         "description": "Donde esta la biblioteca manito?",
-        "cost": 100,
+        "cost": 500,
         "primary": "#C60B1E",
         "primary_compliment": "#d94050",
         "secondary": "#FFC400",
@@ -82,7 +66,7 @@
     "germanyTheme": {
         "title": "Germany",
         "description": "We can have a funny description too.",
-        "cost": 250,
+        "cost": 500,
         "primary": "#DD0000",
         "primary_compliment": "#000000",
         "secondary": "#FFCC00",
@@ -98,7 +82,7 @@
     "ukTheme": {
         "title": "UK",
         "description": "Invented the game and still working on the ending.",
-        "cost": 300,
+        "cost": 500,
         "primary": "#012169",
         "primary_compliment": "#FFFFFF",
         "secondary": "#C8102E",
@@ -113,8 +97,8 @@
     },
     "portugalTheme": {
         "title": "Portugal",
-        "description": "Sim.",
-        "cost": 350,
+        "description": "One nation, one coast, infinite stepovers.",
+        "cost": 500,
         "primary": "#046A38",
         "primary_compliment": "#DA291C",
         "secondary": "#FFE900",
@@ -129,8 +113,8 @@
     },
     "argentinaTheme": {
         "title": "Argentina",
-        "description": "Si.",
-        "cost": 400,
+        "description": "Passion, chaos, and a little hand magic.",
+        "cost": 500,
         "primary": "#74ACDF",
         "primary_compliment": "#FFFFFF",
         "secondary": "#74ACDF",
@@ -145,8 +129,8 @@
     },
     "mexicoTheme": {
         "title": "Mexico",
-        "description": "Si.",
-        "cost": 450,
+        "description": "Loud fans, louder goals.",
+        "cost": 500,
         "primary": "#006847",
         "primary_compliment": "#FFFFFF",
         "secondary": "#CE1126",
@@ -161,7 +145,7 @@
     },
     "colombiaTheme": {
         "title": "Colombia",
-        "description": "Si.",
+        "description": "Coffee strong, counterattacks stronger.",
         "cost": 500,
         "primary": "#FFCD00",
         "primary_compliment": "#003087",
@@ -177,8 +161,8 @@
     },
     "italyTheme": {
         "title": "Italy",
-        "description": "Si.",
-        "cost": 550,
+        "description": "Defends first, asks questions later.",
+        "cost": 500,
         "primary": "#009246",
         "primary_compliment": "#FFFFFF",
         "secondary": "#CE2B37",
@@ -193,8 +177,8 @@
     },
     "uruguayTheme": {
         "title": "Uruguay",
-        "description": "Si.",
-        "cost": 600,
+        "description": "Tiny country, gigantic football ego.",
+        "cost": 500,
         "primary": "#0038A8",
         "primary_compliment": "#0038A8",
         "secondary": "#FFFFFF",
@@ -210,7 +194,7 @@
     "brazilTheme": {
         "title": "Brazil",
         "description": "Ordem e Progresso! Verde e amarelo porra!",
-        "cost": 100,
+        "cost": 500,
         "primary": "#009739",
         "primary_compliment": "#33b35e",
         "secondary": "#FFDF00",
