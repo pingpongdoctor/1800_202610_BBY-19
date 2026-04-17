@@ -1,6 +1,6 @@
 import { db } from '../firebaseConfig.js';
 import { collection, getDocs, onSnapshot, doc } from 'firebase/firestore';
-import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker, getLocationsInVacouverByType } from "../mapFunctions.js";
+import { getLocationsByPlaceNameAndCountry, getLocationsByPlaceName, addMarker, getLocationsInVancouverByType } from "../mapFunctions.js";
 import { map } from "./map.js"
 import { addNewLocation } from "../locations.js"
 import { onAuthReady } from '/src/authentication.js';
@@ -75,10 +75,6 @@ class SiteSearchbar extends HTMLElement {
             });
 
         });
-
-
-
-
 
         // Load autocomplete suggestions from Firestore - REPLACE WITH ACTUAL LOCATIONS LATER!
         // let autocompleteSuggestions = [];
@@ -271,7 +267,7 @@ class SiteSearchbar extends HTMLElement {
             clearFilterMarkers()
 
             types.forEach(async (type) => {
-                const locations = await getLocationsInVacouverByType(type);
+                const locations = await getLocationsInVancouverByType(type);
 
                 locations.forEach(location => {
                     addMarker(
