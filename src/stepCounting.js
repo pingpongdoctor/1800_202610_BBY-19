@@ -3,6 +3,10 @@ import { getAuth } from "firebase/auth";
 import { updateDoc, getDoc, doc } from 'firebase/firestore';
 import { db } from "./firebaseConfig.js";
 
+const STEP_LENGTH_METERS = 0.762;
+const METERS_TO_KM = 1000;
+const CALCULATION_INTERVAL_MS = 5000;
+
 async function updateUserPointStepDistance(steps){
     const auth = getAuth();
     const user = auth.currentUser;
@@ -23,7 +27,7 @@ async function updateUserPointStepDistance(steps){
 
     const updatedStep = currentStep + steps;
     const updatedPoint = currentPoint + steps;
-    const updatedDistance = currentDistance + (steps * 0.7)/1000;
+    const updatedDistance = currentDistance + (steps * STEP_LENGTH_METERS)/METERS_TO_KM;
     
     //update points using the current points and new steps
     await updateDoc(docRef, {points: updatedPoint, steps: updatedStep, distance: updatedDistance});
@@ -43,7 +47,7 @@ function detectTransportMode(speedMetersPerSecond) {
 // Convert distance into steps
 // The average length of a step is about 0.762 meter
 function distanceToSteps(meters) {
-    return Math.round(meters / 0.762);
+    return Math.round(meters / STEP_LENGTH_METERS);
 }
 
 // variables used for saving the preceding coordinates and the corresponding time of this preceding location
@@ -59,7 +63,7 @@ let lastCalculation = 0;
 navigator.geolocation.watchPosition(async (pos) => {
     console.log("User position updated. Analyze transport mode to determine if the user is walking");
     const now = Date.now();
-    if (now - lastCalculation < 5000) {
+    if (now - lastCalculation < CALCULATION_INTERVAL_MS) {
         return;
     }
     lastCalculation = now;
@@ -94,5 +98,5 @@ navigator.geolocation.watchPosition(async (pos) => {
     // Share the user's position globally so other modules (e.g. routes) can use it
     window._userPosition = { lng: pos.coords.longitude, lat: pos.coords.latitude };
 }, (error) => {
-    console.log("Geolocation API watchPostion method error" + error)
+    console.log("Geolocation API watchPosition method error" + error)
 }, { enableHighAccuracy: false });

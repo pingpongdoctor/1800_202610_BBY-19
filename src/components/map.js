@@ -4,7 +4,6 @@ import * as maptilersdk from '@maptiler/sdk';
 import { getLocationsByPlaceName, addMarker } from "../mapFunctions";
 
 maptilersdk.config.apiKey = import.meta.env.VITE_MAPTILER_KEY;
-console.log(import.meta.env.VITE_MAPTILER_KEY);
 
 // Get the coordinate of Vancouver
 const result = await getLocationsByPlaceName("Vancouver, BC, Canada");
@@ -30,10 +29,8 @@ const geolocate = new maptilersdk.GeolocateControl({
 
 map.addControl(geolocate, 'top-right');
 
-export function centerTheMapToUserLocaiton() {
+export function centerTheMapToUserLocation() {
   if(map){
     geolocate.trigger();
   }
 }
-// // Add a default marker in Vancouver TODO: pan to user's location instead of center of the map.
-// addMarker(result[0]?.center || [], map)

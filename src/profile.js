@@ -1,29 +1,23 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import { db, auth } from "./firebaseConfig.js";
-import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, setDoc, onSnapshot, orderBy } from "firebase/firestore";
+import { db } from "./firebaseConfig.js";
+import { doc, getDoc, collection, getDocs, query, updateDoc, onSnapshot, orderBy } from "firebase/firestore";
 import { logoutUser, onAuthReady } from '/src/authentication.js';
 import { switchTheme } from '/src/main.js';
 
-
-
 function profilePage() {
-
     // Wait until Firebase Auth finishes checking the user's auth state
     onAuthReady(async (user) => {
-
         // If no user is logged in, redirect to the login page
         if (!user) {
             if (window.location.pathname.endsWith('profile.html')) {
                 location.href = '/app/html/login.html';
             }
-            return; // Stop execution
+            return;
         }
-
         await switchThemeSelect(user)
         await showInfo(user);
         await showSavedLocations(user);
-
         // logout button functionality
         const logout = document.getElementById('logoutGoesHere').querySelector('#logoutBtn');
         logout?.addEventListener('click', logoutUser);
@@ -34,13 +28,11 @@ function profilePage() {
 
 // Function to fetch the signed-in user's name and display it in the UI
 async function showInfo(user) {
-
     const nameElement = document.getElementById("name-goes-here");
     const pointsElement = document.getElementById("pointsGoHere");
     const distanceElement = document.getElementById("distanceTravelled");
     const stepsElement = document.getElementById("stepsTravelled");
     const itemsUnlockedElement = document.getElementById("itemsUnlocked");
-
 
     // Get the user's Firestore document from the "users" collection
     // Document ID is the user's unique UID
@@ -52,11 +44,11 @@ async function showInfo(user) {
         : user.displayName || user.email;    // 3️⃣ Otherwise fallback to email
 
     // Setup a listener on the user's doc that automatically updates when the data is changed
-    const userSnapshot = onSnapshot(doc(db, "users", user.uid), (doc) => {
-        const points = doc.data().points;
-        const distance = (doc.data().distance).toFixed(2);
-        const steps = doc.data().steps;
-        const itemsUnlocked = doc.data().items.length;
+    onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+        const points = snapshot.data().points;
+        const distance = snapshot.data().distance;
+        const steps = snapshot.data().steps;
+        const itemsUnlocked = snapshot.data().items.length;
 
         
 
@@ -70,10 +62,8 @@ async function showInfo(user) {
 
 }
 
-
 async function switchThemeSelect(user) {
     const container = document.getElementById("themeSelect");
-
     const userDoc = await getDoc(doc(db, "users", user.uid));
     const userItems = userDoc.data().items;
     const userChosenTheme = userDoc.data().theme;
@@ -97,8 +87,7 @@ async function switchThemeSelect(user) {
         card.dataset.themeId = id;
         card.innerHTML = `
             <img src="/images/${id}.png" alt="${title}">
-            <span>${title}</span>
-        `;
+            <span>${title}</span>`;
         card.addEventListener("click", () => {
             // Update active state
             container.querySelectorAll(".theme-card").forEach(c => c.classList.remove("active"));
@@ -112,14 +101,11 @@ async function switchThemeSelect(user) {
     });
 }
 
-
 async function showSavedLocations(user) {
-
     const savedLocationsElement = document.getElementById("savedLocationsElement");
     let savedLocationsList = document.getElementById("savedLocationsList");
 
     try {
-
         // User's saved locations subcollection
         const savedLocationsRef = collection(db, "users", user.uid, "savedLocations");
         // Query and sort by last updated in ascending order
@@ -129,7 +115,6 @@ async function showSavedLocations(user) {
         // Iterate through each document
         queryItems.forEach((doc) => {
             const data = doc.data();
-
             const locationName = data.name || "Error: no name";
             const locationDesc = data.description || "Error: no description";
             const locationLat = data.lat || "Error: no lat";
@@ -141,7 +126,6 @@ async function showSavedLocations(user) {
             if (savedLocationsElement) {
                 savedLocationsList.innerHTML += locationItem;
             }
-
         })
 
         if (!queryItems.empty) { savedLocationsElement.style = "" }
@@ -150,9 +134,6 @@ async function showSavedLocations(user) {
     } catch (error) {
         console.error("Error loading saved locations: ", error);
     }
-
-
-
 }
 
 profilePage();

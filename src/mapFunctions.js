@@ -20,7 +20,7 @@ export async function getLocationsByPlaceNameAndCountry(name, country, limit, pr
     return result?.features || [];
 }
 
-export async function getLocationsInVacouverByType(type) {
+export async function getLocationsInVancouverByType(type) {
     // Params are West, East, South, North
     const vancouverBoundary = [-123.224, 49.100, -122.900, 49.315];
 
@@ -70,8 +70,6 @@ export async function addMarker(coordinates, map, locationData = null, color = n
         // This avoids passing raw strings through onclick attributes (escaping issues).
         const registryKey = `loc_${Date.now()}_${Math.random().toString(36).slice(2)}`;
         window._locationRegistry = window._locationRegistry || {};
-        // saveCallback is an optional function passed by the searchbar for unsaved locations
-        // When present, the Save button in the detail panel becomes active
 
         // Small popup — just the name (panel opens automatically alongside it)
         const popupHTML = `

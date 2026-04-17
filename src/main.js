@@ -6,18 +6,15 @@ import { onAuthReady } from '/src/authentication.js';
 import { geocoding, config } from "@maptiler/client";
 
 config.apiKey = import.meta.env.VITE_MAPTILER_KEY;
+const PROXIMITY_OFFSET_DEGREES = 0.00045;
 
 let trackUserChallengesInterval;
-
-
 // Loads the user's chosen theme on page load (Firestore is the source of truth)
 function userFunctions() {
     onAuthReady(async (user) => {
         if (!user) return;
-
         const userDoc = await getDoc(doc(db, "users", user.uid));
         const userTheme = userDoc.exists() ? userDoc.data().theme : 'defaultTheme';
-
         await switchTheme(userTheme);
 
         // In the profile page, highlight the active theme card
@@ -31,11 +28,8 @@ function userFunctions() {
         }
 
         trackUserChallengesInterval = setInterval(() => { trackUserMoveCloseToChallengePlaces(user) }, 5000);
-
-
     });
 }
-
 
 // CSS variable names that map to theme fields in Firestore
 // Firestore uses underscores (text_muted), CSS uses hyphens (--text-muted)
@@ -80,7 +74,6 @@ export async function switchTheme(themeId) {
     if (!themeId || themeId === 'default') {
         themeId = 'defaultTheme';
     }
-
     const themeDoc = await getDoc(doc(db, 'themes', themeId));
 
     if (themeDoc.exists()) {
@@ -120,21 +113,16 @@ async function moveCloseToCafe(userRef, userCafeChallenges, cafeGoal) {
         return;
     };
 
-    // Convert 50m radius to degrees
-    const offset = 0.00045;
-
     // Calculate the bounding box to search for a location type in 50m radius
     const bbox = [
-        userLng - offset,
-        userLat - offset,
-        userLng + offset,
-        userLat + offset
+        userLng - PROXIMITY_OFFSET_DEGREES,
+        userLat - PROXIMITY_OFFSET_DEGREES,
+        userLng + PROXIMITY_OFFSET_DEGREES,
+        userLat + PROXIMITY_OFFSET_DEGREES
     ];
 
     // Get the queries data for the location type input
-
     let moveCloseCafe = false;
-
 
     for (const cafeType of cafeTypes) {
         const result = await geocoding.forward(cafeType, {
@@ -143,7 +131,6 @@ async function moveCloseToCafe(userRef, userCafeChallenges, cafeGoal) {
             types: ["poi"],
             limit: 10
         });
-
         const locations = result?.features || [];
 
         if (locations.length > 0) {
@@ -158,14 +145,12 @@ async function moveCloseToCafe(userRef, userCafeChallenges, cafeGoal) {
 
     }
 
-
     if (moveCloseCafe && (userCafeChallenges < cafeGoal)) {
         // Increment user cafe challenge field if user moves close to a cafe and the goal has not been achieved
         await updateDoc(userRef, {
             challengeCafes: userCafeChallenges + 1
         });
         console.log(`Cafe challenge progress updated: ${userCafeChallenges + 1}/${cafeGoal}${userCafeChallenges + 1 >= cafeGoal ? " .Challenge complete! 🎉" : ""}`)
-
     }
 }
 
@@ -178,19 +163,15 @@ async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaura
         return;
     };
 
-    // Convert 50m radius to degrees
-    const offset = 0.00045;
-
     // Calculate the bounding box to search for a location type in 50m radius
     const bbox = [
-        userLng - offset,
-        userLat - offset,
-        userLng + offset,
-        userLat + offset
+        userLng - PROXIMITY_OFFSET_DEGREES,
+        userLat - PROXIMITY_OFFSET_DEGREES,
+        userLng + PROXIMITY_OFFSET_DEGREES,
+        userLat + PROXIMITY_OFFSET_DEGREES
     ];
 
     // Get the queries data for the location type input
-
     let moveCloseRestaurant = false;
 
     for (const restaurantType of restaurantTypes) {
@@ -200,7 +181,6 @@ async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaura
             types: ["poi"],
             limit: 10
         });
-
         const locations = result?.features || [];
 
         if (locations.length > 0) {
@@ -215,7 +195,7 @@ async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaura
     }
 
     if (moveCloseRestaurant && (userRestaurantChallenges < restaurantGoal)) {
-        // Increment user cafe challenge field if user moves close to a cafe and the goal has not been achieved
+        // Increment user restaurant challenge field if user moves close to a restaurant and the goal has not been achieved
         await updateDoc(userRef, {
             challengeRestaurants: userRestaurantChallenges + 1
         });
@@ -224,7 +204,6 @@ async function moveCloseToRestaurant(userRef, userRestaurantChallenges, restaura
 }
 
 async function trackUserMoveCloseToChallengePlaces(user) {
-
     // Get the challenges points that users have obtained
     const userRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(userRef, user.uid);

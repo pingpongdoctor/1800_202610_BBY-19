@@ -2,10 +2,13 @@ import * as maptilersdk from '@maptiler/sdk';
 import { map } from './components/map.js';
 import { addMarker } from './mapFunctions.js';
 import * as maptilerClient from '@maptiler/client';
-import {centerTheMapToUserLocaiton} from "./components/map.js";
+import {centerTheMapToUserLocation} from "./components/map.js";
 
 // ORS (OpenRouteService) API key loaded from the .env file via Vite
 const ORS_KEY = import.meta.env.VITE_ORS_KEY;
+
+// Radius that is used to analyze if users arrive the detination
+const ARRIVAL_RADIUS_METERS = 30;
 
 // Maps our UI mode button names to the ORS API profile strings
 // Transit is treated as driving for now (bus stop routing is out of scope)
@@ -179,7 +182,7 @@ function closeRoutePanel() {
         arrivalInterval = null;
     }
 
-    // Clear the destionation coordinations when closing route to stop tracking if users arrive the destination
+    // Clear the destionation coordinates when closing route to stop tracking if users arrive the destination
     window.curDestLng = null;
     window.curDestLat = null;
 }
@@ -225,7 +228,7 @@ function cancelRouteWhenUserArrive() {
             [desLng, desLat]
         );
 
-        if (distanceBetweenUserAndDes <= 30) {
+        if (distanceBetweenUserAndDes <= ARRIVAL_RADIUS_METERS) {
             closeRoutePanel();
         }
     }
@@ -288,7 +291,7 @@ window.openRoutePanel = function (name, lat, lng) {
     }
 
     // Center the map based on user current location when a route is set
-    centerTheMapToUserLocaiton();
+    centerTheMapToUserLocation();
 };
 
 // Set up listeners once DOM is ready

@@ -1,9 +1,8 @@
 import { db } from "./firebaseConfig.js";
-import { doc, collection, query, onSnapshot, } from "firebase/firestore";
+import { doc, collection, query, onSnapshot } from "firebase/firestore";
 import { onAuthReady } from '/src/authentication.js';
 
 function challengesPage() {
-
     // Wait until Firebase Auth finishes checking the user's auth state
     onAuthReady(async (user) => {
 
@@ -14,10 +13,7 @@ function challengesPage() {
             }
             return; // Stop execution
         }
-
         populateItems(user);
-
-
     });
 }
 
@@ -31,11 +27,11 @@ async function populateItems(user) {
 
         // Query through the challenges collection and listen for changes to any doc
         const q = query(collection(db, "challenges"));
-        const challengesSnapshot = onSnapshot(q, (QuerySnapshot) => {
+        onSnapshot(q, (querySnapshot) => {
 
             // Clear the HTML to re-add the data on any change
             itemList.innerHTML = "";
-            QuerySnapshot.forEach((challengesDoc) => {
+            querySnapshot.forEach((challengesDoc) => {
 
                 // Grab the values of each item's fields to be added to the template
                 const data = challengesDoc.data();
@@ -67,7 +63,5 @@ async function populateItems(user) {
     })
 
 }
-
-
 
 challengesPage()
