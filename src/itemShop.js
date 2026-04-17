@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db } from "./firebaseConfig.js";
-import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, increment, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, query, updateDoc, arrayUnion, increment, onSnapshot} from "firebase/firestore";
 import { onAuthReady } from '/src/authentication.js';
 
 onAuthReady(async (user) => {
@@ -10,30 +10,24 @@ onAuthReady(async (user) => {
         if (!window.location.pathname.endsWith('index.html')) {
             location.href = '/app/html/login.html';
         }
-
         return; // Stop execution
     }
-
     // Listen to users points data and display with dynamic updates
-    const pointsSnapshot = onSnapshot(doc(db, "users", user.uid), (doc) => {
-        const userPointsSnapshot = doc.data().points;
+    onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+        const userPointsSnapshot = snapshot.data().points;
         document.getElementById("pointsGoHere").innerHTML = userPointsSnapshot;
     })
 
     await populateItems(user);
-
 })
-
 
 async function populateItems(user) {
     try {
-
-        const userDoc = await getDoc(doc(db, "users", user.uid));
         const userRef = doc(db, "users", user.uid);
-
+        const userDoc = await getDoc(userRef);
+        
         const itemTemplate = document.getElementById("itemTemplate");
         const itemList = document.getElementById("itemList");
-
         const userItems = userDoc.data().items;
 
         // Shop items collection
@@ -41,11 +35,11 @@ async function populateItems(user) {
         const queryItems = await getDocs(q);
 
         // Iterate through each document in the "items" collection
-        queryItems.forEach((doc) => {
+        queryItems.forEach((snapshot) => {
 
             // Only display items that the user doesn't already own
-            if (!userItems.includes(doc.id)) {
-                const data = doc.data();
+            if (!userItems.includes(snapshot.id)) {
+                const data = snapshot.data();
 
                 // Grab the values of each item's fields to be added to the template
                 const itemTitle = data.title || "Error: no title";
@@ -57,15 +51,15 @@ async function populateItems(user) {
                 itemCard.querySelector(".itemTitle").textContent = itemTitle;
                 itemCard.querySelector(".itemDesc").textContent = itemDesc;
                 itemCard.querySelector(".itemCost").textContent = itemCost;
-                itemCard.querySelector(".itemRedeem").id = doc.id + "Redeem";
-                itemCard.querySelector(".card").id = doc.id;
-                itemCard.querySelector("img").src = `/images/${doc.id}.png`;
+                itemCard.querySelector(".itemRedeem").id = snapshot.id + "Redeem";
+                itemCard.querySelector(".card").id = snapshot.id;
+                itemCard.querySelector("img").src = `/images/${snapshot.id}.png`;
 
                 // Append the updated cloned item and add it to the list of items to be displayed
                 itemList.appendChild(itemCard);
 
                 // Add a listener to the button 
-                document.getElementById(doc.id + "Redeem").addEventListener("click", async event => {
+                document.getElementById(snapshot.id + "Redeem").addEventListener("click", async event => {
 
                     const userDocSnapshot = await getDoc(userRef);
                     const userPointsSnapshot = userDocSnapshot.data().points;
@@ -77,17 +71,16 @@ async function populateItems(user) {
                         const redeemModal = new bootstrap.Modal(document.getElementById('redeemModal'))
                         redeemModal.show();
 
-                        document.getElementById(doc.id).style.display = "none";
+                        document.getElementById(snapshot.id).style.display = "none";
 
                         await updateDoc(userRef, {
-                            items: arrayUnion(doc.id),
+                            items: arrayUnion(snapshot.id),
                             points: increment(-itemCost)
                         });
                     } else {
                         const errorModal = new bootstrap.Modal(document.getElementById('errorModal'))
                         errorModal.show();
                     }
-
                 })
             }
         })
