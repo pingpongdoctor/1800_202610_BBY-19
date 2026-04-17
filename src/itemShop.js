@@ -26,8 +26,6 @@ onAuthReady(async (user) => {
 
 
 async function populateItems(user) {
-
-    // console.log("Adding items to the shop...");
     try {
 
         const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -37,7 +35,6 @@ async function populateItems(user) {
         const itemList = document.getElementById("itemList");
 
         const userItems = userDoc.data().items;
-        // console.log("User's purchased items:", userItems);
 
         // Shop items collection
         const q = query(collection(db, "items"));
@@ -77,8 +74,6 @@ async function populateItems(user) {
                     //  and update the user's purchased items and points fields
                     // Else, show the error modal
                     if (userPointsSnapshot >= itemCost) {
-                        console.log("Redeeming", itemTitle + "...");
-
                         const redeemModal = new bootstrap.Modal(document.getElementById('redeemModal'))
                         redeemModal.show();
 
