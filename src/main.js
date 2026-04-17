@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { db } from "./firebaseConfig.js";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, increment } from "firebase/firestore";
 import { onAuthReady } from '/src/authentication.js';
 import { geocoding, config } from "@maptiler/client";
 
@@ -218,15 +218,29 @@ async function trackUserMoveCloseToChallengePlaces(user) {
     const restaurantsChallengesDocSnap = await getDoc(doc(db, "challenges", "challengeRestaurants"));
     const restaurantGoal = restaurantsChallengesDocSnap.data().goal;
 
-    if (userCafeChallenges < cafeGoal) {
+    if (userCafeChallenges < cafeGoal && userCafeChallenges != -1) {
         moveCloseToCafe(userRef, userCafeChallenges, cafeGoal)
     }
 
-    if (userRestaurantChallenges < restaurantGoal) {
+    if (userCafeChallenges >= cafeGoal) {
+        await updateDoc(userRef, {
+            challengeCafes: -1,
+            points: increment(1000)
+        });
+    }
+
+    if (userRestaurantChallenges < restaurantGoal && userRestaurantChallenges != -1) {
         moveCloseToRestaurant(userRef, userRestaurantChallenges, restaurantGoal)
     }
 
-    if ((userCafeChallenges >= cafeGoal) && (userRestaurantChallenges >= restaurantGoal)) {
+    if (userRestaurantChallenges >= restaurantGoal) {
+        await updateDoc(userRef, {
+            challengeRestaurants: -1,
+            points: increment(1000)
+        });
+    }
+
+    if ((userCafeChallenges == -1) && (userRestaurantChallenges == -1)) {
         if (trackUserChallengesInterval) {
             clearInterval(trackUserChallengesInterval);
             trackUserChallengesInterval = null;

@@ -50,6 +50,8 @@ async function showInfo(user) {
         const steps = snapshot.data().steps;
         const itemsUnlocked = snapshot.data().items.length;
 
+        
+
         // display the name and points
         if (nameElement) nameElement.textContent = `${name}`;
         if (pointsElement) pointsElement.textContent = `You have ${points} points!`;
