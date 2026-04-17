@@ -29,7 +29,7 @@ const geolocate = new maptilersdk.GeolocateControl({
 
 map.addControl(geolocate, 'top-right');
 
-export function centerTheMapToUserLocaiton() {
+export function centerTheMapToUserLocation() {
   if(map){
     geolocate.trigger();
   }
